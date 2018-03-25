@@ -44,7 +44,7 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 def sr_gamma(beta_x=0, beta_y=0, beta_z=0):
     """The gamma used in special relativity using 3 velocites, some may be zero."""
 
-    return 1 / (1 - beta_x ** 2 - beta_y ** 2 - beta_z ** 2) ** 0.5
+    return 1 / (1 - beta_x ** 2 - beta_y ** 2 - beta_z ** 2) ** (1/2)
 
 def sr_gamma_betas(beta_x=0, beta_y=0, beta_z=0):
     """gamma and the three gamma * betas used in special relativity."""
@@ -64,7 +64,7 @@ def sr_gamma_betas(beta_x=0, beta_y=0, beta_z=0):
 class QH(object):
     """Quaternions as Hamilton would have defined them, on the manifold R^4."""
 
-    def __init__(self, values=None, qtype="Q"):
+    def __init__(self, values=None, qtype="Q", representation=""):
         if values is None:
             self.t, self.x, self.y, self.z = 0, 0, 0, 0
         elif len(values) == 4:
@@ -73,16 +73,165 @@ class QH(object):
         elif len(values) == 8:
             self.t, self.x = values[0] - values[1], values[2] - values[3]
             self.y, self.z = values[4] - values[5], values[6] - values[7]
+        self.representation = representation
+        
+        if representation != "":
+            self.t, self.x, self.y, self.z = self.representation_2_txyz(representation)
+            
         self.qtype = qtype
 
     def __str__(self):
         """Customize the output."""
-        return "({t}, {x}, {y}, {z}) {qt}".format(t=self.t, x=self.x, y=self.y, z=self.z, qt=self.qtype)
+        
+        if self.representation == "":
+            string = "({t}, {x}, {y}, {z}) {qt}".format(
+                t=self.t, x=self.x, y=self.y, z=self.z, qt=self.qtype)
     
+        elif self.representation == "polar":
+            rep = self.txyz_2_representation("polar")
+            string = "({A} A, {thetaX} 𝜈x, {thetaY} 𝜈y, {thetaZ} 𝜈z) {qt}".format(
+                A=rep[0], thetaX=rep[1], thetaY=rep[2], thetaZ=rep[3], qt=self.qtype)
+ 
+        elif self.representation == "spherical":
+            rep = self.txyz_2_representation("spherical")
+            string = "({t} t, {R} R, {theta} θ, {phi} φ) {qt}".format(
+                t=rep[0], R=rep[1], theta=rep[2], phi=rep[3], qt=self.qtype)
+
+        return string
+
+    def is_symbolic(self):
+        """Figures out if an expression has symbolic terms."""
+        
+        symbolic = False
+        
+        if hasattr(self.t, "free_symbols") or hasattr(self.x, "free_symbols") or             hasattr(self.y, "free_symbols") or hasattr(self.z, "free_symbols"): 
+            symbolic = True
+        
+        return symbolic
+
+    def txyz_2_representation(self, representation):
+        """Converts Cartesian txyz into an array of 4 values in a different representation."""
+
+        symbolic = self.is_symbolic()
+        
+        if representation == "":
+            rep = [self.t, self.x, self.y, self.z]
+        
+        elif representation == "polar":
+            amplitude = (self.t ** 2 + self.x ** 2 + self.y **2 + self.z **2) ** (1/2)
+            
+            abs_v = self.abs_of_vector().t
+            
+            if symbolic:
+                theta = sp.atan2(abs_v, self.t)
+            else:
+                theta = math.atan2(abs_v, self.t)
+                
+            if abs_v == 0:
+                thetaX, thetaY, thetaZ = 0, 0, 0
+                
+            else:
+                thetaX = theta * self.x / abs_v
+                thetaY = theta * self.y / abs_v
+                thetaZ = theta * self.z / abs_v
+                
+            rep = [amplitude, thetaX, thetaY, thetaZ]
+        
+        elif representation == "spherical":
+            
+            t = self.t
+            
+            R = (self.x ** 2 + self.y **2 + self.z **2) ** (1/2)
+            
+            if R == 0:
+                theta = 0
+            else:
+                if symbolic:
+                    theta = sp.acos(self.z / R)
+                
+                else:
+                    theta = math.acos(self.z / R)
+                
+            if symbolic:
+                phi = sp.atan2(self.y, self.x)
+            else:
+                phi = math.atan2(self.y, self.x)
+                
+            rep = [t, R, theta, phi]
+        
+        else:
+            print("Oops, don't know representation: ", representation)
+            
+        return rep
+    
+    def representation_2_txyz(self, representation):
+        """Convert from a representation to Cartesian txyz."""
+        
+        symbolic = False
+        
+        if hasattr(self.t, "free_symbols") or hasattr(self.x, "free_symbols") or             hasattr(self.y, "free_symbols") or hasattr(self.z, "free_symbols"): 
+            symbolic = True
+
+        if representation == "":
+            t, x, y, z = self.t, self.x, self.y, self.z
+        
+        elif representation == "polar":
+            amplitude, thetaX, thetaY, thetaZ = self.t, self.x, self.y, self.z
+    
+            theta = (thetaX ** 2 + thetaY ** 2 + thetaZ ** 2) ** (1/2)
+                
+            if theta == 0:
+                t = self.t
+                x, y, z = 0, 0, 0
+            
+            else:
+                if symbolic:
+                    t = amplitude * sp.cos(theta)
+                    x = self.x / theta * amplitude * sp.sin(theta)
+                    y = self.y / theta * amplitude * sp.sin(theta)
+                    z = self.z / theta * amplitude * sp.sin(theta)
+                else:
+                    t = amplitude * math.cos(theta)
+                    x = self.x / theta * amplitude * math.sin(theta)
+                    y = self.y / theta * amplitude * math.sin(theta)
+                    z = self.z / theta * amplitude * math.sin(theta)
+    
+        elif representation == "spherical":
+            t, R, theta, phi = self.t, self.x, self.y, self.z
+
+            if symbolic:
+                x = R * sp.sin(theta) * sp.cos(phi)
+                y = R * sp.sin(theta) * sp.sin(phi)
+                z = R * sp.cos(theta)
+            else:
+                x = R * math.sin(theta) * math.cos(phi)
+                y = R * math.sin(theta) * math.sin(phi)
+                z = R * math.cos(theta)
+            
+        else:
+            print("Oops, don't know representation: ", representation)
+            
+        txyz = [t, x, y, z]
+        
+        return txyz 
+        
+    def check_representations(self, q1):
+        """If they are the same, report true. If not, kick out an exception. Don't add apples to oranges."""
+
+        if self.representation == q1.representation:
+            return True
+        
+        else:
+            raise Exception("Oops, 2 quaternions have different representations: {}, {}".format(self.representation, q1.representation))
+            return False
+        
     def display_q(self):
         """Display each terms in a pretty way."""
 
-        display((self.t, self.x, self.y, self.z, self.qtype))
+        display(self.t)
+        display(self.x)
+        display(self.y)
+        display(self.z)
         return
 
     
@@ -107,31 +256,31 @@ class QH(object):
     def q_0(self, qtype="0"):
         """Return a zero quaternion."""
 
-        q0 = QH([0, 0, 0, 0], qtype=qtype)
+        q0 = QH([0, 0, 0, 0], qtype=qtype, representation=self.representation)
         return q0
 
     def q_1(self, qtype="1"):
         """Return a multiplicative identity quaternion."""
 
-        q1 = QH([1, 0, 0, 0], qtype=qtype)
+        q1 = QH([1, 0, 0, 0], qtype=qtype, representation=self.representation)
         return q1
     
     def q_i(self, qtype="i"):
         """Return i."""
 
-        qi = QH([0, 1, 0, 0], qtype=qtype)
+        qi = QH([0, 1, 0, 0], qtype=qtype, representation=self.representation)
         return qi
     
     def q_j(self, qtype="j"):
         """Return j."""
 
-        qj = QH([0, 0, 1, 0], qtype=qtype)
+        qj = QH([0, 0, 1, 0], qtype=qtype, representation=self.representation)
         return qj
     
     def q_k(self, qtype="k"):
         """Return k."""
 
-        qk = QH([0, 0, 0, 1], qtype=qtype)
+        qk = QH([0, 0, 0, 1], qtype=qtype, representation=self.representation)
         return qk
     
     def q_random(self, qtype="?"):
@@ -143,16 +292,18 @@ class QH(object):
     def dupe(self, qtype=""):
         """Return a duplicate copy, good for testing since qtypes persist"""
         
-        du = QH([self.t, self.x, self.y, self.z], qtype=self.qtype)
+        du = QH([self.t, self.x, self.y, self.z], qtype=self.qtype, representation=self.representation)
         return du
     
-    def equals(self, q2):
+    def equals(self, q1):
         """Tests if two quaternions are equal."""
         
-        self_t, self_x, self_y, self_z = sp.expand(self.t), sp.expand(self.x), sp.expand(self.y), sp.expand(self.z)
-        q2_t, q2_x, q2_y, q2_z = sp.expand(q2.t), sp.expand(q2.x), sp.expand(q2.y), sp.expand(q2.z)
+        self.check_representations(q1)
         
-        if math.isclose(self_t, q2_t) and math.isclose(self_x, q2_x) and math.isclose(self_y, q2_y) and math.isclose(self_z, q2_z):
+        self_t, self_x, self_y, self_z = sp.expand(self.t), sp.expand(self.x), sp.expand(self.y), sp.expand(self.z)
+        q1_t, q1_x, q1_y, q1_z = sp.expand(q1.t), sp.expand(q1.x), sp.expand(q1.y), sp.expand(q1.z)
+        
+        if math.isclose(self_t, q1_t) and math.isclose(self_x, q1_x) and math.isclose(self_y, q1_y) and math.isclose(self_z, q1_z):
             return True
         
         else:
@@ -194,17 +345,18 @@ class QH(object):
             qtype += "2"
             
         conj_q.qtype = self.qtype + qtype
+        conj_q.representation = self.representation
         
         return conj_q
     
     def flip_signs(self, qtype="-"):
         """Flip the signs of all terms."""
         
-        end_type = "-{}".format(self.qtype)
+        end_qtype = "-{}".format(self.qtype)
         
         t, x, y, z = self.t, self.x, self.y, self.z
         
-        flip_q = QH(qtype=end_qtype)
+        flip_q = QH(qtype=end_qtype, representation=self.representation)
         if t != 0:
             flip_q.t = -1 * t
         if x != 0:
@@ -250,6 +402,7 @@ class QH(object):
             qtype += "*"
             
         conj_q.qtype = self.qtype + qtype
+        conj_q.representation = self.representation
         
         return conj_q
     
@@ -298,7 +451,7 @@ class QH(object):
         
         qxq = self._commuting_products(self)
 
-        sq_q = QH(qtype=end_qtype)
+        sq_q = QH(qtype=end_qtype, representation=self.representation)
         sq_q.t = qxq['tt'] - qxq['xx+yy+zz']
         sq_q.x = qxq['tx+xt']
         sq_q.y = qxq['ty+yt']
@@ -313,7 +466,7 @@ class QH(object):
 
         qxq = self._commuting_products(self)
 
-        n_q = QH(qtype=end_qtype)
+        n_q = QH(qtype=end_qtype, representation=self.representation)
         n_q.t = qxq['tt'] + qxq['xx+yy+zz']
 
         return n_q
@@ -325,7 +478,7 @@ class QH(object):
         
         qxq = self._commuting_products(self)
 
-        nv_q = QH(qtype=end_qtype)
+        nv_q = QH(qtype=end_qtype, representation=self.representation)
         nv_q.t = qxq['xx+yy+zz']
 
         return nv_q
@@ -336,9 +489,10 @@ class QH(object):
         end_qtype = "|{}|".format(self.qtype)
         
         a = self.norm_squared()
-        sqrt_t = a.t ** 0.5
+        sqrt_t = a.t ** (1/2)
         a.t = sqrt_t
         a.qtype = end_qtype
+        a.representation = self.representation
         
         return a
 
@@ -350,6 +504,7 @@ class QH(object):
         abs_q_inv = self.abs_of_q().invert()
         n_q = self.product(abs_q_inv)
         n_q.qtype = end_qtype
+        n_q.representation = self.representation
         
         return n_q
     
@@ -359,20 +514,23 @@ class QH(object):
         end_qtype = "|V({})|".format(self.qtype)
         
         av = self.norm_squared_of_vector(qtype=end_qtype)
-        sqrt_t = av.t ** 0.5
+        sqrt_t = av.t ** (1/2)
         av.t = sqrt_t
+        av.representation = self.representation
         
         return av
 
     def add(self, qh_1, qtype=""):
         """Form a add given 2 quaternions."""
 
+        self.check_representations(qh_1)
+        
         end_qtype = "{f}+{s}".format(f=self.qtype, s=qh_1.qtype)
         
         t_1, x_1, y_1, z_1 = self.t, self.x, self.y, self.z
         t_2, x_2, y_2, z_2 = qh_1.t, qh_1.x, qh_1.y, qh_1.z
 
-        add_q = QH(qtype=end_qtype)
+        add_q = QH(qtype=end_qtype, representation=self.representation)
         add_q.t = t_1 + t_2
         add_q.x = x_1 + x_2
         add_q.y = y_1 + y_2
@@ -382,13 +540,15 @@ class QH(object):
 
     def dif(self, qh_1, qtype=""):
         """Form a add given 2 quaternions."""
+        
+        self.check_representations(qh_1)
 
         end_qtype = "{f}-{s}".format(f=self.qtype, s=qh_1.qtype)
         
         t_1, x_1, y_1, z_1 = self.t, self.x, self.y, self.z
         t_2, x_2, y_2, z_2 = qh_1.t, qh_1.x, qh_1.y, qh_1.z
 
-        dif_q = QH(qtype=end_qtype)
+        dif_q = QH(qtype=end_qtype, representation=self.representation)
         dif_q.t = t_1 - t_2
         dif_q.x = x_1 - x_2
         dif_q.y = y_1 - y_2
@@ -399,6 +559,8 @@ class QH(object):
     def product(self, q1, kind="", reverse=False, qtype=""):
         """Form a product given 2 quaternions. Kind can be '' aka standard, even, odd, or even_minus_odd.
         Setting reverse=True is like changing the order."""
+        
+        self.check_representations(q1)
         
         commuting = self._commuting_products(q1)
         q_even = QH()
@@ -443,13 +605,15 @@ class QH(object):
         else:
             result.qtype = "{f}{ts}{s}".format(f=self.qtype, ts=times_symbol, s=q1.qtype)
             
+        result.representation = self.representation
+            
         return result
 
     def Euclidean_product(self, q1, kind="", reverse=False, qtype=""):
         """Form a product p* q given 2 quaternions, not associative."""
 
-        pq = QH()
-        pq = self.conj().product(q1, kind, reverse, qtype)
+        pq = QH(qtype, representation=self.representation)
+        pq = self.conj().product(q1, kind, reverse)
             
         return pq
     
@@ -468,22 +632,28 @@ class QH(object):
         q_norm_squared_inv = QH([1.0 / q_norm_squared.t, 0, 0, 0])
         q_inv = q_conj.product(q_norm_squared_inv)
         q_inv.qtype = end_qtype
+        q_inv.representation = self.representation
 
         return q_inv
 
     def divide_by(self, q1, qtype=""):
         """Divide one quaternion by another. The order matters unless one is using a norm_squared (real number)."""
         
+        end_qtype = "{f}/{s}".format(f=self.qtype, s=q1.qtype)
+        
         q1_inv = q1.invert()
         q_div = self.product(q1.invert())
-        q_div.qtype = "{f}/{s}".format(f=self.qtype, s=q1.qtype)
-            
+        q_div.qtype = end_qtype
+        q_div.representation = self.representation
+        
         return q_div
 
     def triple_product(self, q1, q2):
         """Form a triple product given 3 quaternions."""
 
         triple = self.product(q1).product(q2)
+        triple.representation = self.representation
+        
         return triple
 
     # Quaternion rotation involves a triple product:  UQU∗
@@ -499,6 +669,7 @@ class QH(object):
 
         q_rot = u_norm_squaredalized.triple_product(self, u_norm_squaredalized.conj())
         q_rot.qtype = end_qtype
+        q_rot.representation = self.representation
         
         return q_rot
 
@@ -522,6 +693,7 @@ class QH(object):
         half_23 = triple_23.product(QH([0.5, 0, 0, 0]))
         triple_123 = triple_1.add(half_23, qtype=end_qtype)
         triple_123.qtype = end_qtype
+        triple_123.representation = self.representation
         
         return triple_123
 
@@ -550,6 +722,7 @@ class QH(object):
         g_q.y = self.y * g_factor
         g_q.z = self.z * g_factor
         g_q.qtype = end_qtype
+        g_q.representation = self.representation
         
         return g_q
     
@@ -575,7 +748,9 @@ class QH(object):
         q_out.x = k * self.x
         q_out.y = k * self.y
         q_out.z = k * self.z
+        
         q_out.qtype = end_qtype
+        q_out.representation = self.representation
         
         return q_out
      
@@ -603,6 +778,8 @@ class QH(object):
         q_out.z = k * self.z
 
         q_out.qtype = end_qtype
+        q_out.representation = self.representation
+        
         return q_out
     
     def tan(self, qtype="sin"):
@@ -617,9 +794,10 @@ class QH(object):
             
         sinq = self.sin()
         cosq = self.cos()
-            
         q_out = sinq.divide_by(cosq) 
+        
         q_out.qtype = end_qtype
+        q_out.representation = self.representation
         
         return q_out
     
@@ -640,7 +818,7 @@ class QH(object):
         
         k = cosht * sinR / abs_v.t
             
-        q_out = QH(qtype=end_qtype)
+        q_out = QH(qtype=end_qtype, representation=self.representation)
         q_out.t = sinht * cosR
         q_out.x = k * self.x
         q_out.y = k * self.y
@@ -665,7 +843,7 @@ class QH(object):
         
         k = sinht * sinR / abs_v.t
             
-        q_out = QH(qtype=end_qtype)
+        q_out = QH(qtype=end_qtype, representation=self.representation)
         q_out.t = cosht * cosR
         q_out.x = k * self.x
         q_out.y = k * self.y
@@ -687,7 +865,9 @@ class QH(object):
         coshq = self.cosh()
             
         q_out = sinhq.divide_by(coshq) 
+        
         q_out.qtype = end_qtype
+        q_out.representation = self.representation
         
         return q_out
     
@@ -707,7 +887,7 @@ class QH(object):
         sinR = math.sin(abs_v.t)
         k = et * sinR / abs_v.t
                        
-        expq = QH([et * cosR, k * self.x, k * self.y, k * self.z], qtype=end_qtype)
+        expq = QH([et * cosR, k * self.x, k * self.y, k * self.z], qtype=end_qtype, representation=self.representation)
                        
         return expq
     
@@ -731,7 +911,7 @@ class QH(object):
         t_value = 0.5 * math.log(self.t * self.t + abs_v.t * abs_v.t)
         k = math.atan2(abs_v.t, self.t) / abs_v.t
                        
-        expq = QH([t_value, k * self.x, k * self.y, k * self.z], qtype=end_qtype)
+        expq = QH([t_value, k * self.x, k * self.y, k * self.z], qtype=end_qtype, representation=self.representation)
                        
         return expq
     
@@ -743,6 +923,7 @@ class QH(object):
         
         q2q = self.ln().product(q1).exp()           
         q2q.qtype = end_qtype
+        q2q.representation = self.representation
         
         return q2q
     
@@ -757,17 +938,9 @@ class QH(object):
         return self
 
 
-# In[4]:
-
-
-print(QH([1.0, 2.0, 0, 0]).ln())
-print(QH([1.0, 2.0, 0, 0]).cosh())
-print(QH([0, 1, 0, 0]).q_2_q(QH([0, 0, 0, -1])).trunc())
-
-
 # Write tests the QH class.
 
-# In[5]:
+# In[4]:
 
 
 class TestQH(unittest.TestCase):
@@ -1120,17 +1293,64 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQH())
 unittest.TextTestRunner().run(suite);
 
 
+# In[5]:
+
+
+class TestQHRep(unittest.TestCase):
+    Q12 = QH([1, 2, 0, 0])
+    Q1123 = QH([1, 1, 2, 3])
+    Q11p = QH([1, 1, 0, 0], representation="polar")
+    Q12p = QH([1, 2, 0, 0], representation="polar")
+    Q12np = QH([1, -2, 0, 0], representation="polar")
+    Q21p = QH([2, 1, 0, 0], representation="polar")
+    Q23p = QH([2, 3, 0, 0], representation="polar")
+    Q13p = QH([1, 3, 0, 0], representation="polar")
+    Q5p = QH([5, 0, 0, 0], representation="polar")
+    
+    def test_txyz_2_representation(self):
+        qr = QH(self.Q12.txyz_2_representation(""))
+        self.assertTrue(qr.equals(self.Q12))
+        qr = QH(self.Q12.txyz_2_representation("polar"))
+        self.assertTrue(qr.equals(QH([2.23606797749979, 1.10714871779409, 0, 0])))
+        qr = QH(self.Q1123.txyz_2_representation("spherical"))
+        self.assertTrue(qr.equals(QH([1.0, 3.7416573867739413, 0.640522312679424, 1.10714871779409])))
+        
+    def test_representation_2_txyz(self):
+        qr = QH(self.Q12.representation_2_txyz(""))
+        self.assertTrue(qr.equals(self.Q12))
+        qr = QH(self.Q12.representation_2_txyz("polar"))
+        self.assertTrue(qr.equals(QH([-0.4161468365471424, 0.9092974268256817, 0, 0])))
+        qr = QH(self.Q1123.representation_2_txyz("spherical"))
+        self.assertTrue(qr.equals(QH([1.0, -0.9001976297355174, 0.12832006020245673, -0.4161468365471424])))
+    
+    def test_polar_products(self):
+        qr = self.Q11p.product(self.Q12p)
+        print("polar 1 1 0 0 * 1 2 0 0: ", qr)
+        self.assertTrue(qr.equals(self.Q13p))
+        qr = self.Q12p.product(self.Q21p)
+        print("polar 1 2 0 0 * 2 1 0 0: ", qr)
+        self.assertTrue(qr.equals(self.Q23p))
+
+    def test_polar_conj(self):
+        qr = self.Q12p.conj()
+        print("polar conj of 1 2 0 0: ", qr)
+        self.assertTrue(qr.equals(self.Q12np))
+        
+suite = unittest.TestLoader().loadTestsFromModule(TestQHRep())
+unittest.TextTestRunner().run(suite);
+
+
 # ## Numpy Arrays for Hamilton
 
 # A separate class is needed for numpy array due to technical issues I have getting sympy and numpy to play nicely with each other...
 
-# In[ ]:
+# In[6]:
 
 
 class QHa(object):
     """Quaternions as nparrays."""
 
-    def __init__(self, values=None, qtype="Q"):
+    def __init__(self, values=None, qtype="Q", representation=""):
         if values is None:
             self.a = np.array([0.0, 0.0, 0.0, 0.0])
         elif len(values) == 4:
@@ -1139,16 +1359,167 @@ class QHa(object):
         elif len(values) == 8:
             self.a = np.array([values[0] - values[1], values[2] - values[3], values[4] - values[5], values[6] - values[7]])
         
+        self.representation = representation
+        
+        if representation != "":
+            txyz = self.representation_2_txyz(representation)
+            self.a = np.array(txyz)
+            
         self.qtype = qtype
 
     def __str__(self):
         """Customize the output."""
-        return "({t}, {x}, {y}, {z}) {qt}".format(t=self.a[0], x=self.a[1], y=self.a[2], z=self.a[3], qt=self.qtype)
+        
+        if self.representation == "":
+            string = "({t}, {x}, {y}, {z}) {qt}".format(t=self.a[0], x=self.a[1], y=self.a[2], z=self.a[3], qt=self.qtype)
+    
+        elif self.representation == "polar":
+            rep = self.txyz_2_representation("polar")
+            
+            string = "({A} A, {thetaX} 𝜈x, {thetaY} 𝜈y, {thetaZ} 𝜈z) {qt}".format(
+                A=rep[0], thetaX=rep[1], thetaY=rep[2], thetaZ=rep[3], qt=self.qtype)
+ 
+        elif self.representation == "spherical":
+            rep = self.txyz_2_representation("spherical")
+            string = "({t} t, {R} R, {theta} θ, {phi} φ) {qt}".format(t=rep[0], R=rep[1], theta=rep[2], phi=rep[3], 
+                                                                       qt=self.qtype)
+        
+        return string
+    
+    def is_symbolic(self):
+        """Figures out if an expression is symbolic."""
+        
+        symbolic = False
+        
+        if hasattr(self.a[0], "free_symbols") or hasattr(self.a[1], "free_symbols") or             hasattr(self.a[2], "free_symbols") or hasattr(self.a[3], "free_symbols"): 
+            symbolic = True
+        
+        return symbolic
+    
+    def txyz_2_representation(self, representation):
+        """Converts Cartesian txyz into an array of 4 values in a different representation."""
+
+        symbolic = self.is_symbolic()
+        
+        if representation == "":
+            rep = [self.a[0], self.a[1], self.a[2], self.a[3]]
+        
+        elif representation == "polar":
+            amplitude = (self.a[0] ** 2 + self.a[1] ** 2 + self.a[2] ** 2 + self.a[3] ** 2) ** (1/2)
+            
+            abs_v = self.abs_of_vector().a[0]
+            
+            if symbolic:
+                theta = sp.atan2(abs_v, self.a[0])
+            else:
+                theta = math.atan2(abs_v, self.a[0])
+                
+            if abs_v == 0:
+                thetaX, thetaY, thetaZ = 0, 0, 0
+                
+            else:
+                thetaX = theta * self.a[1] / abs_v
+                thetaY = theta * self.a[2] / abs_v
+                thetaZ = theta * self.a[3] / abs_v
+            
+            rep = [amplitude, thetaX, thetaY, thetaZ]
+        
+        elif representation == "spherical":
+            
+            t = self.a[0]
+            
+            R = (self.a[1] ** 2 + self.a[2] **2 + self.a[3] **2) ** (1/2)
+            
+            if R == 0:
+                theta = 0
+            else:
+                if symbolic:
+                    theta = sp.acos(self.a[3] / R)
+                
+                else:
+                    theta = math.acos(self.a[3] / R)
+                
+            if symbolic:
+                phi = sp.atan2(self.a[2], self.a[1])
+            else:
+                phi = math.atan2(self.a[2], self.a[1])
+                
+            rep = [t, R, theta, phi]
+        
+        else:
+            print("Oops, don't know representation: ", representation)
+            
+        return rep
+    
+    def representation_2_txyz(self, representation):
+        """Convert from a representation to Cartesian txyz."""
+        
+        symbolic = False
+        
+        if hasattr(self.a[0], "free_symbols") or hasattr(self.a[1], "free_symbols") or             hasattr(self.a[2], "free_symbols") or hasattr(self.a[3], "free_symbols"): 
+            symbolic = True
+
+        if representation == "":
+            t, x, y, z = self.a[0], self.a[1], self.a[2], self.a[3]
+        
+        elif representation == "polar":
+            amplitude, thetaX, thetaY, thetaZ = self.a[0], self.a[1], self.a[2], self.a[3]
+        
+            theta = (thetaX ** 2 + thetaY ** 2 + thetaZ ** 2) ** (1/2)
+            
+            if theta == 0:
+                t = amplitude
+                x, y, z = 0, 0, 0
+                
+            else:
+                if symbolic:
+                    t = amplitude * sp.cos(theta)
+                    x = self.a[1] / theta * amplitude * sp.sin(theta)
+                    y = self.a[2] / theta * amplitude * sp.sin(theta)
+                    z = self.a[3] / theta * amplitude * sp.sin(theta)
+                
+                else:
+                    t = amplitude * math.cos(theta)
+                    x = self.a[1] / theta * amplitude * math.sin(theta)
+                    y = self.a[2] / theta * amplitude * math.sin(theta)
+                    z = self.a[3] / theta * amplitude * math.sin(theta)
+                
+        elif representation == "spherical":
+            t, R, theta, phi = self.a[0], self.a[1], self.a[2], self.a[3]
+
+            if symbolic:
+                x = R * sp.sin(theta) * sp.cos(phi)
+                y = R * sp.sin(theta) * sp.sin(phi)
+                z = R * sp.cos(theta)
+            else:
+                x = R * math.sin(theta) * math.cos(phi)
+                y = R * math.sin(theta) * math.sin(phi)
+                z = R * math.cos(theta)
+            
+        else:
+            print("Oops, don't know representation: ", representation)
+            
+        txyz = [t, x, y, z]
+        
+        return txyz 
+        
+    def check_representations(self, q1):
+        """If they are the same, report true. If not, kick out an exception. Don't add apples to oranges."""
+
+        if self.representation == q1.representation:
+            return True
+        
+        else:
+            raise Exception("Oops, 2 quaternions have different representations: {}, {}".format(self.representation, q1.representation))
+            return False
     
     def display_q(self):
         """display each terms in a pretty way."""
 
-        display((self.a[0], self.a[1], self.a[2], self.a[3], self.qtype))
+        display(self.a[0])
+        display(self.a[1])
+        display(self.a[2])
+        display(self.a[3])
         return
 
     def simple_q(self):
@@ -1163,51 +1534,53 @@ class QHa(object):
     def q_0(self, qtype="0"):
         """Return a zero quaternion."""
 
-        q0 = QHa([0.0, 0.0, 0.0, 0.0], qtype=qtype)
-        return 
+        q0 = QHa(qtype=qtype, representation=self.representation)
+        return q0
 
     def q_1(self, qtype="1"):
         """Return a multiplicative identity quaternion."""
     
-        q1 = QHa([1.0, 0.0, 0.0, 0.0], qtype=qtype)
+        q1 = QHa([1.0, 0.0, 0.0, 0.0], qtype=qtype, representation=self.representation)
         return q1
     
     def q_i(self, qtype="i"):
         """Return i."""
 
-        qi = QHa([0.0, 1.0, 0.0, 0.0], qtype=qtype)
+        qi = QHa([0.0, 1.0, 0.0, 0.0], qtype=qtype, representation=self.representation)
         return qi
 
     def q_j(self, qtype="j"):
         """Return j."""
         
-        qj = QHa([0.0, 0.0, 1.0, 0.0], qtype=qtype)
+        qj = QHa([0.0, 0.0, 1.0, 0.0], qtype=qtype, representation=self.representation)
         return qj
     
     def q_k(self, qtype="k"):
         """Return k."""
 
-        qk = QHa([0.0, 0.0, 0.0, 1.0], qtype=qtype)
+        qk = QHa([0.0, 0.0, 0.0, 1.0], qtype=qtype, representation=self.representation)
         return qk
 
     def q_random(self, qtype="?"):
         """Return a random-valued quaternion."""
 
-        qr = QHa([random.random(), random.random(), random.random(), random.random()], qtype=qtype)
+        qr = QHa([random.random(), random.random(), random.random(), random.random()], qtype=qtype, representation=self.representation)
         return qr
     
     def dupe(self, qtype=""):
         """Return a duplicate copy, good for testing since qtypes persist"""
         
-        return QHa([self.a[0], self.a[1], self.a[2], self.a[3]], qtype=self.qtype)
+        return QHa([self.a[0], self.a[1], self.a[2], self.a[3]], qtype=self.qtype, representation=self.representation)
     
-    def equals(self, q2):
+    def equals(self, q1):
         """Tests if two quaternions are equal."""
         
-        self_t, self_x, self_y, self_z = sp.expand(self.a[0]), sp.expand(self.a[1]), sp.expand(self.a[2]), sp.expand(self.a[3])
-        q2_t, q2_x, q2_y, q2_z = sp.expand(q2.a[0]), sp.expand(q2.a[1]), sp.expand(q2.a[2]), sp.expand(q2.a[3])
+        self.check_representations(q1)
         
-        if math.isclose(self_t, q2_t) and math.isclose(self_x, q2_x) and math.isclose(self_y, q2_y) and math.isclose(self_z, q2_z):
+        self_t, self_x, self_y, self_z = sp.expand(self.a[0]), sp.expand(self.a[1]), sp.expand(self.a[2]), sp.expand(self.a[3])
+        q1_t, q1_x, q1_y, q1_z = sp.expand(q1.a[0]), sp.expand(q1.a[1]), sp.expand(q1.a[2]), sp.expand(q1.a[3])
+        
+        if math.isclose(self_t, q1_t) and math.isclose(self_x, q1_x) and math.isclose(self_y, q1_y) and math.isclose(self_z, q1_z):
             return True
         
         else:
@@ -1249,7 +1622,8 @@ class QHa(object):
             qtype += "2"
             
         conj_q.qtype = self.qtype + qtype
-        
+        conj_q.representation = self.representation
+    
         return conj_q
     
     def flip_signs(self, conj_type=0, qtype="-"):
@@ -1270,6 +1644,7 @@ class QHa(object):
             flip_q.a[3] = -1.0 * z
         
         flip_q.qtype = end_qtype
+        flip_q.representation = self.representation
         
         return flip_q
     
@@ -1307,6 +1682,7 @@ class QHa(object):
             qtype += "*"
             
         conj_q.qtype = self.qtype + qtype
+        conj_q.representation = self.representation
         
         return conj_q
 
@@ -1355,7 +1731,7 @@ class QHa(object):
         
         qxq = self._commuting_products(self)
 
-        sq_q = QHa(qtype=end_qtype)
+        sq_q = QHa(qtype=end_qtype, representation=self.representation)
         sq_q.a[0] = qxq['tt'] - qxq['xx+yy+zz']
         sq_q.a[1] = qxq['tx+xt']
         sq_q.a[2] = qxq['ty+yt']
@@ -1376,6 +1752,7 @@ class QHa(object):
         n_q.a[0] = qxq['tt'] + qxq['xx+yy+zz']
 
         n_q.qtype = end_qtype
+        n_q.representation = self.representation
         
         return n_q
 
@@ -1390,6 +1767,7 @@ class QHa(object):
         nv_q.a[0] = qxq['xx+yy+zz']
 
         nv_q.qtype = end_qtype
+        nv_q.representation = self.representation
         
         return nv_q
 
@@ -1399,10 +1777,11 @@ class QHa(object):
         end_qtype = "|{}|".format(self.qtype)
         
         ns = self.norm_squared()
-        sqrt_t = ns.a[0] ** 0.5
+        sqrt_t = ns.a[0] ** (1/2)
         ns.a[0] = sqrt_t
 
         ns.qtype = end_qtype
+        ns.representation = self.representation
         
         return ns
 
@@ -1412,10 +1791,11 @@ class QHa(object):
         end_qtype = "|V({})|".format(self.qtype)
         
         av = self.norm_squared_of_vector()
-        sqrt_t = av.a[0] ** 0.5
+        sqrt_t = av.a[0] ** (1/2)
         av.a[0] = sqrt_t
 
         av.qtype = end_qtype
+        av.representation = self.representation
         
         return av
 
@@ -1428,6 +1808,7 @@ class QHa(object):
         n_q = self.product(abs_q_inv)
 
         n_q.qtype = end_qtype
+        n_q.representation = self.representation
         
         return n_q
     
@@ -1444,6 +1825,7 @@ class QHa(object):
         add_q.a[3] = z_1 + z_2
         
         add_q.qtype = "{f}+{s}".format(f=self.qtype, s=QHa_1.qtype)
+        add_q.representation = self.representation
         
         return add_q    
 
@@ -1460,6 +1842,7 @@ class QHa(object):
         dif_q.a[3] = z_1 - z_2
 
         dif_q.qtype = "{f}-{s}".format(f=self.qtype, s=QHa_1.qtype)
+        dif_q.representation = self.representation
             
         return dif_q
 
@@ -1508,6 +1891,7 @@ class QHa(object):
             times_symbol = times_symbol.replace('x', 'xR')
             
         result.qtype = "{f}{ts}{s}".format(f=self.qtype, ts=times_symbol, s=q1.qtype)
+        result.representation = self.representation
             
         return result
     
@@ -1535,6 +1919,7 @@ class QHa(object):
         q_inv = q_conj.product(q_norm_squared_inv, qtype=self.qtype)
         
         q_inv.qtype = end_qtype
+        q_inv.representation = self.representation
         
         return q_inv
 
@@ -1545,6 +1930,7 @@ class QHa(object):
         q_div = self.product(q1.invert())
         
         q_div.qtype = "{f}/{s}".format(f=self.qtype, s=q1.qtype)
+        q_div.representation = self.representation
             
         return q_div
 
@@ -1552,6 +1938,8 @@ class QHa(object):
         """Form a triple product given 3 quaternions."""
 
         triple = self.product(q1).product(q2)
+        triple.representation = self.representation
+        
         return triple
 
     # Quaternion rotation involves a triple product:  UQU∗
@@ -1568,7 +1956,8 @@ class QHa(object):
         q_rot = u_norm_squaredalized.triple_product(self, u_norm_squaredalized.conj())
   
         q_rot.qtype = end_qtype
-    
+        q_rot.representation = self.representation
+        
         return q_rot
 
     # A boost also uses triple products like a rotation, but more of them.
@@ -1592,6 +1981,7 @@ class QHa(object):
         triple_123 = triple_1.add(half_23, qtype=self.qtype)
         
         triple_123.qtype = end_qtype
+        triple_123.representation = self.representation
         
         return triple_123
 
@@ -1620,6 +2010,7 @@ class QHa(object):
         g_q.a[2] = self.a[2] * g_factor
         g_q.a[3] = self.a[3] * g_factor
         g_q.qtype = end_qtype
+        g_q.representation = self.representation
         
         return g_q
     
@@ -1640,7 +2031,7 @@ class QHa(object):
         
         k = cost * sinhR / abs_v.a[0]
             
-        q_out = QHa(qtype=end_qtype)
+        q_out = QHa(qtype=end_qtype, representation=self.representation)
         q_out.a[0] = sint * coshR
         q_out.a[1] = k * self.a[1]
         q_out.a[2] = k * self.a[2]
@@ -1665,7 +2056,7 @@ class QHa(object):
         
         k = -1 * sint * sinhR / abs_v.a[0]
             
-        q_out = QHa(qtype=end_qtype)
+        q_out = QHa(qtype=end_qtype, representation=self.representation)
         q_out.a[0] = cost * coshR
         q_out.a[1] = k * self.a[1]
         q_out.a[2] = k * self.a[2]
@@ -1688,6 +2079,7 @@ class QHa(object):
             
         q_out = sinq.divide_by(cosq) 
         q_out.qtype = end_qtype
+        q_out.representation = self.representation
         
         return q_out
     
@@ -1708,7 +2100,7 @@ class QHa(object):
         
         k = cosht * sinR / abs_v.a[0]
         
-        q_out = QHa(qtype=end_qtype)
+        q_out = QHa(qtype=end_qtype, representation=self.representation)
         q_out.a[0] = sinht * cosR
         q_out.a[1] = k * self.a[1]
         q_out.a[2] = k * self.a[2]
@@ -1733,7 +2125,7 @@ class QHa(object):
         
         k = sinht * sinR / abs_v.a[0]
             
-        q_out = QHa(qtype=end_qtype)
+        q_out = QHa(qtype=end_qtype, representation=self.representation)
         q_out.a[0] = cosht * cosR
         q_out.a[1] = k * self.a[1]
         q_out.a[2] = k * self.a[2]
@@ -1756,6 +2148,7 @@ class QHa(object):
             
         q_out = sinhq.divide_by(coshq) 
         q_out.qtype = end_qtype
+        q_out.representation = self.representation
         
         return q_out
     
@@ -1769,13 +2162,13 @@ class QHa(object):
         et = math.exp(self.a[0])
         
         if (abs_v.a[0] == 0):
-            return QHa([et, 0, 0, 0], qtype=end_qtype)
+            return QHa([et, 0, 0, 0], qtype=end_qtype, representation=self.representation)
         
         cosR = math.cos(abs_v.a[0])
         sinR = math.sin(abs_v.a[0])
         k = et * sinR / abs_v.a[0]
                        
-        expq = QHa([et * cosR, k * self.a[1], k * self.a[2], k * self.a[3]], qtype=end_qtype)
+        expq = QHa([et * cosR, k * self.a[1], k * self.a[2], k * self.a[3]], qtype=end_qtype, representation=self.representation)
         
         return expq
     
@@ -1789,10 +2182,10 @@ class QHa(object):
         
         if (abs_v.a[0] == 0):
             if self.a[0] > 0:
-                return(QHa([math.log(self.a[0]), 0, 0, 0], qtype=end_qtype))
+                return(QHa([math.log(self.a[0]), 0, 0, 0], qtype=end_qtype, representation=self.representation))
             else:
                 # I don't understant this, but mathematica does the same thing.
-                return(QHa([math.log(-self.a[0]), math.pi, 0, 0], qtype=end_qtype))   
+                return(QHa([math.log(-self.a[0]), math.pi, 0, 0], qtype=end_qtype, representation=self.representation))   
             
             return QHa([lt, 0, 0, 0])
         
@@ -1811,6 +2204,7 @@ class QHa(object):
         
         q2q = self.ln().product(q1).exp()
         q2q.qtype = end_qtype
+        q2q.representation = self.representation
         
         return q2q
     
@@ -1825,7 +2219,7 @@ class QHa(object):
         return self
 
 
-# In[ ]:
+# In[7]:
 
 
 class TestQHa(unittest.TestCase):
@@ -2171,11 +2565,59 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHa())
 unittest.TextTestRunner().run(suite);
 
 
+# In[8]:
+
+
+class TestQHaRep(unittest.TestCase):
+    Q12 = QHa([1, 2, 0, 0])
+    Q1123 = QHa([1, 1, 2, 3])
+    Q11p = QHa([1, 1, 0, 0], representation="polar")
+    Q12p = QHa([1, 2, 0, 0], representation="polar")
+    Q12np = QHa([1, -2, 0, 0], representation="polar")
+    Q21p = QHa([2, 1, 0, 0], representation="polar")
+    Q23p = QHa([2, 3, 0, 0], representation="polar")
+    Q13p = QHa([1, 3, 0, 0], representation="polar")
+    Q5p = QHa([5, 0, 0, 0], representation="polar")
+    
+    def test_txyz_2_representation(self):
+        qr = QHa(self.Q12.txyz_2_representation(""))
+        self.assertTrue(qr.equals(self.Q12))
+        qr = QHa(self.Q12.txyz_2_representation("polar"))
+        self.assertTrue(qr.equals(QHa([2.23606797749979, 1.10714871779409, 0, 0])))
+        qr = QHa(self.Q1123.txyz_2_representation("spherical"))
+        self.assertTrue(qr.equals(QHa([1.0, 3.7416573867739413, 0.640522312679424, 1.10714871779409])))
+        
+    def test_representation_2_txyz(self):
+        qr = QHa(self.Q12.representation_2_txyz(""))
+        self.assertTrue(qr.equals(self.Q12))
+        qr = QHa(self.Q12.representation_2_txyz("polar"))
+        self.assertTrue(qr.equals(QHa([-0.4161468365471424, 0.9092974268256817, 0, 0])))
+        qr = QHa(self.Q1123.representation_2_txyz("spherical"))
+        self.assertTrue(qr.equals(QHa([1.0, -0.9001976297355174, 0.12832006020245673, -0.4161468365471424])))
+    
+    def test_polar_products(self):
+        qr = self.Q11p.product(self.Q12p)
+        print("polar 1 1 0 0 * 1 2 0 0: ", qr)
+        self.assertTrue(qr.equals(self.Q13p))
+        qr = self.Q12p.product(self.Q21p)
+        print("polar 1 2 0 0 * 2 1 0 0: ", qr)
+        self.assertTrue(qr.equals(self.Q23p))
+
+    def test_polar_conj(self):
+        qr = self.Q12p.conj()
+        print("polar conj of {}: {}", self.Q12p, qr)
+        print("Q12np: ", self.Q12np)
+        self.assertTrue(qr.equals(self.Q12np))
+        
+suite = unittest.TestLoader().loadTestsFromModule(TestQHaRep())
+unittest.TextTestRunner().run(suite);
+
+
 # ## Using More Numbers via Doublets
 
 # My long term goal is to deal with quaternions on a quaternion manifold. This will have 4 pairs of doublets. Each doublet is paired with its additive inverse. Instead of using real numbers, one uses (3, 0) and (0, 2) to represent +3 and -2 respectively. Numbers such as (5, 6) are allowed. That can be "reduced" to (0, 1).  My sense is that somewhere deep in the depths of relativistic quantum field theory, this will be a "good thing". For now, it is a minor pain to program.
 
-# In[8]:
+# In[9]:
 
 
 class Doublet(object):
@@ -2269,13 +2711,25 @@ class Doublet(object):
             return Doublet([self.n + n, self.p + n])
         else:
             red = self.d_reduce()
-            return Doublet([red.n + n, red.p +n])
+            return Doublet([red.n + n, red.p + n])
                         
     def d_dif(self, d1, n=0):
         """Take the difference by flipping and adding."""
         d2 = d1.d_additive_inverse_up_to_an_automorphism(n)
                         
         return self.d_add(d2)
+
+    def d_equals(self, d1):
+        """Figure out if two doublets are equal up to an equivalence relation."""
+        
+        self_red = self.d_reduce()
+        d1_red = d1.d_reduce()
+        
+        if math.isclose(self_red.p, d1_red.p) and math.isclose(self_red.n, d1_red.n):
+            return True
+        
+        else:
+            return False
         
     def Z2_product(self, d1):
         """Uset the Abelian cyclic group Z2 to form the product of 2 doublets."""
@@ -2285,7 +2739,7 @@ class Doublet(object):
         return Doublet([p1, n1])
 
 
-# In[9]:
+# In[10]:
 
 
 class TestDoublet(unittest.TestCase):
@@ -2294,6 +2748,7 @@ class TestDoublet(unittest.TestCase):
     d1 = Doublet()
     d2 = Doublet(2)
     d3 = Doublet(-3)
+    d4 = Doublet([5, 3])
     dstr12 = Doublet("1 2")
     dstr13 = Doublet("3 2")
     
@@ -2338,6 +2793,10 @@ class TestDoublet(unittest.TestCase):
         Z2p = self.dstr12.Z2_product(self.dstr13)
         self.assertTrue(Z2p.p == 7)
         self.assertTrue(Z2p.n == 8)
+
+    def test_d_equals(self):
+        self.assertTrue(self.d2.d_equals(self.d4))
+        self.assertFalse(self.d2.d_equals(self.d1))
         
     def test_reduced_product(self):
         """Reduce before or after, should make no difference."""
@@ -2355,7 +2814,7 @@ unittest.TextTestRunner().run(suite);
 
 # Repeat the exercise for arrays.
 
-# In[10]:
+# In[11]:
 
 
 class Doubleta(object):
@@ -2445,7 +2904,19 @@ class Doubleta(object):
         d2 = d1.d_additive_inverse_up_to_an_automorphism(n)
                         
         return self.d_add(d2)
+
+    def d_equals(self, d1):
+        """See if two are equals up to an constant value."""
         
+        self_red = self.d_reduce()
+        d1_red = d1.d_reduce()
+        
+        if math.isclose(self_red.d[0], d1_red.d[0]) and math.isclose(self_red.d[1], d1_red.d[1]):
+            return True
+        
+        else:
+            return False
+    
     def Z2_product(self, d1):
         """Uset the Abelian cyclic group Z2 to form the product of 2 doublets."""
         p1 = self.d[0] * d1.d[0] + self.d[1] * d1.d[1]
@@ -2454,7 +2925,7 @@ class Doubleta(object):
         return Doubleta([p1, n1])
 
 
-# In[11]:
+# In[12]:
 
 
 class TestDoubleta(unittest.TestCase):
@@ -2463,6 +2934,7 @@ class TestDoubleta(unittest.TestCase):
     d1 = Doubleta()
     d2 = Doubleta(2)
     d3 = Doubleta(-3)
+    d4 = Doubleta([5, 3])
     dstr12 = Doubleta("1 2")
     dstr13 = Doubleta("3 2")
     
@@ -2507,6 +2979,10 @@ class TestDoubleta(unittest.TestCase):
         Z2p = self.dstr12.Z2_product(self.dstr13)
         self.assertTrue(Z2p.d[0] == 7)
         self.assertTrue(Z2p.d[1] == 8)
+
+    def test_d_equals(self):
+        self.assertTrue(self.d2.d_equals(self.d4))
+        self.assertFalse(self.d2.d_equals(self.d1))
         
     def test_reduced_product(self):
         """Reduce before or after, should make no difference."""
@@ -2519,7 +2995,7 @@ class TestDoubleta(unittest.TestCase):
         self.assertTrue(Z2p_red.d[1] == Z2p_2.d[1])
 
 
-# In[12]:
+# In[ ]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestDoubleta())
@@ -2530,13 +3006,13 @@ unittest.TextTestRunner().run(suite);
 
 # Write a class to handle quaternions given 8 numbers.
 
-# In[13]:
+# In[ ]:
 
 
 class Q8(object):
     """Quaternions on a quaternion manifold or space-time numbers."""
 
-    def __init__(self, values=None, qtype="Q"):
+    def __init__(self, values=None, qtype="Q", representation=""):
         if values is None:
             self.dt, self.dx, self.dy, self.dz = Doublet(), Doublet(),Doublet(), Doublet()
         elif isinstance(values, list):
@@ -2552,15 +3028,199 @@ class Q8(object):
                 self.dy = Doublet([values[4], values[5]])
                 self.dz = Doublet([values[6], values[7]])
                 
+        self.representation = representation
+        
+        if representation != "":
+            self.dt.p, self.dt.n, self.dx.p, self.dx.n, self.dy.p, self.dy.n, self.dz.p, self.dz.n = self.representation_2_txyz(representation)
+                
         self.qtype=qtype
                 
     def __str__(self):
         """Customize the output."""
-        return "(({tp}, {tn}), ({xp}, {xn}), ({yp}, {yn}), ({zp}, {zn})) {qt}".format(tp=self.dt.p, tn=self.dt.n, 
+        
+        if self.representation == "":
+            string = "(({tp}, {tn}), ({xp}, {xn}), ({yp}, {yn}), ({zp}, {zn})) {qt}".format(tp=self.dt.p, tn=self.dt.n, 
                                                              xp=self.dx.p, xn=self.dx.n, 
                                                              yp=self.dy.p, yn=self.dy.n, 
                                                              zp=self.dz.p, zn=self.dz.n,
                                                              qt=self.qtype)
+    
+        elif self.representation == "polar":
+            rep = self.txyz_2_representation("polar")
+            string = "(({Ap}, {An}) A, ({thetaXp}, {thetaXn})  𝜈x, ({thetaYp}, {thetaYn}) 𝜈y, ({thetaZp}, {thetaZn}) 𝜈z) {qt}".format(
+                Ap=rep[0], An=rep[1], 
+                thetaXp=rep[2], thetaXn=rep[3], 
+                thetaYp=rep[4], thetaYn=rep[5], 
+                thetaZp=rep[6], thetaZn=rep[7], qt=self.qtype)
+ 
+        elif self.representation == "spherical":
+            rep = self.txyz_2_representation("spherical")
+            string = "(({tp}, {tn}) t, ({Rp}, {Rn}) R, ({thetap}, {thetan}) θ , ({phip}, {phin}) φ) {qt}".format(
+                tp=rep[0], tn=rep[1], 
+                Rp=rep[2], Rn=rep[3], 
+                thetap=rep[4], thetan=rep[5], 
+                phip=rep[6], phin=rep[7], qt=self.qtype)
+            
+        return string 
+
+    def is_symbolic(self):
+        """Looks to see if a symbol is inside one of the terms."""
+        
+        symbolic = False
+        
+        if hasattr(self.dt.p, "free_symbols") or hasattr(self.dt.n, "free_symbols") or             hasattr(self.dx.p, "free_symbols") or hasattr(self.dx.n, "free_symbols") or             hasattr(self.dy.p, "free_symbols") or hasattr(self.dy.n, "free_symbols") or             hasattr(self.dz.p, "free_symbols") or hasattr(self.dz.n, "free_symbols"): 
+            symbolic = True
+            
+        return symbolic
+        
+    def txyz_2_representation(self, representation):
+        """Converts Cartesian txyz into an array of 4 values in a different representation."""
+
+        symbolic = self.is_symbolic()
+                
+        if representation == "":
+            rep = [self.dt.p, self.dt.n, self.dx.p, self.dx.n, self.dy.p, self.dy.n, self.dz.p, self.dz.n]
+            return rep
+        
+        elif representation == "polar":
+            
+            dtr = self.dt.p - self.dt.n
+            dxr = self.dx.p - self.dx.n
+            dyr = self.dy.p - self.dy.n
+            dzr = self.dz.p - self.dz.n
+            
+            amplitude = (dtr ** 2 + dxr ** 2 + dyr **2 + dzr **2) ** (1/2)
+            damp = Doublet(amplitude)
+            
+            abs_v = self.abs_of_vector().dt.p
+            
+            if symbolic:
+                theta = sp.atan2(abs_v, dtr)
+            else:
+                theta = math.atan2(abs_v, dtr)
+                
+            if abs_v == 0:
+                dthetaX, dthetaY, dthetaZ = Doublet(), Doublet(), Doublet()
+                
+            else:
+                thetaX = dxr / abs_v * theta
+                thetaY = dyr / abs_v * theta
+                thetaZ = dzr / abs_v * theta
+                
+                dthetaX = Doublet(thetaX)
+                dthetaY = Doublet(thetaY)
+                dthetaZ = Doublet(thetaZ)
+                
+            rep = [damp.p, damp.n, dthetaX.p, dthetaX.n, dthetaY.p, dthetaY.n, dthetaZ.p, dthetaZ.n]
+            return rep
+        
+        elif representation == "spherical":
+            
+            dtr = self.dt.p - self.dt.n
+            dxr = self.dx.p - self.dx.n
+            dyr = self.dy.p - self.dy.n
+            dzr = self.dz.p - self.dz.n
+            
+            dt = self.dt
+            
+            R =(dxr ** 2 + dyr **2 + dzr**2) ** (1/2)
+            
+            if symbolic:
+                theta = sp.acos(dzr / R)
+                phi = sp.atan2(dyr, dxr)
+            
+            else:
+                theta = math.acos(dzr / R)
+                phi = math.atan2(dyr, dxr)
+
+            dR = Doublet(R)
+            dtheta = Doublet(theta)
+            dphi = Doublet(phi)
+            
+            rep = [dt.p, dt.n, dR.p, dR.n, dtheta.p, dtheta.n, dphi.p, dphi.n] 
+            return rep
+        
+        else:
+            print("Oops, don't know representation: ", representation)
+        
+    def representation_2_txyz(self, representation):
+        """Convert from a representation to Cartesian txyz."""
+        
+        symbolic = self.is_symbolic()
+
+        if representation == "":
+            dt, dx, dy, dz = self.dt, self.dx, self.dy, self.dz
+        
+        elif representation == "polar":
+                                
+            amplitude, thetaX, thetaY, thetaZ = self.dt, self.dx, self.dy, self.dz
+    
+            amp = amplitude.p - amplitude.n
+            thetaXr = thetaX.p - thetaX.n
+            thetaYr = thetaY.p - thetaY.n
+            thetaZr = thetaZ.p - thetaZ.n
+                                
+            theta = (thetaXr ** 2 + thetaYr ** 2 + thetaZr ** 2) ** (1/2)
+                
+            if theta == 0:
+                dt = amplitude
+                dx, dy, dz = Doublet(), Doublet(), Doublet()
+            
+            else:
+                if symbolic:
+                    t = amp * sp.cos(theta)
+                    x = thetaXr / theta * amp * sp.sin(theta)
+                    y = thetaYr / theta * amp * sp.sin(theta)
+                    z = thetaZr / theta * amp * sp.sin(theta)
+                else:
+                    t = amp * math.cos(theta)
+                    x = thetaXr / theta * amp * math.sin(theta)
+                    y = thetaYr / theta * amp * math.sin(theta)
+                    z = thetaZr / theta * amp * math.sin(theta)
+                    
+                dt = Doublet(t)
+                dx = Doublet(x)
+                dy = Doublet(y)
+                dz = Doublet(z)
+                                
+        elif representation == "spherical":
+            dt, R, theta, phi = self.dt, self.dx, self.dy, self.dz
+
+            Rr = R.p - R.n
+            thetar = theta.p - theta.n
+            phir = phi.p - phi.n
+            
+            if symbolic:
+                x = Rr * sp.sin(thetar) * sp.cos(phir)
+                y = Rr * sp.sin(thetar) * sp.sin(phir)
+                z = Rr * sp.cos(thetar)
+                
+            else:
+                x = Rr * math.sin(thetar) * math.cos(phir)
+                y = Rr * math.sin(thetar) * math.sin(phir)
+                z = Rr * math.cos(thetar)
+
+                dx = Doublet(x)
+                dy = Doublet(y)
+                dz = Doublet(z)
+
+        else:
+            print("Oops, don't know representation: ", representation)
+            
+        txyz = [dt.p, dt.n, dx.p, dx.n, dy.p, dy.n, dz.p, dz.n]
+        
+        return txyz 
+        
+    def check_representations(self, q1):
+        """If they are the same, report true. If not, kick out an exception. Don't add apples to oranges."""
+
+        if self.representation == q1.representation:
+            return True
+        
+        else:
+            raise Exception("Oops, 2 quaternions have different representations: {}, {}".format(self.representation, q1.representation))
+            return False
+        
     def q4(self):
         """Return a 4 element array."""
         return [self.dt.p - self.dt.n, self.dx.p - self.dx.n, self.dy.p - self.dy.n, self.dz.p - self.dz.n]
@@ -2568,47 +3228,37 @@ class Q8(object):
     def q_0(self, qtype="0"):
         """Return a zero quaternion."""
         
-        return Q8(qtype=qtype)
+        return Q8(qtype=qtype, representation=self.representation)
       
     def q_1(self, qtype="1"):
         """Return a multiplicative identity quaternion."""
         
-        return Q8([1, 0, 0, 0], qtype=qtype)
+        return Q8([1, 0, 0, 0], qtype=qtype, representation=self.representation)
     
     def q_i(self, qtype="i"):
         """Return i."""
         
-        return Q8([0, 1, 0, 0], qtype=qtype)
+        return Q8([0, 1, 0, 0], qtype=qtype, representation=self.representation)
     
     def q_j(self, qtype="j"):
         """Return j."""
         
-        return Q8([0, 0, 1, 0], qtype=qtype)
+        return Q8([0, 0, 1, 0], qtype=qtype, representation=self.representation)
     
     def q_k(self, qtype="k"):
         """Return k."""
         
-        return Q8([0, 0, 0, 1], qtype=qtype)
+        return Q8([0, 0, 0, 1], qtype=qtype, representation=self.representation)
     
     def q_random(self, qtype="?"):
         """Return a random-valued quaternion."""
 
-        return Q8([random.random(), random.random(), random.random(), random.random()], qtype=qtype)
+        return Q8([random.random(), random.random(), random.random(), random.random()], qtype=qtype, representation=self.representation)
     
-    def equals(self, q2):
-        """Tests if two quaternions are equal."""
+    def equals(self, q1):
+        """Tests if two quaternions are equal."""    
         
-        def equal_doublets(d1, d2):
-            d1_red = d1.d_reduce()
-            d2_red = d2.d_reduce()
-            
-            if math.isclose(d1_red.p, d2_red.p) and math.isclose(d1_red.n, d2_red.n):
-                return True
-            
-            else:
-                return False
-            
-        if equal_doublets(self.dt, q2.dt) and equal_doublets(self.dx, q2.dx) and equal_doublets(self.dy, q2.dy) and equal_doublets(self.dz, q2.dz):
+        if self.dt.d_equals(q1.dt) and self.dx.d_equals(q1.dx) and             self.dy.d_equals(q1.dy) and self.dz.d_equals(q1.dz):
             return True
         
         else:
@@ -2619,58 +3269,64 @@ class Q8(object):
         
         end_qtype = "{st}{qt}".format(st=self.qtype, qt=qtype)
         
-        conjq = Q8(end_qtype)
+        conj_q = Q8()
 
         if conj_type == 0:
-            conjq.dt = self.dt
-            conjq.dx = self.dx.d_additive_inverse_up_to_an_automorphism()
-            conjq.dy = self.dy.d_additive_inverse_up_to_an_automorphism()
-            conjq.dz = self.dz.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dt = self.dt
+            conj_q.dx = self.dx.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dy = self.dy.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dz = self.dz.d_additive_inverse_up_to_an_automorphism()
         
         if conj_type == 1:
-            conjq.dt = self.dt.d_additive_inverse_up_to_an_automorphism()
-            conjq.dx = self.dx
-            conjq.dy = self.dy.d_additive_inverse_up_to_an_automorphism()
-            conjq.dz = self.dz.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dt = self.dt.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dx = self.dx
+            conj_q.dy = self.dy.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dz = self.dz.d_additive_inverse_up_to_an_automorphism()
             end_qtype += "1"
             
         if conj_type == 2:
-            conjq.dt = self.dt.d_additive_inverse_up_to_an_automorphism()
-            conjq.dx = self.dx.d_additive_inverse_up_to_an_automorphism()
-            conjq.dy = self.dy
-            conjq.dz = self.dz.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dt = self.dt.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dx = self.dx.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dy = self.dy
+            conj_q.dz = self.dz.d_additive_inverse_up_to_an_automorphism()
             end_qtype += "2"
-                    
-        return conjq
+                   
+        conj_q.qtype = end_qtype
+        conj_q.representation = self.representation
+        
+        return conj_q
     
     def vahlen_conj(self, conj_type="-", qtype="vc"):
         """Three types of conjugates -'* done by Vahlen in 1901."""
         
         end_qtype = "{st}{qt}".format(st=self.qtype, qt=qtype)
-        conjq = Q8(end_qtype)
+        conj_q = Q8()
 
         if conj_type == "-":
-            conjq.dt = self.dt
-            conjq.dx = self.dx.d_additive_inverse_up_to_an_automorphism()
-            conjq.dy = self.dy.d_additive_inverse_up_to_an_automorphism()
-            conjq.dz = self.dz.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dt = self.dt
+            conj_q.dx = self.dx.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dy = self.dy.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dz = self.dz.d_additive_inverse_up_to_an_automorphism()
             end_qtype += "-"
             
         if conj_type == "'":
-            conjq.dt = self.dt
-            conjq.dx = self.dx.d_additive_inverse_up_to_an_automorphism()
-            conjq.dy = self.dy.d_additive_inverse_up_to_an_automorphism()
-            conjq.dz = self.dz
+            conj_q.dt = self.dt
+            conj_q.dx = self.dx.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dy = self.dy.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dz = self.dz
             end_qtype += "'"
             
         if conj_type == "*":
-            conjq.dt = self.dt
-            conjq.dx = self.dx
-            conjq.dy = self.dy
-            conjq.dz = self.dz.d_additive_inverse_up_to_an_automorphism()
+            conj_q.dt = self.dt
+            conj_q.dx = self.dx
+            conj_q.dy = self.dy
+            conj_q.dz = self.dz.d_additive_inverse_up_to_an_automorphism()
             end_qtype += "*"
+
+        conj_q.qtype = end_qtype
+        conj_q.representation = self.representation
         
-        return conjq
+        return conj_q
 
     def _commuting_products(self, q1):
         """Returns a dictionary with the commuting products."""
@@ -2712,7 +3368,7 @@ class Q8(object):
         
         qxq = self._commuting_products(self)
         
-        sq = Q8(qtype=end_qtype)
+        sq = Q8(qtype=end_qtype, representation=self.representation)
         sq.dt = qxq['tt'].d_dif(qxq['xx+yy+zz'])
         sq.dx = qxq['tx+xt']
         sq.dy = qxq['ty+yt']
@@ -2731,6 +3387,8 @@ class Q8(object):
         q_red.dy = self.dy.d_reduce()
         q_red.dz = self.dz.d_reduce()
         
+        q_red.representation = self.representation
+        
         return q_red
     
     def norm_squared(self, qtype="|| ||^2"):
@@ -2739,10 +3397,13 @@ class Q8(object):
         end_qtype = "||{st}||^2".format(st=self.qtype)
         
         qxq = self._commuting_products(self)
-        n_q = Q8(qtype=end_qtype)
+        n_q = Q8()
         n_q.dt = qxq['tt'].d_add(qxq['xx+yy+zz'])
-
-        return n_q
+        result = n_q.reduce()
+        result.qtype = end_qtype
+        result.representation = self.representation
+        
+        return result
     
     def norm_squared_of_vector(self, qtype="V(|| ||)^2"):
         """The norm_squared of the vector of a quaternion."""
@@ -2750,10 +3411,13 @@ class Q8(object):
         end_qtype = "||{st}||^2".format(st=self.qtype)
         
         qxq = self._commuting_products(self)
-        nv_q = Q8(qtype=end_qtype)
+        nv_q = Q8()
         nv_q.dt = qxq['xx+yy+zz']
+        result = nv_q.reduce()
+        result.qtype = end_qtype
+        result.representation = self.representation
 
-        return nv_q
+        return result
     
     def abs_of_q(self, qtype="| |"):
         """The absolute value, the square root of the norm_squared."""
@@ -2764,6 +3428,7 @@ class Q8(object):
         sqrt_t = a.dt.p ** (1/2)
         a.dt.p = sqrt_t
         a.qtype = end_qtype
+        a.representation = self.representation
         
         return a
 
@@ -2775,7 +3440,9 @@ class Q8(object):
         av = self.norm_squared_of_vector()
         sqrt_t = av.dt.p ** (1/2)
         av.dt.p = sqrt_t
-        av.qtype = qtype
+        
+        av.qtype = end_qtype
+        av.representation = self.representation
         
         return av
     
@@ -2786,7 +3453,9 @@ class Q8(object):
         
         abs_q_inv = self.abs_of_q().invert()
         n_q = self.product(abs_q_inv)
+        
         n_q.qtype = end_qtype
+        n_q.representation = self.representation
         
         return n_q
     
@@ -2795,22 +3464,20 @@ class Q8(object):
 
         end_qtype = "{f}+{s}".format(f=self.qtype, s=q1.qtype)
         
-        add_q = Q8()
+        add_q = Q8(qtype=end_qtype, representation=self.representation)
         add_q.dt = self.dt.d_add(q1.dt)
         add_q.dx = self.dx.d_add(q1.dx)
         add_q.dy = self.dy.d_add(q1.dy)
         add_q.dz = self.dz.d_add(q1.dz)
-        add_q.qtype = end_qtype
         
         return add_q
-        # return Q8([add_q_dt, add_q_dx, add_q_dy, add_q_dz], qtype=end_qtype)  
-
+        
     def dif(self, q1, qtype=""):
         """Form a add given 2 quaternions."""
 
         end_qtype = "{f}-{s}".format(f=self.qtype, s=q1.qtype)
             
-        dif_q = Q8(qtype=end_qtype)
+        dif_q = Q8(qtype=end_qtype, representation=self.representation)
         dif_q.dt = self.dt.d_dif(q1.dt)
         dif_q.dx = self.dx.d_dif(q1.dx)
         dif_q.dy = self.dy.d_dif(q1.dy)
@@ -2841,7 +3508,7 @@ class Q8(object):
             q_odd.dy = anti_commuting['zx-xz']
             q_odd.dz = anti_commuting['xy-yx']
         
-        result = Q8()
+        result = Q8(representation=self.representation)
         
         if kind == "":
             result = q_even.add(q_odd)
@@ -2865,13 +3532,13 @@ class Q8(object):
             result.qtype = qtype
         else:
             result.qtype = "{f}{ts}{s}".format(f=self.qtype, ts=times_symbol, s=q1.qtype)
-            
+        
         return result
     
     def Euclidean_product(self, q1, kind="", reverse=False, qtype=""):
         """Form a product p* q given 2 quaternions, not associative."""
 
-        pq = Q8()
+        pq = Q8(representation=self.representation)
         pq = self.conj().product(q1, kind, reverse, qtype)
             
         return pq
@@ -2891,6 +3558,7 @@ class Q8(object):
 
         q_inv = q_conj.product(q_norm_squared_inv, qtype=self.qtype)
         q_inv.qtype = end_qtype
+        q_inv.representation = self.representation
         
         return q_inv
 
@@ -2902,6 +3570,7 @@ class Q8(object):
         q_inv = q1.invert()
         q_div = self.product(q_inv) 
         q_div.qtype = end_qtype
+        q_div.representation = self.representation
         
         return q_div
     
@@ -2909,6 +3578,8 @@ class Q8(object):
         """Form a triple product given 3 quaternions."""
         
         triple = self.product(q1).product(q2)
+        triple.representation = self.representation
+        
         return triple
     
     # Quaternion rotation involves a triple product:  UQU∗
@@ -2920,6 +3591,7 @@ class Q8(object):
         u_abs = u.abs_of_q()
         u_norm_squaredalized = u.divide_by(u_abs)
         q_rot = u_norm_squaredalized.triple_product(self, u_norm_squaredalized.conj())
+        q_rot.representation = self.representation
         
         return q_rot
     
@@ -2941,6 +3613,7 @@ class Q8(object):
         half_23 = triple_23.product(Q8([0.5, 0, 0, 0, 0, 0, 0, 0]))
         triple_123 = triple_1.add(half_23, qtype=self.qtype)
         triple_123.qtype = end_qtype
+        triple_123.representation = self.representation
         
         return triple_123
     
@@ -2966,7 +3639,7 @@ class Q8(object):
             return self
         exp_g = sp.exp(dimensionless_g)
         
-        g_q = Q8(qtype=end_qtype)
+        g_q = Q8(qtype=end_qtype, representation=self.representation)
         g_q.dt = Doublet([self.dt.p / exp_g, self.dt.n / exp_g])
         g_q.dx = Doublet([self.dx.p * exp_g, self.dx.n * exp_g])
         g_q.dy = Doublet([self.dy.p * exp_g, self.dy.n * exp_g])
@@ -3001,7 +3674,7 @@ class Q8(object):
         
         k = cost * sinhR / abs_v.dt.p
 
-        q_out = Q8(qtype=end_qtype)
+        q_out = Q8(qtype=end_qtype, representation=self.representation)
         q_out.dt = Doublet(sint * coshR)
         q_out.dx = Doublet(k * (self.dx.p - self.dx.n))
         q_out.dy = Doublet(k * (self.dy.p - self.dy.n))
@@ -3036,7 +3709,7 @@ class Q8(object):
         
         k = -1 * sint * sinhR / abs_v.dt.p
         
-        q_out = Q8(qtype=end_qtype)
+        q_out = Q8(qtype=end_qtype, representation=self.representation)
         q_out.dt = Doublet(cost * coshR)
         q_out.dx = Doublet(k * (self.dx.p - self.dx.n))
         q_out.dy = Doublet(k * (self.dy.p - self.dy.n))
@@ -3064,6 +3737,7 @@ class Q8(object):
             
         q_out = sinq.divide_by(cosq) 
         q_out.qtype = end_qtype
+        q_out.representation = self.representation
         
         return q_out
     
@@ -3094,7 +3768,7 @@ class Q8(object):
         
         k = cosht * sinR / abs_v.dt.p
         
-        q_out = Q8(qtype=end_qtype)
+        q_out = Q8(qtype=end_qtype, representation=self.representation)
         q_out.dt = Doublet(sinht * cosR)
         q_out.dx = Doublet(k * (self.dx.p - self.dx.n))
         q_out.dy = Doublet(k * (self.dy.p - self.dy.n))
@@ -3102,7 +3776,7 @@ class Q8(object):
 
         return q_out
     
-    def cosh(self, qtype="sin"):
+    def cosh(self, qtype="cosh"):
         """Take the cosh of a quaternion, (cosh(t) cos(|R|), sinh(t) sin(|R|) R/|R|)"""
 
         end_qtype = "cosh({sq})".format(sq=self.qtype)
@@ -3122,14 +3796,14 @@ class Q8(object):
                 return Q8([math.cosh(red_t.p), 0, 0, 0], qtype=end_qtype)
             
             sinht = math.sinh(red_t.p)
-            cosht = math.cosh(red_t.n)
+            cosht = math.cosh(red_t.p)
              
         sinR = math.sin(abs_v.dt.p)
         cosR = math.cos(abs_v.dt.p)
         
         k = sinht * sinR / abs_v.dt.p
             
-        q_out = Q8(qtype=end_qtype)
+        q_out = Q8(qtype=end_qtype, representation=self.representation)
         q_out.dt = Doublet(cosht * cosR)
         q_out.dx = Doublet(k * (self.dx.p - self.dx.n))
         q_out.dy = Doublet(k * (self.dy.p - self.dy.n))
@@ -3158,6 +3832,7 @@ class Q8(object):
             
         q_out = sinhq.divide_by(coshq) 
         q_out.qtype = end_qtype
+        q_out.representation = self.representation
         
         return q_out
     
@@ -3190,7 +3865,7 @@ class Q8(object):
             
         k = et * sinR / abs_v.dt.p
              
-        expq = Q8(qtype = end_qtype)
+        expq = Q8(qtype=end_qtype, representation=self.representation)
         expq.dt = Doublet(et * cosR)
         expq.dx = Doublet(k * (self.dx.p - self.dx.n))
         expq.dy = Doublet(k * (self.dy.p - self.dy.n))
@@ -3222,7 +3897,7 @@ class Q8(object):
             t_value = 0.5 * math.log(red_t.p * red_t.p + abs_v.dt.p * abs_v.dt.p)
             k = math.atan2(abs_v.dt.p, red_t.p) / abs_v.dt.p
             
-        lnq = Q8(qtype=end_qtype)
+        lnq = Q8(qtype=end_qtype, representation=self.representation)
         lnq.dt = Doublet(t_value)
         lnq.dx = Doublet(k * (self.dx.p - self.dx.n))
         lnq.dy = Doublet(k * (self.dy.p - self.dy.n))
@@ -3238,6 +3913,7 @@ class Q8(object):
         
         q2q = self.ln().product(q1).reduce().exp()           
         q2q.qtype = end_qtype
+        q2q.representation = self.representation
         
         return q2q
     
@@ -3252,26 +3928,7 @@ class Q8(object):
         return self
 
 
-# In[14]:
-
-
-Q = Q8([1, 0, 0, 2, 0, 3, 0, 4])
-P = Q8([0, 0, 4, 0, 0, 3, 0, 0])
-R = Q8([3, 0, 0, 0, 0, 0, 0, 0])
-C = Q8([2, 0, 4, 0, 0, 0, 0, 0])
-q_big = Q8([1, 2, 3, 4, 5, 6, 7, 8])
-
-print("Q", Q)
-print("P", P)
-print("add ", Q.add(P))
-print("norm sequared ", Q.norm_squared())
-
-print("|P|, should be 5 ", P.abs_of_vector())
-
-print("cosh: ", Q.cosh())
-
-
-# In[15]:
+# In[ ]:
 
 
 class TestQ8(unittest.TestCase):
@@ -3707,15 +4364,65 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8())
 unittest.TextTestRunner().run(suite);
 
 
+# In[ ]:
+
+
+class TestQ8Rep(unittest.TestCase):
+    Q12 = Q8([1.0, 2.0, 0, 0])
+    Q1123 = Q8([1.0, 1.0, 2, 3])
+    Q11p = Q8([1.0, 1.0, 0, 0], representation="polar")
+    Q12p = Q8([1.0, 2.0, 0, 0], representation="polar")
+    Q12np = Q8([1.0, -2.0, 0, 0], representation="polar")
+    Q21p = Q8([2.0, 1.0, 0, 0], representation="polar")
+    Q23p = Q8([2.0, 3.0, 0, 0], representation="polar")
+    Q13p = Q8([1.0, 3.0, 0, 0], representation="polar")
+    Q5p = Q8([5.0, 0, 0, 0], representation="polar")
+    
+    # @unittest.skip("problems implementing")
+    def test_txyz_2_representation(self):
+        qr = Q8(self.Q12.txyz_2_representation("")).reduce()
+        self.assertTrue(qr.equals(self.Q12))
+        qr = Q8(self.Q12.txyz_2_representation("polar")).reduce()
+        self.assertTrue(qr.equals(Q8([2.23606797749979, 1.10714871779409, 0, 0])))
+        qr = Q8(self.Q1123.txyz_2_representation("spherical")).reduce()
+        self.assertTrue(qr.equals(Q8([1.0, 3.7416573867739413, 0.640522312679424, 1.10714871779409])))
+
+        
+    # @unittest.skip("problems implementing")    
+    def test_representation_2_txyz(self):
+        qr = Q8(self.Q12.representation_2_txyz("")).reduce()
+        self.assertTrue(qr.equals(self.Q12))
+        qr = Q8(self.Q12.representation_2_txyz("polar")).reduce()
+        self.assertTrue(qr.equals(Q8([-0.4161468365471424, 0.9092974268256817, 0, 0])))
+        qr = Q8(self.Q1123.representation_2_txyz("spherical")).reduce()
+        self.assertTrue(qr.equals(Q8([1.0, -0.9001976297355174, 0.12832006020245673, -0.4161468365471424])))
+    
+    def test_polar_products(self):
+        qr = self.Q11p.product(self.Q12p).reduce()
+        print("polar 1 1 0 0 * 1 2 0 0: ", qr)
+        self.assertTrue(qr.equals(self.Q13p))
+        qr = self.Q12p.product(self.Q21p).reduce()
+        print("polar 1 2 0 0 * 2 1 0 0: ", qr)
+        self.assertTrue(qr.equals(self.Q23p))
+
+    def test_polar_conj(self):
+        qr = self.Q12p.conj().reduce()
+        print("polar conj of 1 2 0 0: ", qr)
+        self.assertTrue(qr.equals(self.Q12np))
+        
+suite = unittest.TestLoader().loadTestsFromModule(TestQ8Rep())
+unittest.TextTestRunner().run(suite);
+
+
 # ## Class Q8a as nparrays
 
-# In[16]:
+# In[ ]:
 
 
-class Q8a(object):
+class Q8a(Doubleta):
     """Quaternions on a quaternion manifold or space-time numbers."""
 
-    def __init__(self, values=None, qtype="Q"):
+    def __init__(self, values=None, qtype="Q", representation=""):
         if values is None:
             d_zero = Doubleta()
             self.a = np.array([d_zero.d[0], d_zero.d[0], d_zero.d[0], d_zero.d[0], d_zero.d[0], d_zero.d[0], d_zero.d[0], d_zero.d[0]])
@@ -3732,16 +4439,225 @@ class Q8a(object):
                                    Doubleta([values[2], values[3]]).d[0], Doubleta([values[2], values[3]]).d[1],
                                    Doubleta([values[4], values[5]]).d[0], Doubleta([values[4], values[5]]).d[1],
                                    Doubleta([values[6], values[7]]).d[0], Doubleta([values[6], values[7]]).d[1]])
-                                  
+        
+        self.representation = representation
+        
+        if representation != "":
+            rep = self.representation_2_txyz(representation)
+            self.a = np.array(rep)
+        
         self.qtype=qtype
                 
     def __str__(self):
         """Customize the output."""
+        
+        
+        if self.representation == "":
+            string = "(({tp}, {tn}), ({xp}, {xn}), ({yp}, {yn}), ({zp}, {zn})) {qt}".format(tp=self.a[0], tn=self.a[1], 
+                                                             xp=self.a[2], xn=self.a[3], 
+                                                             yp=self.a[4], yn=self.a[5], 
+                                                             zp=self.a[6], zn=self.a[7],
+                                                             qt=self.qtype)
+    
+        elif self.representation == "polar":
+            rep = self.txyz_2_representation("polar")
+            string = "(({Ap}, {An}) A, ({thetaXp}, {thetaXn})  𝜈x, ({thetaYp}, {thetaYn}) 𝜈y, ({thetaZp}, {thetaZn}) 𝜈z) {qt}".format(Ap=rep[0], An=rep[1], thetaXp=rep[2], thetaXn=rep[3], thetaYp=rep[4], thetaYn=rep[5], thetaZp=rep[6], thetaZn=rep[7], 
+                                                                    qt=self.qtype)
+ 
+        elif self.representation == "spherical":
+            rep = self.txyz_2_representation("spherical")
+            string = "(({tp}, {tn}) t, ({Rp}, {Rn}) R, ({thetap}, {thetan}) θ , ({phip}, {phin}) φ) {qt}".format(tp=rep[0], tn=rep[1], Rp=rep[2], Rn=rep[3], thetap=rep[4], thetan=rep[5], phip=rep[6], phin=rep[7], 
+                                                                       qt=self.qtype)
+        return string 
+        
+        
         return "(({tp}, {tn}), ({xp}, {xn}), ({yp}, {yn}), ({zp}, {zn})) {qt}".format(tp=self.a[0], tn=self.a[1], 
                                                              xp=self.a[2], xn=self.a[3], 
                                                              yp=self.a[4], yn=self.a[5], 
                                                              zp=self.a[6], zn=self.a[7],
                                                              qt=self.qtype)
+    
+        return string
+    
+    def is_symbolic(self):
+        """Looks to see if a symbol is inside one of the terms."""
+        
+        symbolic = False
+        
+        for i in range(8):
+            if hasattr(self.a[i], "free_symbols"): 
+                symbolic = True
+            
+        return symbolic
+        
+    def txyz_2_representation(self, representation):
+        """Converts Cartesian txyz into an array of 4 values in a different representation."""
+
+        symbolic = self.is_symbolic()
+                
+        if representation == "":
+            rep = [self.a[0], self.a[1], self.a[2], self.a[3], self.a[4], self.a[5], self.a[6], self.a[7]]
+        
+        elif representation == "polar":
+            
+            dtr = self.a[0] - self.a[1]
+            dxr = self.a[2] - self.a[3]
+            dyr = self.a[4] - self.a[5]
+            dzr = self.a[6] - self.a[7]
+            
+            amplitude = (dtr ** 2 + dxr ** 2 + dyr **2 + dzr **2) ** (1/2)
+            
+            abs_v = self.abs_of_vector().a[0]
+            
+            if symbolic:
+                theta = sp.atan2(abs_v, dtr)
+            else:
+                theta = math.atan2(abs_v, dtr)
+                
+            if abs_v == 0:
+                thetaX, thetaY, thetaZ = 0, 0, 0
+                
+            else:
+                thetaX = theta * dxr / abs_v
+                thetaY = theta * dyr / abs_v
+                thetaZ = theta * dzr / abs_v
+                
+            damp = Doubleta(amplitude)
+            dthetaX = Doubleta(thetaX)
+            dthetaY = Doubleta(thetaY)
+            dthetaZ = Doubleta(thetaZ)
+            
+            rep = [damp.d[0], damp.d[1], 
+                   dthetaX.d[0], dthetaX.d[1], 
+                   dthetaY.d[0], dthetaY.d[1], 
+                   dthetaZ.d[0], dthetaZ.d[1]]
+        
+        elif representation == "spherical":
+            
+            dtr = self.a[0] - self.a[1]
+            dxr = self.a[2] - self.a[3]
+            dyr = self.a[4] - self.a[5]
+            dzr = self.a[6] - self.a[7]
+            
+            R = (dxr ** 2 + dyr **2 + dzr**2) ** (1/2)
+            
+            if symbolic:
+                theta = sp.acos(dzr / R)
+                phi = sp.atan2(dyr, dxr)
+            
+            else:
+                theta = math.acos(dzr / R)
+                phi = math.atan2(dyr, dxr)
+                
+            dt = Doubleta(dtr)
+            dR = Doubleta(R)
+            dtheta = Doubleta(theta)
+            dphi = Doubleta(phi)
+            
+            rep = [dt.d[0], dt.d[1], 
+                   dR.d[0], dR.d[1], 
+                   dtheta.d[0], dtheta.d[1], 
+                   dphi.d[0], dphi.d[1]]
+        
+        else:
+            print("Oops, don't know representation: ", representation)
+            
+        return rep
+    
+    def representation_2_txyz(self, representation):
+        """Convert from a representation to Cartesian txyz."""
+        
+        symbolic = self.is_symbolic()
+
+        if representation == "":
+            rep = [self.a[0], self.a[1], self.a[2], self.a[3], self.a[4], self.a[5], self.a[6], self.a[7]]
+        
+        elif representation == "polar":
+                                
+            amplitude1, amplitude2 = self.a[0], self.a[1]
+            thetaX1, thetaX2 = self.a[2], self.a[3]
+            thetaY1, thetaY2 = self.a[4], self.a[5]
+            thetaZ1, thetaZ2 = self.a[6], self.a[7]
+    
+            amp = amplitude1 - amplitude2
+            thetaXr = thetaX1 - thetaX2
+            thetaYr = thetaY1 - thetaY2
+            thetaZr = thetaZ1 - thetaZ2
+                                
+            theta = (thetaXr ** 2 + thetaYr ** 2 + thetaZr ** 2) ** (1/2)
+                
+            if theta == 0:
+                t = amp
+                x, y, z = 0, 0, 0
+            
+            else:
+                if symbolic:
+                    t = amp * sp.cos(theta)
+                    x = thetaXr / theta * amp * sp.sin(theta)
+                    y = thetaYr / theta * amp * sp.sin(theta)
+                    z = thetaZr / theta * amp * sp.sin(theta)
+                else:
+                    t = amp * math.cos(theta)
+                    x = thetaXr / theta * amp * math.sin(theta)
+                    y = thetaYr / theta * amp * math.sin(theta)
+                    z = thetaZr / theta * amp * math.sin(theta)
+                    
+            dt = Doubleta(t)
+            dx = Doubleta(x)
+            dy = Doubleta(y)
+            dz = Doubleta(z)
+            
+            rep = [dt.d[0], dt.d[1],
+                   dx.d[0], dx.d[1],
+                   dy.d[0], dy.d[1],
+                   dz.d[0], dz.d[1]]
+            
+        elif representation == "spherical":
+            t1, t2 = self.a[0], self.a[1]
+            R1, R2 = self.a[2], self.a[3]
+            theta1, theta2 = self.a[4], self.a[5]
+            phi1, phi2 = self.a[6], self.a[7]
+    
+            t = t1 - t2
+            R = R1 - R2
+            thetar = theta1 - theta2
+            phir = phi1 - phi2
+            
+            if symbolic:
+                x = R * sp.sin(thetar) * sp.cos(phir)
+                y = R * sp.sin(thetar) * sp.sin(phir)
+                z = R * sp.cos(thetar)
+                
+            else:
+                x = R * math.sin(thetar) * math.cos(phir)
+                y = R * math.sin(thetar) * math.sin(phir)
+                z = R * math.cos(thetar)
+                
+            dt = Doubleta(t)
+            dx = Doubleta(x)
+            dy = Doubleta(y)
+            dz = Doubleta(z)
+
+            rep = [dt.d[0], dt.d[1],
+                   dx.d[0], dx.d[1],
+                   dy.d[0], dy.d[1],
+                   dz.d[0], dz.d[1]]
+
+        else:
+            print("Oops, don't know representation: ", representation)
+        
+        return rep
+        
+    def check_representations(self, q1):
+        """If they are the same, report true. If not, kick out an exception. Don't add apples to oranges."""
+
+        if self.representation == q1.representation:
+            return True
+        
+        else:
+            raise Exception("Oops, 2 quaternions have different representations: {}, {}".format(self.representation, q1.representation))
+            return False
+    
     def q4(self):
         """Return a 4 element array."""
         return [self.a[0] - self.a[1], self.a[0] - self.a[1], self.a[4] - self.a[5], self.a[6] - self.a[7]]
@@ -3749,38 +4665,44 @@ class Q8a(object):
     def q_0(self, qtype="0"):
         """Return a zero quaternion."""
         
-        q0 = Q8a(qtype=qtype)
+        q0 = Q8a(qtype=qtype, representation=self.representation)
+        
         return q0
       
     def q_1(self, qtype="1"):
         """Return a multiplicative identity quaternion."""
         
-        q1 = Q8a([1, 0, 0, 0, 0, 0, 0, 0], qtype=qtype)
+        q1 = Q8a([1, 0, 0, 0, 0, 0, 0, 0], qtype=qtype, representation=self.representation)
+        
         return q1
     
     def q_i(self, qtype="i"):
         """Return i."""
         
-        qi = Q8a([0, 0, 1, 0, 0, 0, 0, 0], qtype=qtype)
+        qi = Q8a([0, 0, 1, 0, 0, 0, 0, 0], qtype=qtype, representation=self.representation)
         return qi
     
     def q_j(self, qtype="j"):
         """Return j."""
         
-        qj = Q8a([0, 0, 0, 0, 1, 0, 0, 0], qtype=qtype)
+        qj = Q8a([0, 0, 0, 0, 1, 0, 0, 0], qtype=qtype, representation=self.representation)
+        
         return qj
     
 
     def q_k(self, qtype="k"):
         """Return k."""
         
-        qk = Q8a([0, 0, 0, 0, 0, 0, 1, 0], qtype=qtype)
+        qk = Q8a([0, 0, 0, 0, 0, 0, 1, 0], qtype=qtype, representation=self.representation)
+        
         return qk
 
     def q_random(self, qtype="?"):
         """Return a random-valued quaternion."""
 
         qr = Q8a([random.random(), random.random(), random.random(), random.random(), random.random(), random.random(), random.random(), random.random()], qtype=qtype)
+        qr.representation = self.representation
+        
         return qr
     
     def equals(self, q2):
@@ -3837,6 +4759,7 @@ class Q8a(object):
             qtype += "2"
             
         conj_q.qtype = self.qtype + qtype
+        conj_q.representation = self.representation
         
         return conj_q
     
@@ -3881,6 +4804,7 @@ class Q8a(object):
             qtype += "*"
             
         conj_q.qtype = self.qtype + qtype
+        conj_q.representation = self.representation
         
         return conj_q
 
@@ -3970,6 +4894,7 @@ class Q8a(object):
         sq_q.a[7] = qxq['tz+zt1']
         
         sq_q.qtype = end_qtype
+        sq_q.representation = self.representation
         
         return sq_q
     
@@ -3994,6 +4919,7 @@ class Q8a(object):
         q_red.a[7] = red_z.d[1]
 
         q_red.qtype = end_qtype
+        q_red.representation = self.representation
         
         return q_red
     
@@ -4004,12 +4930,15 @@ class Q8a(object):
         
         qxq = self._commuting_products(self)
         
-        n_q = Q8a(qtype=self.qtype)        
+        n_q = Q8a()        
         n_q.a[0] = qxq['tt0'] + qxq['xx+yy+zz0']
-
-        n_q.qtype = self.qtype
-        n_q.qtype = end_qtype
-        return n_q
+        n_q.a[1] = qxq['tt1'] + qxq['xx+yy+zz1']
+        result = n_q.reduce()
+        
+        result.qtype = end_qtype
+        result.representation = self.representation
+        
+        return result
     
     def norm_squared_of_vector(self, qtype="V(|| ||)^2"):
         """The norm_squared of the vector of a quaternion."""
@@ -4018,21 +4947,25 @@ class Q8a(object):
         
         qxq = self._commuting_products(self)
         
-        nv_q = Q8a(qtype=self.qtype)
+        nv_q = Q8a()
         nv_q.a[0] = qxq['xx+yy+zz0']
-        nv_q.qtype = end_qtype
+        nv_q.a[1] = qxq['xx+yy+zz1']
+        result = nv_q.reduce()
+        result.qtype = end_qtype
+        result.representation = self.representation
 
-        return nv_q
+        return result
         
     def abs_of_q(self, qtype="| |"):
         """The absolute value, the square root of the norm_squared."""
 
         end_qtype = "|{}|".format(self.qtype)
         
-        abq = self.norm_squared(qtype=self.qtype)
-        sqrt_t = abq.a[0] ** (1/2)
-        abq.a[0] = sqrt_t
+        abq = self.norm_squared()
+        sqrt_t0 = abq.a[0] ** (1/2)
+        abq.a[0] = sqrt_t0
         abq.qtype = end_qtype
+        abq.representation = self.representation
         
         return abq
 
@@ -4045,6 +4978,7 @@ class Q8a(object):
         sqrt_t = av.a[0] ** (1/2)
         av.a[0] = sqrt_t
         av.qtype = end_qtype
+        av.representation = self.representation
         
         return av
     
@@ -4056,6 +4990,7 @@ class Q8a(object):
         abs_q_inv = self.abs_of_q().invert()
         n_q = self.product(abs_q_inv)
         n_q.qtype = end_qtype
+        n_q.representation=self.representation
         
         return n_q
     
@@ -4067,7 +5002,8 @@ class Q8a(object):
             add_q.a[i] = self.a[i] + q1.a[i]
                     
         add_q.qtype = "{f}+{s}".format(f=self.qtype, s=q1.qtype)
-            
+        add_q.representation = self.representation    
+        
         return add_q    
 
     def dif(self, q1, qtype="-"):
@@ -4085,7 +5021,8 @@ class Q8a(object):
         dif_q.a[7] = self.a[7] + q1.a[6]
      
         dif_q.qtype = "{f}-{s}".format(f=self.qtype, s=q1.qtype)
-            
+        dif_q.representation = self.representation
+        
         return dif_q
     
     def product(self, q1, kind="", reverse=False, qtype=""):
@@ -4137,7 +5074,8 @@ class Q8a(object):
             times_symbol = times_symbol.replace('x', 'xR')    
             
         result.qtype = "{f}{ts}{s}".format(f=self.qtype, ts=times_symbol, s=q1.qtype)
-            
+        result.representation = self.representation
+        
         return result
 
     def Euclidean_product(self, q1, kind="", reverse=False, qtype=""):
@@ -4145,7 +5083,8 @@ class Q8a(object):
 
         pq = Q8a()
         pq = self.conj().product(q1, kind, reverse, qtype)
-
+        pq.representation = self.representation
+        
         return pq
 
     def invert(self, qtype="^-1"):
@@ -4163,6 +5102,7 @@ class Q8a(object):
 
         q_inv = q_conj.product(q_norm_squared_inv)
         q_inv.qtype = end_qtype
+        q_inv.representation = self.representation
         
         return q_inv
 
@@ -4172,7 +5112,8 @@ class Q8a(object):
         q_inv = q1.invert()
         q_div = self.product(q_inv) 
         q_div.qtype = "{f}/{s}".format(f=self.qtype, s=q1.qtype)
-            
+        q_div.representation = self.representation    
+        
         return q_div
     
     def triple_product(self, q1, q2):
@@ -4191,6 +5132,7 @@ class Q8a(object):
         u_abs = u.abs_of_q()
         u_norm_squaredalized = u.divide_by(u_abs)
         q_rot = u_norm_squaredalized.triple_product(self, u_norm_squaredalized.conj())
+        q_rot.representation = self.representation
         
         return q_rot
     
@@ -4210,9 +5152,10 @@ class Q8a(object):
               
         triple_23 = triple_2.dif(triple_3)
         half_23 = triple_23.product(Q8a([0.5, 0, 0, 0, 0, 0, 0, 0]))
-        triple_123 = triple_1.add(half_23, qtype=self.qtype)
+        triple_123 = triple_1.add(half_23)
         
         triple_123.qtype = end_qtype
+        triple_123.representation = self.representation
         
         return triple_123
     
@@ -4254,6 +5197,7 @@ class Q8a(object):
         g_q.a[7] = dz.d[1]
         
         g_q.qtype = end_qtype
+        g_q.representation = self.representation
         
         return g_q
     
@@ -4267,13 +5211,13 @@ class Q8a(object):
 
         if red_t.d[0] == 0 and red_t.d[1] != 0:
             if abs_v.a[0] == 0:    
-                return Q8a([-1 * math.sin(red_t.d[1]), 0, 0, 0], qtype=end_qtype)
+                return Q8a([-1 * math.sin(red_t.d[1]), 0, 0, 0], qtype=end_qtype, representation=self.representation)
         
             sint = math.sin(-1 * red_t.d[1])
             cost = math.cos(-1 *red_t.d[1])    
         else:
             if abs_v.a[0] == 0:    
-                return Q8a([math.sin(red_t.d[0]), 0, 0, 0], qtype=end_qtype)
+                return Q8a([math.sin(red_t.d[0]), 0, 0, 0], qtype=end_qtype, representation=self.representation)
 
             sint = math.sin(red_t.d[0])
             cost = math.cos(red_t.d[0])    
@@ -4287,8 +5231,8 @@ class Q8a(object):
         q_out_dx = Doubleta(k * (self.a[2] - self.a[3]))
         q_out_dy = Doubleta(k * (self.a[4] - self.a[5]))
         q_out_dz = Doubleta(k * (self.a[6] - self.a[7]))
-        q_out = Q8a([q_out_t, q_out_x, q_out_y, q_out_z], qtype=end_qtype)
-
+        q_out = Q8a([q_out_t, q_out_x, q_out_y, q_out_z], qtype=end_qtype, representation=self.representation)
+        
         return q_out
      
     def cos(self, qtype="cos"):
@@ -4322,7 +5266,7 @@ class Q8a(object):
         q_out_dx = Doubleta(k * (self.a[2] - self.a[3]))
         q_out_dy = Doubleta(k * (self.a[4] - self.a[5]))
         q_out_dz = Doubleta(k * (self.a[6] - self.a[7]))
-        q_out = Q8a([q_out_t, q_out_x, q_out_y, q_out_z], qtype=end_qtype)
+        q_out = Q8a([q_out_t, q_out_x, q_out_y, q_out_z], qtype=end_qtype, representation=self.representation)
 
         return q_out
     
@@ -4336,17 +5280,18 @@ class Q8a(object):
         
         if red_t.d[0] == 0 and red_t.d[1] != 0:
             if abs_v.dt == 0:    
-                return Q8a([math.tan(-1 * red_t.d[1]), 0, 0, 0], qtype=end_qtype)
+                return Q8a([math.tan(-1 * red_t.d[1]), 0, 0, 0], qtype=end_qtype, representation=self.representation)
         else:
             if abs_v.a[0] == 0:    
-                return Q8a([math.tan(red_t.d[0]), 0, 0, 0], qtype=end_qtype)
+                return Q8a([math.tan(red_t.d[0]), 0, 0, 0], qtype=end_qtype, representation=self.representation)
             
         sinq = self.sin()
         cosq = self.cos()
             
         q_out = sinq.divide_by(cosq) 
         q_out.qtype = end_qtype
-        
+        q_out.representation = self.representation
+
         return q_out
     
     def sinh(self, qtype="sinh"):
@@ -4359,12 +5304,12 @@ class Q8a(object):
         
         if red_t.d[0] == 0 and red_t.d[1] != 0: 
             if abs_v.a[0] == 0:    
-                return Q8a([math.sinh(-1 * red_t.d[1]), 0, 0, 0], qtype=end_qtype)
+                return Q8a([math.sinh(-1 * red_t.d[1]), 0, 0, 0], qtype=end_qtype, representation=self.representation)
             sinht = math.sinh(-1 * red_t.d[1])
             cosht = math.cosh(-1 * red_t.d[1])
         else: 
             if abs_v.a[0] == 0:    
-                return Q8a([math.sinh(red_t.d[0]), 0, 0, 0], qtype=end_qtype)
+                return Q8a([math.sinh(red_t.d[0]), 0, 0, 0], qtype=end_qtype, representation=self.representation)
             sinht = math.sinh(red_t.d[0])
             cosht = math.cosh(red_t.d[0])
             
@@ -4377,7 +5322,7 @@ class Q8a(object):
         q_out_dx = Doubleta(k * (self.a[2] - self.a[3]))
         q_out_dy = Doubleta(k * (self.a[4] - self.a[5]))
         q_out_dz = Doubleta(k * (self.a[6] - self.a[7]))
-        q_out = Q8a([q_out_t, q_out_x, q_out_y, q_out_z], qtype=end_qtype)
+        q_out = Q8a([q_out_t, q_out_x, q_out_y, q_out_z], qtype=end_qtype, representation=self.representation)
 
         return q_out
      
@@ -4391,14 +5336,14 @@ class Q8a(object):
         
         if red_t.d[0] == 0 and red_t.d[1] != 0:
             if abs_v.a[0] == 0:    
-                return Q8a([-1 * math.cosh(self.dt.n), 0, 0, 0], qtype=end_qtype)
+                return Q8a([-1 * math.cosh(self.dt.n), 0, 0, 0], qtype=end_qtype, representation=self.representation)
             
             sinht = math.sinh(-1 * red_t.d[1])
             cosht = math.cosh(-1 * red_t.d[1])
         
         else:
             if abs_v.a[0] == 0:    
-                return Q8a([math.cosh(self.dt.p), 0, 0, 0], qtype=end_qtype)
+                return Q8a([math.cosh(self.dt.p), 0, 0, 0], qtype=end_qtype, representation=self.representation)
             
             sinht = math.sinh(red_t.d[0])
             cosht = math.cosh(red_t.d[0])
@@ -4412,7 +5357,7 @@ class Q8a(object):
         q_out_dx = Doubleta(k * (self.a[2] - self.a[3]))
         q_out_dy = Doubleta(k * (self.a[4] - self.a[5]))
         q_out_dz = Doubleta(k * (self.a[6] - self.a[7]))
-        q_out = Q8a([q_out_t, q_out_x, q_out_y, q_out_z], qtype=end_qtype)
+        q_out = Q8a([q_out_t, q_out_x, q_out_y, q_out_z], qtype=end_qtype, representation=self.representation)
 
         return q_out
     
@@ -4426,15 +5371,16 @@ class Q8a(object):
         
         if abs_v.a[0] == 0:
             if red_t.d[0] == 0 and red_t.d[1] != 0:
-                return Q8a([-1 * math.tanh(self.dt.n), 0, 0, 0], qtype=end_qtype)
+                return Q8a([-1 * math.tanh(self.dt.n), 0, 0, 0], qtype=end_qtype, representation=self.representation)
             else:
-                return Q8a([math.tanh(self.dt.p), 0, 0, 0], qtype=end_qtype)
+                return Q8a([math.tanh(self.dt.p), 0, 0, 0], qtype=end_qtype, representation=self.representation)
             
         sinhq = self.sinh()
         coshq = self.cosh()
             
         q_out = sinhq.divide_by(coshq) 
         q_out.qtype = end_qtype
+        q_out.representation = self.representation
         
         return q_out
     
@@ -4451,7 +5397,7 @@ class Q8a(object):
             et = math.exp(-1 * red_t.d[1])
             
             if (abs_v.a[0] == 0):
-                return Q8a([et, 0, 0, 0], qtype=end_qtype)
+                return Q8a([et, 0, 0, 0], qtype=end_qtype, representation=self.representation)
             
             cosR = math.cos(abs_v.a[0])
             sinR = math.sin(abs_v.a[0])
@@ -4460,7 +5406,7 @@ class Q8a(object):
             et = math.exp(red_t.d[0])
             
             if (abs_v.a[0] == 0):
-                return Q8a([et, 0, 0, 0], qtype=end_qtype)
+                return Q8a([et, 0, 0, 0], qtype=end_qtype, representation=self.representation)
             
             cosR = math.cos(abs_v.a[0])
             sinR = math.sin(abs_v.a[0])
@@ -4471,7 +5417,7 @@ class Q8a(object):
         expq_dx = Doubleta(k * (self.a[2] - self.a[3]))
         expq_dy = Doubleta(k * (self.a[4] - self.a[5]))
         expq_dz = Doubleta(k * (self.a[6] - self.a[7]))
-        expq = Q8a([expq_dt, expq_dt, expq_dt, expq_dt], qtype=end_qtype)
+        expq = Q8a([expq_dt, expq_dt, expq_dt, expq_dt], qtype=end_qtype, representation=self.representation)
                        
         return expq
     
@@ -4494,7 +5440,7 @@ class Q8a(object):
         
         else:
             if (abs_v.a[0] == 0):
-                return(Q8a([math.log(self.dt.p), 0, 0, 0], qtype=end_qtype))
+                return(Q8a([math.log(self.dt.p), 0, 0, 0], qtype=end_qtype, representation=self.representation))
                 
             t_value = 0.5 * math.log(red_t.d[0] * red_t.d[0] + abs_v.a[0] * abs_v.a[0])
             k = math.atan2(abs_v.a[0], red_t.d[0]) / abs_v.a[0]
@@ -4503,18 +5449,18 @@ class Q8a(object):
         lnq_dx = Doubleta(k * (self.a[2] - self.a[3]))
         lnq_dy = Doubleta(k * (self.a[4] - self.a[5]))
         lnq_dz = Doubleta(k * (self.a[6] - self.a[7]))
-        lnq = Q8a([lnq_dt, lnq_dx, lnq_dy, lnq_dz], qtype=end_qtype)
+        lnq = Q8a([lnq_dt, lnq_dx, lnq_dy, lnq_dz], qtype=end_qtype, representation=self.representation)
                        
         return lnq
     
     def q_2_q(self, q1, qtype="P"):
-        """Take the natural log of a quaternion."""
-        # q^p = exp(ln(q) * p)
+        """Take the natural log of a quaternion, q^p = exp(ln(q) * p)."""
         
         end_qtype = "{st}^P".format(st=self.qtype)
         
         q2q = self.ln().product(q1).reduce().exp()
         q2q.qtype = end_qtype
+        q2q.representation = self.representation
         
         return q2q
     
@@ -4529,19 +5475,11 @@ class Q8a(object):
         return self
 
 
-# In[17]:
-
-
-q1 = Q8([1, 0, 0, 2, 0, 3, 0, 4])
-q2 = Q8a([0, 0, 4, 0, 0, 3, 0, 0])
-q_big = Q8a([1, 2, 3, 4, 5, 6, 7, 8])
-print(q1)
-
-
-# In[18]:
+# In[ ]:
 
 
 class TestQ8a(unittest.TestCase):
+
     """Class to make sure all the functions work as expected."""
     
     q1 = Q8a([1, 0, 0, 2, 0, 3, 0, 4])
@@ -4903,6 +5841,56 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8a())
 unittest.TextTestRunner().run(suite);
 
 
+# In[ ]:
+
+
+class TestQ8aRep(unittest.TestCase):
+    Q12 = Q8a([1.0, 2.0, 0, 0])
+    Q1123 = Q8a([1.0, 1.0, 2.0, 3.0])
+    Q11p = Q8a([1.0, 1.0, 0, 0], representation="polar")
+    Q12p = Q8a([1.0, 2.0, 0, 0], representation="polar")
+    Q12np = Q8a([1.0, -2.0, 0, 0], representation="polar")
+    Q21p = Q8a([2.0, 1.0, 0, 0], representation="polar")
+    Q23p = Q8a([2.0, 3.0, 0, 0], representation="polar")
+    Q13p = Q8a([1.0, 3.0, 0, 0], representation="polar")
+    Q5p = Q8a([5.0, 0, 0, 0], representation="polar")
+    
+    # @unittest.skip("problems implementing")
+    def test_txyz_2_representation(self):
+        qr = Q8a(self.Q12.txyz_2_representation(""))
+        self.assertTrue(qr.equals(self.Q12))
+        qr = Q8a(self.Q12.txyz_2_representation("polar"))
+        self.assertTrue(qr.equals(Q8a([2.23606797749979, 1.10714871779409, 0, 0])))
+        qr = Q8a(self.Q1123.txyz_2_representation("spherical"))
+        self.assertTrue(qr.equals(Q8a([1.0, 3.7416573867739413, 0.640522312679424, 1.10714871779409])))
+
+        
+    # @unittest.skip("problems implementing")    
+    def test_representation_2_txyz(self):
+        qr = Q8a(self.Q12.representation_2_txyz(""))
+        self.assertTrue(qr.equals(self.Q12))
+        qr = Q8a(self.Q12.representation_2_txyz("polar"))
+        self.assertTrue(qr.equals(Q8a([-0.4161468365471424, 0.9092974268256817, 0, 0])))
+        qr = Q8a(self.Q1123.representation_2_txyz("spherical"))
+        self.assertTrue(qr.equals(Q8a([1.0, -0.9001976297355174, 0.12832006020245673, -0.4161468365471424])))
+    
+    def test_polar_products(self):
+        qr = self.Q11p.product(self.Q12p).reduce()
+        print("polar 1 1 0 0 * 1 2 0 0: ", qr)
+        self.assertTrue(qr.equals(self.Q13p))
+        qr = self.Q12p.product(self.Q21p).reduce()
+        print("polar 1 2 0 0 * 2 1 0 0: ", qr)
+        self.assertTrue(qr.equals(self.Q23p))
+
+    def test_polar_conj(self):
+        qr = self.Q12p.conj().reduce()
+        print("polar conj of 1 2 0 0: ", qr)
+        self.assertTrue(qr.equals(self.Q12np))
+        
+suite = unittest.TestLoader().loadTestsFromModule(TestQ8aRep())
+unittest.TextTestRunner().run(suite);
+
+
 # ## Equivalence Classes
 
 # Create a class that can figure out if two quaternions are in the same equivalence class. An equivalence class of space-time is a subset of events in space-time. For example, the future equivalence class would have any event that happens in the future. All time-like events have an interval that is positive.
@@ -4914,7 +5902,7 @@ unittest.TextTestRunner().run(suite);
 # Such an exact relation is not of much interest to physicists since Einstein showed that holds for only one set of observers. If one is moving relative to the reference observer, the two events would look like they occured at different times in the future, presuming perfectly accurate measuring devices.
 # 
 
-# In[19]:
+# In[ ]:
 
 
 def round_sig_figs(num, sig_figs):
@@ -4928,7 +5916,7 @@ def round_sig_figs(num, sig_figs):
         return 0  # Can't take the log of 0
 
 
-# In[20]:
+# In[ ]:
 
 
 class EQ(object):
@@ -5252,7 +6240,7 @@ class EQ(object):
     
 
 
-# In[21]:
+# In[ ]:
 
 
 class TestEQ(unittest.TestCase):
@@ -5362,7 +6350,7 @@ class TestEQ(unittest.TestCase):
         self.assertTrue(eq_small_tiny.norm_squared_of_unity() == 'less_than_unity')
 
 
-# In[22]:
+# In[ ]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestEQ())
@@ -5373,7 +6361,7 @@ unittest.TextTestRunner().run(suite);
 
 # Create a class that can make many, many quaternions.
 
-# In[23]:
+# In[ ]:
 
 
 class QHArray(QH):
@@ -5446,7 +6434,7 @@ class QHArray(QH):
         return QH([new_t, new_x, new_y, new_z])
 
 
-# In[24]:
+# In[ ]:
 
 
 class TestQHArray(unittest.TestCase):
@@ -5474,7 +6462,7 @@ class TestQHArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.z > 13.9)
 
 
-# In[25]:
+# In[ ]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHArray())
@@ -5483,7 +6471,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Array of nparrays
 
-# In[26]:
+# In[ ]:
 
 
 class QHaArray(QHa):
@@ -5546,7 +6534,7 @@ class QHaArray(QHa):
                 self.q_max.a[3] = q1.a[3]
 
 
-# In[27]:
+# In[ ]:
 
 
 class TestQHaArray(unittest.TestCase):
@@ -5574,7 +6562,7 @@ class TestQHaArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.a[3] > 13.9)
 
 
-# In[28]:
+# In[ ]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaArray())
@@ -5585,7 +6573,7 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[29]:
+# In[ ]:
 
 
 class QHStates(QH):
@@ -5967,7 +6955,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[30]:
+# In[ ]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -6158,7 +7146,7 @@ class TestQHStates(unittest.TestCase):
         self.assertTrue(self.Op4i.is_square())
 
 
-# In[31]:
+# In[ ]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHStates())
@@ -6173,7 +7161,7 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[32]:
+# In[ ]:
 
 
 class QHaStates(QHa):
@@ -6441,24 +7429,7 @@ class QHaStates(QHa):
         return norm
 
 
-# In[42]:
-
-
-q0 = QHa().q_0()
-q1 = QHa().q_1()
-qi = QHa().q_i()
-q0_q1 = QHaStates([q0, q1])
-q1_q0 = QHaStates([q1, q0])
-q1_qi = QHaStates([q1, qi])
-A = QHaStates([QHa([4,0,0,0]),QHa([0,1,0,0])])
-B = QHaStates([QHa([0,0,1,0]),QHa([0,0,0,2]),QHa([0,3,0,0])])
-Op = QHaStates([QHa([3,0,0,0]),QHa([0,1,0,0]),QHa([0,0,2,0]),QHa([0,0,0,3]),QHa([2,0,0,0]),QHa([0,4,0,0])])
-Op4i = QHaStates([QHa([0,4,0,0])])
-qn = QHaStates([QHa([3,0,0,4])])
-A.product('bra', operator=Op4i)
-
-
-# In[33]:
+# In[ ]:
 
 
 class TestQHaStates(unittest.TestCase):
@@ -6595,14 +7566,14 @@ class TestQHaStates(unittest.TestCase):
         self.assertTrue(opn.qs[0].a[1] == 3)
 
 
-# In[34]:
+# In[ ]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[35]:
+# In[ ]:
 
 
 class Q8States(Q8):
@@ -6870,7 +7841,7 @@ class Q8States(Q8):
         return norm
 
 
-# In[36]:
+# In[ ]:
 
 
 class TestQ8States(unittest.TestCase):
@@ -7016,14 +7987,14 @@ class TestQ8States(unittest.TestCase):
         self.assertTrue(opn.qs[0].dx.p == 3)
 
 
-# In[37]:
+# In[ ]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[38]:
+# In[ ]:
 
 
 class Q8aStates(Q8a):
@@ -7294,7 +8265,7 @@ class Q8aStates(Q8a):
         return norm
 
 
-# In[39]:
+# In[ ]:
 
 
 class TestQ8aStates(unittest.TestCase):
@@ -7439,7 +8410,7 @@ class TestQ8aStates(unittest.TestCase):
         self.assertTrue(opn.qs[0].a[2] == 3)
 
 
-# In[40]:
+# In[ ]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQ8aStates())
