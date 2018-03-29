@@ -233,7 +233,6 @@ class QH(object):
         display(self.y)
         display(self.z)
         return
-
     
     def simple_q(self):
         """Simplify each term."""
@@ -612,6 +611,8 @@ class QH(object):
     def Euclidean_product(self, q1, kind="", reverse=False, qtype=""):
         """Form a product p* q given 2 quaternions, not associative."""
 
+        self.check_representations(q1)
+        
         pq = QH(qtype, representation=self.representation)
         pq = self.conj().product(q1, kind, reverse)
             
@@ -639,6 +640,8 @@ class QH(object):
     def divide_by(self, q1, qtype=""):
         """Divide one quaternion by another. The order matters unless one is using a norm_squared (real number)."""
         
+        self.check_representations(q1)
+        
         end_qtype = "{f}/{s}".format(f=self.qtype, s=q1.qtype)
         
         q1_inv = q1.invert()
@@ -651,6 +654,9 @@ class QH(object):
     def triple_product(self, q1, q2):
         """Form a triple product given 3 quaternions."""
 
+        self.check_representations(q1)
+        self.check_representations(q2)
+        
         triple = self.product(q1).product(q2)
         triple.representation = self.representation
         
@@ -919,6 +925,7 @@ class QH(object):
         """Take the natural log of a quaternion."""
         # q^p = exp(ln(q) * p)
         
+        self.check_representations(q1)
         end_qtype = "{st}^P".format(st=self.qtype)
         
         q2q = self.ln().product(q1).exp()           
@@ -1812,11 +1819,13 @@ class QHa(object):
         
         return n_q
     
-    def add(self, QHa_1, qtype=""):
+    def add(self, q1, qtype=""):
         """Form a add given 2 quaternions."""
 
+        self.check_representations(q1)
+        
         t_1, x_1, y_1, z_1 = self.a[0], self.a[1], self.a[2], self.a[3]
-        t_2, x_2, y_2, z_2 = QHa_1.a[0], QHa_1.a[1], QHa_1.a[2], QHa_1.a[3]
+        t_2, x_2, y_2, z_2 = q1.a[0], q1.a[1], q1.a[2], q1.a[3]
 
         add_q = QHa()
         add_q.a[0] = t_1 + t_2
@@ -1824,16 +1833,18 @@ class QHa(object):
         add_q.a[2] = y_1 + y_2
         add_q.a[3] = z_1 + z_2
         
-        add_q.qtype = "{f}+{s}".format(f=self.qtype, s=QHa_1.qtype)
+        add_q.qtype = "{f}+{s}".format(f=self.qtype, s=q1.qtype)
         add_q.representation = self.representation
         
         return add_q    
 
-    def dif(self, QHa_1, qtype=""):
+    def dif(self, q1, qtype=""):
         """Form a add given 2 quaternions."""
 
+        self.check_representations(q1)
+        
         t_1, x_1, y_1, z_1 = self.a[0], self.a[1], self.a[2], self.a[3]
-        t_2, x_2, y_2, z_2 = QHa_1.a[0], QHa_1.a[1], QHa_1.a[2], QHa_1.a[3]
+        t_2, x_2, y_2, z_2 = q1.a[0], q1.a[1], q1.a[2], q1.a[3]
 
         dif_q = QHa()
         dif_q.a[0] = t_1 - t_2
@@ -1841,7 +1852,7 @@ class QHa(object):
         dif_q.a[2] = y_1 - y_2
         dif_q.a[3] = z_1 - z_2
 
-        dif_q.qtype = "{f}-{s}".format(f=self.qtype, s=QHa_1.qtype)
+        dif_q.qtype = "{f}-{s}".format(f=self.qtype, s=q1.qtype)
         dif_q.representation = self.representation
             
         return dif_q
@@ -1849,6 +1860,8 @@ class QHa(object):
     def product(self, q1, kind="", reverse=False, qtype=""):
         """Form a product given 2 quaternions: standard, even, odd, and even_minus_odd. If reverse=True, reverses the order."""
 
+        self.check_representations(q1)
+        
         commuting = self._commuting_products(q1)
         q_even = QHa()
         q_even.a[0] = commuting['tt'] - commuting['xx+yy+zz']
@@ -1898,6 +1911,8 @@ class QHa(object):
     def Euclidean_product(self, q1, kind="", reverse=False, qtype=""):
         """Form a product p* q given 2 quaternions, not associative."""
 
+        self.check_representations(q1)
+        
         pq = QHa()
         pq = self.conj().product(q1, kind, reverse, qtype)
             
@@ -1926,6 +1941,8 @@ class QHa(object):
     def divide_by(self, q1, qtype=""):
         """Divide one quaternion by another. The order matters unless one is using a norm_squared (real number)."""
         
+        self.check_representations(q1)
+        
         q1_inv = q1.invert()
         q_div = self.product(q1.invert())
         
@@ -1937,6 +1954,8 @@ class QHa(object):
     def triple_product(self, q1, q2):
         """Form a triple product given 3 quaternions."""
 
+        self.check_representations(q1)
+        
         triple = self.product(q1).product(q2)
         triple.representation = self.representation
         
@@ -2199,6 +2218,8 @@ class QHa(object):
     def q_2_q(self, q1, qtype="^P"):
         """Take the natural log of a quaternion."""
         # q^p = exp(ln(q) * p)
+        
+        self.check_representations(q1)
         
         end_qtype = "{st}^P".format(st=self.qtype)
         
@@ -2995,7 +3016,7 @@ class TestDoubleta(unittest.TestCase):
         self.assertTrue(Z2p_red.d[1] == Z2p_2.d[1])
 
 
-# In[ ]:
+# In[13]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestDoubleta())
@@ -3006,7 +3027,7 @@ unittest.TextTestRunner().run(suite);
 
 # Write a class to handle quaternions given 8 numbers.
 
-# In[ ]:
+# In[53]:
 
 
 class Q8(object):
@@ -3328,6 +3349,29 @@ class Q8(object):
         
         return conj_q
 
+    def flip_signs(self, qtype=""):
+        """Flip all the signs, just like multipying by -1."""
+
+        end_qtype = "-{}".format(self.qtype)
+        
+        dt, dx, dy, dz = self.dt, self.dx, self.dy, self.dz
+        flip_q = Q8(qtype=end_qtype)
+        
+        flip_q.dt.p = dt.n
+        flip_q.dt.n = dt.p
+        flip_q.dx.p = dx.n
+        flip_q.dx.n = dx.p
+        flip_q.dy.p = dy.n
+        flip_q.dy.n = dy.p
+        flip_q.dz.p = dz.n
+        flip_q.dz.n = dz.p
+        
+        flip_q.qtype = end_qtype
+        flip_q.representation = self.representation
+        
+        return flip_q
+    
+    
     def _commuting_products(self, q1):
         """Returns a dictionary with the commuting products."""
 
@@ -3462,6 +3506,8 @@ class Q8(object):
     def add(self, q1, qtype=""):
         """Form a add given 2 quaternions."""
 
+        self.check_representations(q1)
+        
         end_qtype = "{f}+{s}".format(f=self.qtype, s=q1.qtype)
         
         add_q = Q8(qtype=end_qtype, representation=self.representation)
@@ -3475,6 +3521,8 @@ class Q8(object):
     def dif(self, q1, qtype=""):
         """Form a add given 2 quaternions."""
 
+        self.check_representations(q1)
+        
         end_qtype = "{f}-{s}".format(f=self.qtype, s=q1.qtype)
             
         dif_q = Q8(qtype=end_qtype, representation=self.representation)
@@ -3487,6 +3535,8 @@ class Q8(object):
     
     def product(self, q1, kind="", reverse=False, qtype=""):
         """Form a product given 2 quaternions: standard, even, odd, and even_minus_odd."""
+    
+        self.check_representations(q1)
     
         commuting = self._commuting_products(q1)
         q_even = Q8()
@@ -3538,6 +3588,8 @@ class Q8(object):
     def Euclidean_product(self, q1, kind="", reverse=False, qtype=""):
         """Form a product p* q given 2 quaternions, not associative."""
 
+        self.check_representations(q1)
+        
         pq = Q8(representation=self.representation)
         pq = self.conj().product(q1, kind, reverse, qtype)
             
@@ -3565,6 +3617,8 @@ class Q8(object):
     def divide_by(self, q1, qtype=""):
         """Divide one quaternion by another. The order matters unless one is using a norm_squared (real number)."""
 
+        self.check_representations(q1)
+        
         end_qtype = "{f}/{s}".format(f=self.qtype, s=q1.qtype)
             
         q_inv = q1.invert()
@@ -3576,6 +3630,9 @@ class Q8(object):
     
     def triple_product(self, q1, q2):
         """Form a triple product given 3 quaternions."""
+        
+        self.check_representations(q1)
+        self.check_representations(q2)
         
         triple = self.product(q1).product(q2)
         triple.representation = self.representation
@@ -3909,6 +3966,8 @@ class Q8(object):
         """Take the natural log of a quaternion."""
         # q^p = exp(ln(q) * p)
         
+        self.check_representations(q1)
+        
         end_qtype = "{st}^P".format(st=self.qtype)
         
         q2q = self.ln().product(q1).reduce().exp()           
@@ -3928,7 +3987,7 @@ class Q8(object):
         return self
 
 
-# In[ ]:
+# In[54]:
 
 
 class TestQ8(unittest.TestCase):
@@ -4364,7 +4423,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8())
 unittest.TextTestRunner().run(suite);
 
 
-# In[ ]:
+# In[47]:
 
 
 class TestQ8Rep(unittest.TestCase):
@@ -4416,7 +4475,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Class Q8a as nparrays
 
-# In[ ]:
+# In[17]:
 
 
 class Q8a(Doubleta):
@@ -4713,7 +4772,7 @@ class Q8a(Doubleta):
         result = True
         
         for i in range(8):
-            if self_red.a[i] != q2_red.a[i]:
+            if not math.isclose(self_red.a[i], q2_red.a[i]):
                 result = False
         
         return result
@@ -4724,7 +4783,7 @@ class Q8a(Doubleta):
         conj_q = Q8a()
 
         # Flip all but t.                          
-        if conj_type == 0:
+        if conj_type == 0:   
             conj_q.a[0] = self.a[0]
             conj_q.a[1] = self.a[1]
             conj_q.a[2] = self.a[3]
@@ -4808,6 +4867,32 @@ class Q8a(Doubleta):
         
         return conj_q
 
+    def flip_signs(self, conj_type=0, qtype="-"):
+        """Flip all the signs, just like multipying by -1."""
+
+        end_qtype = "-{}".format(self.qtype)
+        
+        t1, t2 = self.a[0], self.a[1]
+        x1, x2 = self.a[2], self.a[3]
+        y1, y2 = self.a[4], self.a[5]
+        z1, z2 = self.a[6], self.a[7]
+        
+        flip_q = QHa(qtype=end_qtype)
+
+        flip_q.a[0] = t2
+        flip_q.a[1] = t1
+        flip_q.a[2] = x2
+        flip_q.a[3] = x1
+        flip_q.a[4] = y2
+        flip_q.a[5] = y1
+        flip_q.a[6] = z2
+        flip_q.a[7] = z1
+
+        flip_q.qtype = end_qtype
+        flip_q.representation = self.representation
+        
+        return flip_q
+    
     def _commuting_products(self, q1):
         """Returns a dictionary with the commuting products."""
 
@@ -4997,6 +5082,8 @@ class Q8a(Doubleta):
     def add(self, q1, qtype="+"):
         """Form a add given 2 quaternions."""
 
+        self.check_representations(q1)
+        
         add_q = Q8a()
         for i in range(0, 8):
             add_q.a[i] = self.a[i] + q1.a[i]
@@ -5009,6 +5096,8 @@ class Q8a(Doubleta):
     def dif(self, q1, qtype="-"):
         """Form a add given 2 quaternions."""
 
+        self.check_representations(q1)
+        
         dif_q = Q8a()
 
         dif_q.a[0] = self.a[0] + q1.a[1]
@@ -5028,6 +5117,8 @@ class Q8a(Doubleta):
     def product(self, q1, kind="", reverse=False, qtype=""):
         """Form a product given 2 quaternions."""
 
+        self.check_representations(q1)
+        
         commuting = self._commuting_products(q1)
         q_even = Q8a()
         q_even.a[0] = commuting['tt0'] + commuting['xx+yy+zz1']
@@ -5081,6 +5172,8 @@ class Q8a(Doubleta):
     def Euclidean_product(self, q1, kind="", reverse=False, qtype=""):
         """Form a product p* q given 2 quaternions, not associative."""
 
+        self.check_representations(q1)
+        
         pq = Q8a()
         pq = self.conj().product(q1, kind, reverse, qtype)
         pq.representation = self.representation
@@ -5109,6 +5202,8 @@ class Q8a(Doubleta):
     def divide_by(self, q1, qtype=""):
         """Divide one quaternion by another. The order matters unless one is using a norm_squared (real number)."""
 
+        self.check_representations(q1)
+        
         q_inv = q1.invert()
         q_div = self.product(q_inv) 
         q_div.qtype = "{f}/{s}".format(f=self.qtype, s=q1.qtype)
@@ -5118,6 +5213,9 @@ class Q8a(Doubleta):
     
     def triple_product(self, q1, q2):
         """Form a triple product given 3 quaternions."""
+        
+        self.check_representations(q1)
+        self.check_representations(q2)
         
         triple = self.product(q1).product(q2)
         
@@ -5456,6 +5554,8 @@ class Q8a(Doubleta):
     def q_2_q(self, q1, qtype="P"):
         """Take the natural log of a quaternion, q^p = exp(ln(q) * p)."""
         
+        self.check_representations(q1)
+        
         end_qtype = "{st}^P".format(st=self.qtype)
         
         q2q = self.ln().product(q1).reduce().exp()
@@ -5475,7 +5575,7 @@ class Q8a(Doubleta):
         return self
 
 
-# In[ ]:
+# In[18]:
 
 
 class TestQ8a(unittest.TestCase):
@@ -5841,7 +5941,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8a())
 unittest.TextTestRunner().run(suite);
 
 
-# In[ ]:
+# In[19]:
 
 
 class TestQ8aRep(unittest.TestCase):
@@ -5902,7 +6002,7 @@ unittest.TextTestRunner().run(suite);
 # Such an exact relation is not of much interest to physicists since Einstein showed that holds for only one set of observers. If one is moving relative to the reference observer, the two events would look like they occured at different times in the future, presuming perfectly accurate measuring devices.
 # 
 
-# In[ ]:
+# In[20]:
 
 
 def round_sig_figs(num, sig_figs):
@@ -5916,7 +6016,7 @@ def round_sig_figs(num, sig_figs):
         return 0  # Can't take the log of 0
 
 
-# In[ ]:
+# In[21]:
 
 
 class EQ(object):
@@ -6240,7 +6340,7 @@ class EQ(object):
     
 
 
-# In[ ]:
+# In[22]:
 
 
 class TestEQ(unittest.TestCase):
@@ -6350,7 +6450,7 @@ class TestEQ(unittest.TestCase):
         self.assertTrue(eq_small_tiny.norm_squared_of_unity() == 'less_than_unity')
 
 
-# In[ ]:
+# In[23]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestEQ())
@@ -6361,7 +6461,7 @@ unittest.TextTestRunner().run(suite);
 
 # Create a class that can make many, many quaternions.
 
-# In[ ]:
+# In[24]:
 
 
 class QHArray(QH):
@@ -6434,7 +6534,7 @@ class QHArray(QH):
         return QH([new_t, new_x, new_y, new_z])
 
 
-# In[ ]:
+# In[25]:
 
 
 class TestQHArray(unittest.TestCase):
@@ -6462,7 +6562,7 @@ class TestQHArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.z > 13.9)
 
 
-# In[ ]:
+# In[26]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHArray())
@@ -6471,7 +6571,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Array of nparrays
 
-# In[ ]:
+# In[27]:
 
 
 class QHaArray(QHa):
@@ -6534,7 +6634,7 @@ class QHaArray(QHa):
                 self.q_max.a[3] = q1.a[3]
 
 
-# In[ ]:
+# In[28]:
 
 
 class TestQHaArray(unittest.TestCase):
@@ -6562,7 +6662,7 @@ class TestQHaArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.a[3] > 13.9)
 
 
-# In[ ]:
+# In[29]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaArray())
@@ -6573,13 +6673,13 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[ ]:
+# In[30]:
 
 
 class QHStates(QH):
     """A class made up of many quaternions."""
     
-    def __init__(self, qs=None):
+    def __init__(self, qs=None, qtype="", representation=""):
         
         self.qs = qs
         
@@ -6587,6 +6687,9 @@ class QHStates(QH):
             self.d, self.dim, self.dimensions = 0, 0, 0
         else:
             self.d, self.dim, self.dimensions = len(qs), len(qs), len(qs)
+    
+        self.qtype = qtype
+        self.representation = representation
         
     def __str__(self):
         """Print out all the states."""
@@ -6611,16 +6714,16 @@ class QHStates(QH):
         if spacer:
             print("")
 
-    def equals(self, q2):
+    def equals(self, q1):
         """Test if two states are equal."""
    
-        if self.dim != q2.dim:
+        if self.dim != q1.dim:
             return False
         
         result = True
     
-        for selfq, q2q in zip(self.qs, q2.qs):
-            if not selfq.equals(q2q):
+        for selfq, q1q in zip(self.qs, q1.qs):
+            if not selfq.equals(q1q):
                 result = False
                 
         return result
@@ -6632,6 +6735,16 @@ class QHStates(QH):
         
         for bra in self.qs:
             new_states.append(bra.conj(conj_type))
+            
+        return QHStates(new_states)
+    
+    def flip_signs(self):
+        """Flip signs of all states."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.flip_signs())
             
         return QHStates(new_states)
     
@@ -6955,7 +7068,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[ ]:
+# In[48]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -6989,6 +7102,11 @@ class TestQHStates(unittest.TestCase):
         print("q1_qc*1: ", qc1)
         self.assertTrue(qc.qs[1].x == -1)
         self.assertTrue(qc1.qs[1].x == 1)
+    
+    def test_flip_signs(self):
+        qf = self.q1_qi.flip_signs()
+        print("-q1_qi: ", qf)
+        self.assertTrue(qf.qs[1].x == -1)
         
     def test_normalize(self):
         qn = self.qn.normalize()
@@ -7144,11 +7262,7 @@ class TestQHStates(unittest.TestCase):
     def test_is_square(self):
         self.assertFalse(self.Op.is_square())
         self.assertTrue(self.Op4i.is_square())
-
-
-# In[ ]:
-
-
+        
 suite = unittest.TestLoader().loadTestsFromModule(TestQHStates())
 unittest.TextTestRunner().run(suite);
 
@@ -7161,13 +7275,13 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[ ]:
+# In[49]:
 
 
 class QHaStates(QHa):
     """A class made up of many quaternions."""
     
-    def __init__(self, qs=None):
+    def __init__(self, qs=None, qtype="", representation=""):
         
         self.qs = qs
         
@@ -7212,6 +7326,20 @@ class QHaStates(QHa):
         
         return result
     
+    def equals(self, q1):
+        """Test if two states are equal."""
+   
+        if self.dim != q1.dim:
+            return False
+        
+        result = True
+    
+        for selfq, q1q in zip(self.qs, q1.qs):
+            if not selfq.equals(q1q):
+                result = False
+                
+        return result
+    
     def conj(self, conj_type=0):
         """Take the conjgates of states, default is zero, but also can do 1 or 2."""
         
@@ -7221,6 +7349,16 @@ class QHaStates(QHa):
             new_states.append(bra.conj(conj_type))
             
         return(QHaStates(new_states))
+    
+    def flip_signs(self):
+        """Flip signs of all states."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.flip_signs())
+            
+        return QHStates(new_states)
     
     def normalize(self):
         """Normalize all states."""
@@ -7429,7 +7567,7 @@ class QHaStates(QHa):
         return norm
 
 
-# In[ ]:
+# In[58]:
 
 
 class TestQHaStates(unittest.TestCase):
@@ -7449,6 +7587,25 @@ class TestQHaStates(unittest.TestCase):
     
     def test_init(self):
         self.assertTrue(self.q0_q1.dim == 2)
+        
+    def test_equals(self):
+        self.assertTrue(self.A.equals(self.A))
+        self.assertFalse(self.A.equals(self.B))
+        
+    def test_conj(self):
+        qc = self.q1_qi.conj()
+        qc1 = self.q1_qi.conj(1)
+        print("q1_qi*: ", qc)
+        print("q1_qc*1: ", qc1)
+        print("a3: ", qc.qs[1].a[3])
+        self.assertTrue(qc.qs[1].a[1] == -1)
+        self.assertTrue(qc1.qs[1].a[1] == 1)
+    
+    def test_flip_signs(self):
+        qf = self.q1_qi.flip_signs()
+        print("-q1_qi: ", qf)
+        print("a3: ", qf.qs[1].a[3])
+        self.assertTrue(qf.qs[1].a[1] == -1)  
         
     def test_summation(self):
         q_01_sum = self.q0_q1.summation()
@@ -7564,22 +7721,18 @@ class TestQHaStates(unittest.TestCase):
         opn = self.Op.op_n(n=self.qi)
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].a[1] == 3)
-
-
-# In[ ]:
-
-
+        
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[ ]:
+# In[51]:
 
 
 class Q8States(Q8):
     """A class made up of many quaternions."""
     
-    def __init__(self, qs=None):
+    def __init__(self, qs=None, qtype="", representation=""):
         
         self.qs = qs
         
@@ -7611,6 +7764,20 @@ class Q8States(Q8):
         if spacer:
             print("")
 
+    def equals(self, q1):
+        """Test if two states are equal."""
+   
+        if self.dim != q1.dim:
+            return False
+        
+        result = True
+    
+        for selfq, q1q in zip(self.qs, q1.qs):
+            if not selfq.equals(q1q):
+                result = False
+                
+        return result        
+            
     def conj(self, conj_type=0):
         """Take the conjgates of states, default is zero, but also can do 1 or 2."""
         
@@ -7620,6 +7787,16 @@ class Q8States(Q8):
             new_states.append(bra.conj(conj_type))
             
         return(Q8States(new_states))
+    
+    def flip_signs(self):
+        """Flip signs of all states."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.flip_signs())
+            
+        return QHStates(new_states)
     
     def normalize(self):
         """Normalize all states."""
@@ -7841,7 +8018,7 @@ class Q8States(Q8):
         return norm
 
 
-# In[ ]:
+# In[52]:
 
 
 class TestQ8States(unittest.TestCase):
@@ -7862,6 +8039,10 @@ class TestQ8States(unittest.TestCase):
     def test_init(self):
         self.assertTrue(self.q0_q1.dim == 2)
         
+    def test_equals(self):
+        self.assertTrue(self.A.equals(self.A))
+        self.assertFalse(self.A.equals(self.B))
+         
     def test_conj(self):
         qc = self.q1_qi.conj()
         qc1 = self.q1_qi.conj(1)
@@ -7870,7 +8051,12 @@ class TestQ8States(unittest.TestCase):
         print("qc.qs[1]: ", qc.qs[1])
         self.assertTrue(qc.qs[1].dx.n == 1)
         self.assertTrue(qc1.qs[1].dx.p == 1)   
-        
+
+    def test_flip_signs(self):
+        qf = self.q1_qi.flip_signs()
+        print("-q1_qi: ", qf)
+        self.assertTrue(qc.qs[1].dx.n == 1)
+    
     def test_normalize(self):
         qn = self.qn.normalize()
         print("Op normalized: ", qn)
@@ -7985,22 +8171,18 @@ class TestQ8States(unittest.TestCase):
         opn = self.Op.op_n(n=self.qi)
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].dx.p == 3)
-
-
-# In[ ]:
-
-
+        
 suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[ ]:
+# In[36]:
 
 
 class Q8aStates(Q8a):
     """A class made up of many quaternions."""
     
-    def __init__(self, qs=None):
+    def __init__(self, qs=None, qtype="Q", representation=""):
         
         self.qs = qs
         
@@ -8008,6 +8190,9 @@ class Q8aStates(Q8a):
             self.d, self.dim, self.dimensions = 0, 0, 0
         else:
             self.d, self.dim, self.dimensions = len(qs), len(qs), len(qs)
+        
+        self.qtype = qtype
+        self.representation = representation
         
     def __str__(self):
         """Print out all the states."""
@@ -8032,6 +8217,20 @@ class Q8aStates(Q8a):
         if spacer:
             print("")
 
+    def equals(self, q1):
+        """Test if two states are equal."""
+   
+        if self.dim != q1.dim:
+            return False
+        
+        result = True
+    
+        for selfq, q1q in zip(self.qs, q1.qs):
+            if not selfq.equals(q1q):
+                result = False
+                
+        return result
+            
     def conj(self, conj_type=0):
         """Take the conjgates of states, default is zero, but also can do 1 or 2."""
         
@@ -8041,6 +8240,16 @@ class Q8aStates(Q8a):
             new_states.append(bra.conj(conj_type))
             
         return(Q8aStates(new_states))
+    
+    def flip_signs(self):
+        """Flip signs of all states."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.flip_signs())
+            
+        return Q8aStates(new_states)
     
     def normalize(self):
         """Normalize all states."""
@@ -8265,7 +8474,7 @@ class Q8aStates(Q8a):
         return norm
 
 
-# In[ ]:
+# In[37]:
 
 
 class TestQ8aStates(unittest.TestCase):
@@ -8285,7 +8494,11 @@ class TestQ8aStates(unittest.TestCase):
     
     def test_init(self):
         self.assertTrue(self.q0_q1.dim == 2)
-    
+
+    def test_equals(self):
+        self.assertTrue(self.A.equals(self.A))
+        self.assertFalse(self.A.equals(self.B))
+        
     def test_conj(self):
         qc = self.q1_qi.conj()
         qc1 = self.q1_qi.conj(1)
@@ -8293,6 +8506,11 @@ class TestQ8aStates(unittest.TestCase):
         print("q1_qc*1: ", qc1)
         self.assertTrue(qc.qs[1].a[3] == 1)
         self.assertTrue(qc1.qs[1].a[2] == 1)
+    
+    def test_flip_signs(self):
+        qf = self.q1_qi.flip_signs()
+        print("-q1_qi: ", qf)
+        self.assertTrue(qc.qs[1].a[3] == -1)    
     
     def test_normalize(self):
         qn = self.qn.normalize()
@@ -8408,11 +8626,7 @@ class TestQ8aStates(unittest.TestCase):
         opn = self.Op.op_n(n=self.qi)
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].a[2] == 3)
-
-
-# In[ ]:
-
-
+        
 suite = unittest.TestLoader().loadTestsFromModule(TestQ8aStates())
 unittest.TextTestRunner().run(suite);
 
