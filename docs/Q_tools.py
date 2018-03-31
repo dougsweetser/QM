@@ -3027,7 +3027,7 @@ unittest.TextTestRunner().run(suite);
 
 # Write a class to handle quaternions given 8 numbers.
 
-# In[53]:
+# In[14]:
 
 
 class Q8(object):
@@ -3987,7 +3987,7 @@ class Q8(object):
         return self
 
 
-# In[54]:
+# In[15]:
 
 
 class TestQ8(unittest.TestCase):
@@ -4423,7 +4423,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8())
 unittest.TextTestRunner().run(suite);
 
 
-# In[47]:
+# In[16]:
 
 
 class TestQ8Rep(unittest.TestCase):
@@ -4877,7 +4877,7 @@ class Q8a(Doubleta):
         y1, y2 = self.a[4], self.a[5]
         z1, z2 = self.a[6], self.a[7]
         
-        flip_q = QHa(qtype=end_qtype)
+        flip_q = Q8a(qtype=end_qtype)
 
         flip_q.a[0] = t2
         flip_q.a[1] = t1
@@ -6810,12 +6810,18 @@ class QHStates(QH):
         """Make a state dim*dim with q along the 'diagonal'."""
         
         diagonal = []
-        q = self.qs[0]
+        
+        if len(self.qs) == 1:
+            q_values = [self.qs[0]] * dim
+        elif len(self.qs) == dim:
+            q_values = self.qs
+        else:
+            print("Oops, need the length to be equal to the dimensions.")
         
         for i in range(dim):
             for j in range(dim):
                 if i == j:
-                    diagonal.append(q)
+                    diagonal.append(q_values.pop(0))
                 else:
                     diagonal.append(QH().q_0())
         
@@ -7068,7 +7074,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[48]:
+# In[31]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -7275,7 +7281,7 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[49]:
+# In[32]:
 
 
 class QHaStates(QHa):
@@ -7567,7 +7573,7 @@ class QHaStates(QHa):
         return norm
 
 
-# In[58]:
+# In[33]:
 
 
 class TestQHaStates(unittest.TestCase):
@@ -7597,14 +7603,12 @@ class TestQHaStates(unittest.TestCase):
         qc1 = self.q1_qi.conj(1)
         print("q1_qi*: ", qc)
         print("q1_qc*1: ", qc1)
-        print("a3: ", qc.qs[1].a[3])
         self.assertTrue(qc.qs[1].a[1] == -1)
         self.assertTrue(qc1.qs[1].a[1] == 1)
     
     def test_flip_signs(self):
         qf = self.q1_qi.flip_signs()
         print("-q1_qi: ", qf)
-        print("a3: ", qf.qs[1].a[3])
         self.assertTrue(qf.qs[1].a[1] == -1)  
         
     def test_summation(self):
@@ -7726,7 +7730,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[51]:
+# In[34]:
 
 
 class Q8States(Q8):
@@ -8018,7 +8022,7 @@ class Q8States(Q8):
         return norm
 
 
-# In[52]:
+# In[35]:
 
 
 class TestQ8States(unittest.TestCase):
@@ -8055,7 +8059,7 @@ class TestQ8States(unittest.TestCase):
     def test_flip_signs(self):
         qf = self.q1_qi.flip_signs()
         print("-q1_qi: ", qf)
-        self.assertTrue(qc.qs[1].dx.n == 1)
+        self.assertTrue(qf.qs[1].dx.n == 1)
     
     def test_normalize(self):
         qn = self.qn.normalize()
@@ -8510,7 +8514,7 @@ class TestQ8aStates(unittest.TestCase):
     def test_flip_signs(self):
         qf = self.q1_qi.flip_signs()
         print("-q1_qi: ", qf)
-        self.assertTrue(qc.qs[1].a[3] == -1)    
+        self.assertTrue(qf.qs[1].a[3] == 1)    
     
     def test_normalize(self):
         qn = self.qn.normalize()
