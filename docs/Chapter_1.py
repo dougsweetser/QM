@@ -131,7 +131,7 @@ print("phase a+a+b: ", phase_a.product(phase_a).product(phase_b))
 # 
 # On the other hand, this sounds like a huge pain. Quantum mechanics is constructed from complex-valued Hilbert vectors spaces. The entire thing would have to be rebuilt. Everything would have to work, no exceptions. Well, that is why there are these iPython notebooks, to test if the reconstruction work can be done.
 
-# ## Spate-time dimensions versus State dimensions
+# ## Space-time dimensions versus State dimensions
 
 # ![](images/chapter_1/101.25.1.50.jpg)
 
@@ -139,7 +139,7 @@ print("phase a+a+b: ", phase_a.product(phase_a).product(phase_b))
 # 
 # Just to get the toes a little wet, here is one quaternion series $A$ which has two states $A1$ and $A2$:
 
-# In[27]:
+# In[6]:
 
 
 A = qt.QHStates([qt.QH([0,1,2,3], qtype="A1"), qt.QH([2,2,2,2], qtype="A2")])
@@ -165,7 +165,7 @@ A.add(B)
 
 # When you write software that has to "do all the math", you get confronted with questions like, what if the dimensions are different? I think they should not be added together because a value of zero is different from being undefined. Of course, some one with more technical skills in these arts may already know that I should treat the phantom third element of the quaternion series $A$ as zero and it is all OK. That would require a skilled math nerd. For now, I will treat it as an illegal move and report it. Let me redefine $B$ to have just two terms, and define a third series $C$ along with a zero.
 
-# In[34]:
+# In[8]:
 
 
 B = qt.QHStates([qt.QH([-1, -1, -1, -1], qtype="B1"), qt.QH([-2,-2,-4,-6], qtype="B2")])
@@ -173,7 +173,7 @@ C = qt.QHStates([qt.QH([0, 0, 0, 4], qtype="C1"), qt.QH([0,0,0,-10], qtype="C2")
 Z = qt.QHStates([qt.QH().q_0(), qt.QH().q_0()])
 
 
-# In[35]:
+# In[9]:
 
 
 A.add(B).print_states("|A> + |B> = |New>")
@@ -185,7 +185,7 @@ A.add(B).print_states("|A> + |B> = |New>")
 
 # Whoops, a lot to prove, but nothing too difficult. Instead of a complex number $z$ and $w$, I will use quaternions $q$ and $w$.
 
-# In[36]:
+# In[10]:
 
 
 print("2. commutative addition, |A> + |B> = |B> + |A>")
@@ -196,7 +196,7 @@ print("|A> + |B> = |B> + |A>? ", A.add(B).equals(B.add(A)))
 
 # I often focus on the qtype, the strings that report all the operations done for a given calculation. Sometimes the qtype can get quite long, but that is a statement about the calculation in question.
 
-# In[33]:
+# In[11]:
 
 
 print("3. associative addition, (|A> + |B>) + |C> = |A> + (|B> + |C)>")
@@ -205,7 +205,7 @@ A.add(B.add(C)).print_states("|A> + (|B> + |C>)", 1)
 print("(|A> + |B>) + |C> = |A> + (|B> + |C)>? ", A.add(B).add(C).equals(A.add(B.add(C))))
 
 
-# In[38]:
+# In[12]:
 
 
 print("4. An additive identity series zero exists")
@@ -214,7 +214,7 @@ A.add(Z).print_states("A + Z", 1)
 print("A = A + Z?", A.equals(A.add(Z)))
 
 
-# In[39]:
+# In[13]:
 
 
 print("5. An additive inverse exists, A + (-A) = 0")
@@ -222,7 +222,7 @@ A.flip_signs().print_states("-A", 1)
 A.add(A.flip_signs()).print_states("A + (-A)")
 
 
-# In[40]:
+# In[14]:
 
 
 print("6. A number times a ket produces a new ket, q|A> = |New>")
@@ -233,7 +233,7 @@ A.product("ket", operator=q).print_states("q|A> = |New>")
 
 # What is going on with the *product()* function? The product function can treat the quaternion series as either a bra or a ket. An operator acts on the ket. If the state dimension of the ket is one, then it creates a diagonal series that is the square of the state dimensions of ket. The ket has 2 state dimensions, so the operator has 4 state dimensions. The zeros of the diagonalized operator appear in the qtype.
 
-# In[41]:
+# In[15]:
 
 
 print("7a. Distributive property, q(|A> + |B>) = q|A> + q|B>")
@@ -244,7 +244,7 @@ qAqB.print_states("q|A> + q|B>", 1)
 print("q(|A> + |B>) = q|A> + q|B>? ", qAB.equals(qAqB))
 
 
-# In[43]:
+# In[16]:
 
 
 w = qt.QHStates([qt.QH([1, -1, 1, 100])])
@@ -262,7 +262,7 @@ print("(q + w)|A> = q|A> + w|A>? ", qwA.equals(qAwA))
 
 # The world of rows and columns does not port to quaternion series. All series are just that: series. Even operators are quaternion series which have relations based on state dimensions. The conjugate of a series can be calculated, and is a very useful thing.
 
-# In[44]:
+# In[17]:
 
 
 A.conj().print_states("A*")
@@ -270,13 +270,13 @@ A.conj().print_states("A*")
 
 # The signal that one is doing a calculation in quantum mechanics may just be the use of mirrors via the conjugate operator. No wonder the subject is such a struggle to understand!
 
-# ## Managing changes in multiplication order
+# ## Conjugates as Magic Mirrors
 
 # ![](images/chapter_1/101.29.2.50.jpg)
 
 # Let's first figure out what exactly is meant by "bra corresponding to [a ket] using complex numbers.
 
-# In[45]:
+# In[18]:
 
 
 print("z|A> ? <A|z*")
@@ -290,7 +290,7 @@ Azc.print_states("Az*")
 
 # The "correspondence" is that the two need one more conjugate operation to be equal, like so:
 
-# In[18]:
+# In[19]:
 
 
 print("z|A> = (<A|z*)* ?", zA.equals(Azc.conj()))
@@ -298,7 +298,7 @@ print("z|A> = (<A|z*)* ?", zA.equals(Azc.conj()))
 
 # Now lets do this more precise definition of the relationship for quaternions.
 
-# In[46]:
+# In[20]:
 
 
 qA = A.product("ket", operator=q)
@@ -319,7 +319,7 @@ print("q|A> = (<A|q*)* ?", qA.equals(Aqc.conj()))
 
 # This calculation should feel similar to the one done with ket's. The bra is just a different series that gets conjugated. 
 
-# In[20]:
+# In[21]:
 
 
 print("1. linear inner product, <C|(|A> + |B>) = <C|A> + <C|B>")
@@ -334,7 +334,7 @@ print("<C|(|A> + |B>) = <C|A> + <C|B>? ", CAB.equals(CABA))
 
 # Quaternions do not commute, but mirrors can sometimes manage the situation.
 
-# In[21]:
+# In[22]:
 
 
 print("2. For inner product, change order AND conjugate, <B|A> = <A|B>*")
@@ -351,7 +351,7 @@ print("<B|A> = <A|B>* ?", BdotA.equals(AdotBc))
 
 # Prove a variation on the linearity of inner products.
 
-# In[22]:
+# In[23]:
 
 
 print("Exercise 1.1: A) linear inner products, (<A| + <B|)|C> = <A|C> + <B|C>")
@@ -364,7 +364,7 @@ print("<C|(|A> + |B>) = <C|A> + <C|B>? ", CAB.equals(CABA))
 
 # Let's show that the inner self-products of A, B, and C evaluate to real numbers.
 
-# In[23]:
+# In[24]:
 
 
 A.Euclidean_product("bra", ket=A).print_states("<A|A>", 1)
@@ -376,7 +376,7 @@ C.Euclidean_product("bra", ket=C).print_states("<C|C>")
 
 # That is what is going on.
 
-# In[24]:
+# In[25]:
 
 
 q_0 = qt.QH().q_0()
@@ -394,19 +394,39 @@ B5.Euclidean_product("bra", ket=A5).print_states("<B5|A5>")
 
 # Let's build two quaternion series that are orthogonal. Use only states that are multiplies of i. If we have 4 state dimensions, and half are positive i while the other a minuses, that should cancel out. Here's what I mean:
 
-# In[25]:
+# In[26]:
 
 
 Ai = qt.QHStates([q_i, q_i, q_i, q_i])
 Bi = qt.QHStates([q_i, q_i.conj(), q_i, q_i.conj()])
-Ai.Euclidean_product("bra", ket=Ai).print_states("<A|A>", 1)
-Bi.Euclidean_product("bra", ket=Bi).print_states("<B|B>", 1)
-Bi.Euclidean_product("bra", ket=Ai).print_states("<B|A>")
+Ai.Euclidean_product("bra", ket=Ai).print_states("<Ai|Ai>", 1)
+Bi.Euclidean_product("bra", ket=Bi).print_states("<Bi|Bi>", 1)
+Bi.Euclidean_product("bra", ket=Ai).print_states("<Bi|Ai>")
 
 
 # None of the elements in the series are equal to zero, but the sum of the series is zero. There should be about an infinite number of ways to make orthogonal states, give or take.
 
 # ![](images/chapter_1/101.34.1.50.jpg)
+
+# The complex numbers $\alpha_i$ have to be made into a diagonal quaternion series so the end result of it acting on the basis series is correct.
+
+# In[27]:
+
+
+αi = qt.QHStates([qt.QH([1,1,0,0]),qt.QH([2,0,2,0]),qt.QH([3,1,3,0]),qt.QH([4,0,0,4])]).diagonal(4)
+αi.print_states("αi", 1)
+Ai.product("ket", operator=αi).print_states("|A> = Sum αi|Ai>")
+
+
+# Good, now just take Euclidean product with <j|.
+
+# In[28]:
+
+
+Ai.Euclidean_product("ket", bra=Bi, operator=αi).print_states("<j|A>")
+
+
+# I don't think there is much meaning to this calculation. It does show the machinery is in place to do more.
 
 # ![](images/chapter_1/101.34.2.50.jpg)
 
