@@ -626,7 +626,7 @@ class QH(object):
         q_conj = self.conj()
         q_norm_squared = self.norm_squared()
 
-        if q_norm_squared.t == 0:
+        if (not self.is_symbolic()) and (q_norm_squared.t == 0):
             print("oops, zero on the norm_squared.")
             return self.q0()
 
@@ -6763,8 +6763,10 @@ class QHStates(QH):
         
         new_states = []
         
+        q_dim = QH([math.sqrt(1/self.dim), 0, 0, 0])
+        
         for bra in self.qs:
-            new_states.append(bra.normalize())
+            new_states.append(bra.normalize().product(q_dim))
             
         return QHStates(new_states)
 
@@ -6807,7 +6809,7 @@ class QHStates(QH):
         return(QHStates(new_states))  
         
     def diagonal(self, dim):
-        """Make a state dim*dim with q along the 'diagonal'."""
+        """Make a state dim*dim with q or qs along the 'diagonal'."""
         
         diagonal = []
         
@@ -7371,8 +7373,10 @@ class QHaStates(QHa):
         
         new_states = []
         
+        q_dim = QHa([math.sqrt(1/self.dim), 0, 0, 0])
+        
         for bra in self.qs:
-            new_states.append(bra.normalize())
+            new_states.append(bra.normalize().product(q_dim))
             
         return QHaStates(new_states)
     
@@ -7400,12 +7404,19 @@ class QHaStates(QHa):
         """Make a state dim*dim with q along the 'diagonal'."""
         
         diagonal = []
-        q = self.qs[0]
+        
+        if len(self.qs) == 1:
+            q_values = [self.qs[0]] * dim
+        elif len(self.qs) == dim:
+            q_values = self.qs
+        else:
+            print("Oops, need the length to be equal to the dimensions.")
         
         for i in range(dim):
             for j in range(dim):
                 if i == j:
-                    diagonal.append(q)
+                    diagonal.append(q_values.pop(0))
+
                 else:
                     diagonal.append(QHa().q_0())
         
@@ -7807,9 +7818,11 @@ class Q8States(Q8):
         
         new_states = []
         
+        q_dim = Q8([math.sqrt(1/self.dim), 0, 0, 0])
+        
         for bra in self.qs:
-            new_states.append(bra.normalize())
-            
+            new_states.append(bra.normalize().product(q_dim))
+        
         return Q8States(new_states)
     
     def summation(self):
@@ -7849,12 +7862,19 @@ class Q8States(Q8):
         """Make a state dim*dim with q along the 'diagonal'."""
         
         diagonal = []
-        q = self.qs[0]
+        
+        if len(self.qs) == 1:
+            q_values = [self.qs[0]] * dim
+        elif len(self.qs) == dim:
+            q_values = self.qs
+        else:
+            print("Oops, need the length to be equal to the dimensions.")
         
         for i in range(dim):
             for j in range(dim):
                 if i == j:
-                    diagonal.append(q)
+                    diagonal.append(q_values.pop(0))
+
                 else:
                     diagonal.append(Q8().q_0())
         
@@ -8260,9 +8280,11 @@ class Q8aStates(Q8a):
         
         new_states = []
         
+        q_dim = Q8a([math.sqrt(1/self.dim), 0, 0, 0])
+        
         for bra in self.qs:
-            new_states.append(bra.normalize())
-            
+            new_states.append(bra.normalize().product(q_dim))
+                
         return Q8aStates(new_states)
     
     def summation(self):
@@ -8305,12 +8327,19 @@ class Q8aStates(Q8a):
         """Make a state dim*dim with q along the 'diagonal'."""
         
         diagonal = []
-        q = self.qs[0]
+        
+        if len(self.qs) == 1:
+            q_values = [self.qs[0]] * dim
+        elif len(self.qs) == dim:
+            q_values = self.qs
+        else:
+            print("Oops, need the length to be equal to the dimensions.")
         
         for i in range(dim):
             for j in range(dim):
                 if i == j:
-                    diagonal.append(q)
+                    diagonal.append(q_values.pop(0))
+
                 else:
                     diagonal.append(Q8a().q_0())
         
