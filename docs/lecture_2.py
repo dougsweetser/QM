@@ -10,7 +10,7 @@
 # In[1]:
 
 
-get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as np\nimport sympy as sp\nimport matplotlib.pyplot as plt\n\n# To get equations the look like, well, equations, use the following.\nfrom sympy.interactive import printing\nprinting.init_printing(use_latex=True)\nfrom IPython.display import display\n\n# Tools for manipulating quaternions.\nimport Q_tools as qt;\n\nfrom IPython.core.display import display, HTML\ndisplay(HTML("<style>.container { width:100% !important; }</style>"))')
+get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as np\nimport sympy as sp\nimport matplotlib.pyplot as plt\n\n# To get equations the look like, well, equations, use the following.\nfrom sympy.interactive import printing\nprinting.init_printing(use_latex=True)\nfrom IPython.display import display\n\n# Tools for manipulating quaternions.\nimport Q_tools as qt;\n\nfrom IPython.core.display import display, HTML, Math, Latex\ndisplay(HTML("<style>.container { width:100% !important; }</style>"))')
 
 
 # ![](images/lecture_2/lecture_2_p_35_1.50.jpg)
@@ -21,7 +21,7 @@ get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as
 
 # ![](images/lecture_2/lecture_2_p_36_1.50.jpg)
 
-# I am in the second class. My montra is that quantum mechanics as done today is formally exactly right, but it is not right enough. Most of the progress that needs to be done is in phase spaces that are not even written down. Instead of just the one Schrödinger equation, there are three mixed derivative differentail equations that I can write down but do not understand how to use productively. That is for another Lecture. A new proposal I have for how gravity works, quaternion gravity, is based on terms that are not in the canonical lexicon of physics. That example however is not quantum mechanical other that to say if true, the graviton as a material expression of a gravity field does not exist. Instead, like special relativity sets some precise rules about what equations can be used to describe Nature, gravity imposes a different set of rules on equations. I know these are huge claims not back up by supporting evidence here. Bottom line: things are great, and they can become greater, but it will require a crazy amount of work.
+# I am in the second class. My montra is that quantum mechanics as done today is formally exactly right, but it is not right enough. Most of the progress that needs to be done is in phase spaces that are not even written down. Instead of just the one Schrödinger equation, there are three mixed derivative differential equations that I can write down but do not understand how to use productively. That is for another Lecture. A new proposal I have for how gravity works, quaternion gravity, is based on terms that are not in the canonical lexicon of physics. That example however is not quantum mechanical other that to say if true, the graviton as a material expression of a gravity field does not exist. Instead, special relativity sets some precise rules about what equations can be used to describe Nature. Gravity imposes a different set of rules on all equations. I know these are huge claims not back up by supporting evidence here. Bottom line: things are great, and they can become greater, but it will require a crazy amount of work, hence these notebooks.
 
 # ![](images/lecture_2/lecture_2_p_38_1.50.jpg)
 
@@ -149,7 +149,7 @@ L.print_states("L")
 
 # One thing to notices is how complicated the qtype became. For the up and down states, it was either zero or one.  Why is there a sum of four terms? Notices that three of the four terms are zeros. To multiply a quaternion series with two state dimensions by the one over the square root of two takes a diagonal quaternion series with four state dimensions. That requirement is effectively recorded in the qtype.
 # 
-# Isn't there something wrong with the sum of $|L>$ being equal to zero? What really matters is squaring things, so this zero is not going to create any issues.
+# Isn't there something wrong with the sum of $|L>$ being equal to zero? What really matters is taking the norm things, $<L|L>=1$, so the zero ket is not going to create any issues.
 
 # ![](images/lecture_2/lecture_2_p_41_2.50.jpg)
 
@@ -165,6 +165,20 @@ L.Euclidean_product('bra', ket=L).print_states("<L|L>", True)
 r.Euclidean_product('bra', ket=L).print_states("<r|L>")
 
 
+# Just for fun, calculate the probability amplitudes $<A|r>$ and $<A|L>$ to see how this basis mixes around the information in $A$ without destroying it.
+
+# In[10]:
+
+
+Ar = A.Euclidean_product("bra", ket=r)
+Ar.print_states("<A|r>", 1)
+
+AL = A.Euclidean_product("bra", ket=L)
+AL.print_states("<A|L>", 1)
+
+
+# In the up and down representation of quaternion states, one row was all zeroes, nice and simple. Now every seat in the hockey arena is filled. The first element in both series are the same. The second terms all differ by a sign although the magnitudes are the same.
+
 # ![](images/lecture_2/lecture_2_p_42_3.50.jpg)
 
 # ![](images/lecture_2/lecture_2_p_43_1.50.jpg)
@@ -177,7 +191,7 @@ r.Euclidean_product('bra', ket=L).print_states("<r|L>")
 
 # This is not so bad. Let's build this, then see of all the conditions "just work".
 
-# In[10]:
+# In[11]:
 
 
 one_root_two = sp.sqrt(1/2)
@@ -193,7 +207,7 @@ o.print_states("o", 1)
 
 # First check the normal and orthogonal properties.
 
-# In[11]:
+# In[12]:
 
 
 i.Euclidean_product('bra', ket=i).print_states("<i|i>", 1)
@@ -203,8 +217,10 @@ i.Euclidean_product('bra', ket=o).print_states("<i|o>")
 
 # Great, these two are orthonormal quaternion series. Now to see how they relate to the other orthonomal series.
 
-# In[12]:
+# In[13]:
 
+
+print("Equation 2.8\n")
 
 ou = o.Euclidean_product('bra', ket=u)
 uo = u.Euclidean_product('bra', ket=o)
@@ -226,8 +242,10 @@ iddi.print_states("<i|d><d|i>")
 
 # Notice how both a Euclidean product and product are used in the calculation. The amplitudes as quaternion series can be multiplied together to get the correct final result. When I first did this calculation, one of the four was 0.3535, not 0.5. There was a typo in expression. Once correct, four down four to go.
 
-# In[13]:
+# In[14]:
 
+
+print("Equation 2.9\n")
 
 Or = o.Euclidean_product('bra', ket=r)
 ro = r.Euclidean_product('bra', ket=o)
@@ -249,15 +267,15 @@ iLLi.print_states("<i|L><L|i>")
 
 # ![](images/lecture_2/lecture_2_p_44_2.50.jpg)
 
-# Some could view this project as "somewhat tedious". There are so many details that have to be done exactly right to back up a claim that quaternion series can do everything that is right in quantum mechanics, before stepping out onto new ice to say here is something more we can do right. As an example, it took me a few hours to get the normalization done correctly. For a quaternion - not a quaternion series - I had a function to normalize it. For a quaternion series, I just called that function for each quaternion in the series. That produced an incorrect value for the quaternion series. I needed to normalize for the square root of the number of state dimensions. Once that detail was added, I got the right result for quaternion series.
+# Some could view this very project as "somewhat tedious". There are so many details that have to be done exactly right to back up a claim that quaternion series can do everything that is right in quantum mechanics, before stepping out onto new ice to say here is something more we can do right. As an example, it took me a few hours to get the normalization done correctly. For a quaternion - not a quaternion series - I had a function to normalize it. For a quaternion series, I just called that function for each quaternion in the series. That produced an incorrect value for the quaternion series. In addition, I needed to normalize for the square root of the number of state dimensions. Once that detail was added, I got the right result for quaternion series.
 # 
-# Off in my basement theoretical physics isolation chamber, I think Newtonian space-time physics should be done with quaternions. Search for "quaternion baseball" on YouTube if interested in the subject.
+# Off in my basement theoretical physics isolation chamber, I think Newtonian space-time physics should be done with quaternions. Newton himself could not have done classical physics using complex numbers or quaternions since they had not yet been invented. Search for "quaternion baseball" on YouTube if interested in the subject.
 
 # ![](images/lecture_2/lecture_2_p_45_1.50.jpg)
 
 # Time to get abstract, the wheelhouse of algebra. First define the symbols needed for the four unknown components.
 
-# In[14]:
+# In[15]:
 
 
 αt, αx, αy, αz = sp.symbols("αt αx αy αz")
@@ -284,7 +302,7 @@ iLLi.print_states("<i|L><L|i>")
 
 # Define the kets $|i>$ and $|o>$.
 
-# In[15]:
+# In[16]:
 
 
 iαβ = u.product("bra", operator=αs).add(d.product("ket", operator=βs))
@@ -296,7 +314,7 @@ oγδ.print_states("oγδ")
 
 # Notice we can extract the component alpha from $|i>$ by multiplying it by the bra $<u|$ because that bra is orthonormal to $<d|$. Beta, gamma, and delta components can be extracted the same way.
 
-# In[24]:
+# In[17]:
 
 
 alpha = u.Euclidean_product("bra", ket=iαβ)
@@ -314,72 +332,136 @@ delta.print_states("delta")
 
 # With the four components precisely defined, we can start forming the products asked for in Exercise 2.3: a):
 
-# In[26]:
+# In[18]:
 
 
 print("Exercise 2.3: a)\n")
 
-aa = alpha.Euclidean_product("bra", ket=alpha)
-aa.print_states("α* α", 1)
-
-bb = beta.Euclidean_product("bra", ket=beta)
-bb.print_states("β* β", 1)
-
-gg = gamma.Euclidean_product("bra", ket=gamma)
-gg.print_states("γ* γ", 1)
-
-dd = delta.Euclidean_product("bra", ket=delta)
-dd.print_states("δ* δ")
-
-
-# In the current state, my software deals better with actual numbers than with algebra. If I normalize the $|iαβ>$, I get "NAN". I am not able to normalize this the proper way, which would have two additional factors: a square root of two for the states, and the squared norm of $|iαβ>$. If the reader imagines putting those two in, then the result is 1/2 as it should be.
-
-# By visual inspection, the alpha component is orthogonal to beta, as well as gamma being orthogonal to delta.
-
-# In[27]:
-
-
-print("Exercise 2.3: b)")
-
-ab = alpha.Euclidean_product("bra", ket=beta)
-ab.print_states("α* β", 1)
-
-gd = gamma.Euclidean_product("bra", ket=delta)
-gd.print_states("γ* δ")
-
-
-# Oops...
-
-# In[31]:
-
+print("equation 2.8.1: <i|u><u|i> = 1/2 =? α* α")
 
 iu = iαβ.Euclidean_product("bra", ket=u)
 ui = u.Euclidean_product("bra", ket=iαβ)
 iuui = iu.product("bra", ket=ui)
 iuui.print_states("<i|u><u|i>", 1)
 
+
+print("equation 2.8.2: <i|d><d|i> = 1/2 =? β* β")
+
 id = iαβ.Euclidean_product("bra", ket=d)
 di = d.Euclidean_product("bra", ket=iαβ)
 iddi = id.product("bra", ket=di)
 iddi.print_states("<i|d><d|i>", 1)
+
+
+print("equation 2.8.3: <o|u><u|o> = 1/2 =? γ* γ")
 
 ou = oγδ.Euclidean_product("bra", ket=u)
 uo = u.Euclidean_product("bra", ket=oγδ)
 ouuo = ou.product("bra", ket=uo)
 ouuo.print_states("<o|u><u|o>", 1)
 
-od = oγδ.Euclidean_product("bra", ket=u)
+
+print("equation 2.8.4: <o|d><d|o> = 1/2 =? δ* δ")
+
+od = oγδ.Euclidean_product("bra", ket=d)
 do = d.Euclidean_product("bra", ket=oγδ)
 oddo = od.product("bra", ket=do)
 oddo.print_states("<o|d><d|o>")
 
 
-# In[32]:
+# These products are all real numbers composed of each of the four components.
+
+# In[19]:
 
 
-iudi = iu.Euclidean_product("bra", ket=di)
-idui = id.Euclidean_product("bra", ket=ui)
+print("Exercise 2.3: b)\n")
 
-iudi.print_states("<i|u><d|i>", 1)
-idui.print_states("<i|d><u|i>")
+print("equation 2.9.1: <o|r><r|o> = 1/2 =?")
 
+OR = oγδ.Euclidean_product("bra", ket=r)
+ro = r.Euclidean_product("bra", ket=oγδ)
+orro = OR.product("bra", ket=ro)
+orro.print_states("<o|r><r|o>", 1)
+
+
+print("equation 2.9.2: <o|L><L|o> = 1/2 =?")
+
+oL = oγδ.Euclidean_product("bra", ket=L)
+Lo = L.Euclidean_product("bra", ket=oγδ)
+oLLo = oL.product("bra", ket=Lo)
+oLLo.print_states("<o|L><L|o>", 1)
+
+
+print("equation 2.9.3: <i|r><r|i> = 1/2 =?")
+
+ir = iαβ.Euclidean_product("bra", ket=r)
+ri = r.Euclidean_product("bra", ket=iαβ)
+irri = ir.product("bra", ket=ri)
+irri.print_states("<i|r><r|i>", 1)
+
+
+print("equation 2.9.4: <i|L><L|i> = 1/2 =?")
+
+iL = iαβ.Euclidean_product("bra", ket=L)
+Li = L.Euclidean_product("bra", ket=iαβ)
+iLLi = iL.product("bra", ket=Li)
+iLLi.print_states("<i|L><L|i>")
+
+
+# The first two have the sum of $\gamma^* \gamma$ and $\delta^* \delta$. The last two are $\alpha^* \alpha$ and $\beta^* \beta$. Those values were figured out in part a). A half of a half plus a half is equal to a half.
+
+# Each of the 4 kets, $|i>$, $|o>$, $|r>$, and $|L>$ are expressed in terms of the orthonormal basis vectors $|u>$ and $|d>$. The products look like this:
+
+# In[20]:
+
+
+display(Math(r"""\begin{align}
+<o|r><r|o> &= \frac{1}{2}(<u|γ* + <d|δ∗)(|u> + |d>)(<u| + <d|)(γ|u> + δ|d>) \\
+&= \frac{1}{2}(γ^* + δ^∗)(γ + δ) \\
+&= \frac{1}{2}(γ^* γ + δ^∗ δ + γ^* δ + δ^* γ) \\
+&= \frac{1}{2}(1 + δ^∗ γ + γ^* δ ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= δ^∗ γ + γ^* δ
+\end{align}"""))
+
+
+# In[21]:
+
+
+display(Math(r"""\begin{align}
+<o|L><L|o> &= \frac{1}{2}(<u|γ* + <d|δ∗)(|u> - |d>)(<u| - <d|)(γ|u> + δ|d>) \\
+&= \frac{1}{2}(γ^* - δ^∗)(γ - δ) \\
+&= \frac{1}{2}(γ^* γ + δ^∗ δ - γ^* δ - δ^* γ) \\
+&= \frac{1}{2}(1 - δ^∗ γ - γ^* δ ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= δ^∗ γ + γ^* δ
+\end{align}"""))
+
+
+# In[22]:
+
+
+display(Math(r"""\begin{align}
+<i|r><r|i> &= \frac{1}{2}(<u|α^* + <d|β^∗)(|u> + |d>)(<u| + <d|)(α|u> + β|d>) \\
+&= \frac{1}{2}(α^* + β^∗)(α + β) \\
+&= \frac{1}{2}(α^* α + β^∗ β + α^* β + β^* α) \\
+&= \frac{1}{2}(1 + β^∗ α + α^* β ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= β^∗ α + α^* β
+\end{align}"""))
+
+
+# In[23]:
+
+
+display(Math(r"""\begin{align}
+<i|L><L|i> &= \frac{1}{2}(<u|α^* + <d|β^∗)(|u> - |d>)(<u| - <d|)(α|u> + β|d>) \\
+&= \frac{1}{2}(α^* - β^∗)(α - β) \\
+&= \frac{1}{2}(α^* α + β^∗ β - α^* β - β^* α) \\
+&= \frac{1}{2}(1 - β^∗ α - α^* β ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= β^∗ α + α^* β
+\end{align}"""))
+
+
+# Exercise 2.3: c). For any complex number $z$, $z = - z^*$ if and only if $z$ is a purely imaginary number. The conjugate operator flips the sign of the imaginary number, but not the real number. Ergo the real number must be equal to zero. $\alpha^* \beta + \alpha \beta^* = 0$, or $\alpha^* \beta = -\alpha \beta^*$. Based on this observation, we know the imaginary numbers $\alpha^* \beta$ and $\gamma^* \delta$ are pure imaginary numbers. 
+
+# ## Conclusion
+# 
+# So far so good. I also don't thing there is anything new here. Of course, I had to get ever detail right for the quaternion states or the project would have derailed. 
