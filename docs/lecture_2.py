@@ -416,47 +416,47 @@ iLLi.print_states("<i|L><L|i>")
 
 
 display(Math(r"""\begin{align}
-<o|r><r|o> &= \frac{1}{2}(<u|γ* + <d|δ∗)(|u> + |d>)(<u| + <d|)(γ|u> + δ|d>) \\
-&= \frac{1}{2}(γ^* + δ^∗)(γ + δ) \\
-&= \frac{1}{2}(γ^* γ + δ^∗ δ + γ^* δ + δ^* γ) \\
-&= \frac{1}{2}(1 + δ^∗ γ + γ^* δ ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= δ^∗ γ + γ^* δ
+<o|r><r|o> &= \frac{1}{2}(<u|\gamma* + <d|\delta^∗)(|u> + |d>)(<u| + <d|)(\gamma|u> + \delta|d>) \\
+&= \frac{1}{2}(\gamma^* + \delta^∗)(\gamma + \delta) \\
+&= \frac{1}{2}(\gamma^* \gamma + \delta^∗ \delta + \gamma^* \delta + \delta^* \gamma) \\
+&= \frac{1}{2}(1 + \delta^∗ \gamma + \gamma^* \delta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \delta^∗ \gamma + \gamma^* \delta
 \end{align}"""))
 
 
-# In[21]:
+# In[24]:
 
 
 display(Math(r"""\begin{align}
-<o|L><L|o> &= \frac{1}{2}(<u|γ* + <d|δ∗)(|u> - |d>)(<u| - <d|)(γ|u> + δ|d>) \\
-&= \frac{1}{2}(γ^* - δ^∗)(γ - δ) \\
-&= \frac{1}{2}(γ^* γ + δ^∗ δ - γ^* δ - δ^* γ) \\
-&= \frac{1}{2}(1 - δ^∗ γ - γ^* δ ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= δ^∗ γ + γ^* δ
+<o|L><L|o> &= \frac{1}{2}(<u|\gamma^* + <d|\delta^∗)(|u> - |d>)(<u| - <d|)(\gamma|u> + \delta|d>) \\
+&= \frac{1}{2}(\gamma^* - \delta^∗)(\gamma - \delta) \\
+&= \frac{1}{2}(\gamma^* \gamma + \delta^∗ \delta - \gamma^* \delta - \delta^* \gamma) \\
+&= \frac{1}{2}(1 - \delta^∗ \gamma - \gamma^* \delta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \delta^∗ \gamma + \gamma^* \delta
 \end{align}"""))
 
 
-# In[22]:
+# In[25]:
 
 
 display(Math(r"""\begin{align}
-<i|r><r|i> &= \frac{1}{2}(<u|α^* + <d|β^∗)(|u> + |d>)(<u| + <d|)(α|u> + β|d>) \\
-&= \frac{1}{2}(α^* + β^∗)(α + β) \\
-&= \frac{1}{2}(α^* α + β^∗ β + α^* β + β^* α) \\
-&= \frac{1}{2}(1 + β^∗ α + α^* β ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= β^∗ α + α^* β
+<i|r><r|i> &= \frac{1}{2}(<u|\alpha^* + <d|\beta^∗)(|u> + |d>)(<u| + <d|)(\alpha|u> + \beta|d>) \\
+&= \frac{1}{2}(\alpha^* + \beta^∗)(\alpha + \beta) \\
+&= \frac{1}{2}(\alpha^* \alpha + \beta^∗ \beta + \alpha^* \beta + \beta^* \alpha) \\
+&= \frac{1}{2}(1 + \beta^∗ \alpha + \alpha^* \beta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \beta^∗ \alpha + \alpha^* \beta
 \end{align}"""))
 
 
-# In[23]:
+# In[26]:
 
 
 display(Math(r"""\begin{align}
-<i|L><L|i> &= \frac{1}{2}(<u|α^* + <d|β^∗)(|u> - |d>)(<u| - <d|)(α|u> + β|d>) \\
-&= \frac{1}{2}(α^* - β^∗)(α - β) \\
-&= \frac{1}{2}(α^* α + β^∗ β - α^* β - β^* α) \\
-&= \frac{1}{2}(1 - β^∗ α - α^* β ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= β^∗ α + α^* β
+<i|L><L|i> &= \frac{1}{2}(<u|\alpha^* + <d|\beta^∗)(|u> - |d>)(<u| - <d|)(\alpha|u> + \beta|d>) \\
+&= \frac{1}{2}(\alpha^* - \beta^∗)(\alpha - \beta) \\
+&= \frac{1}{2}(\alpha^* \alpha + \beta^∗ \beta - \alpha^* \beta - \beta^* \alpha) \\
+&= \frac{1}{2}(1 - \beta^∗ \alpha - \alpha^* \beta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \beta^∗ \alpha + \alpha^* \beta
 \end{align}"""))
 
 

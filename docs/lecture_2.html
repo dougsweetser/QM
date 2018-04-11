@@ -13252,11 +13252,11 @@ sum= (0.5*αt**2 + 0.5*αx**2 + 0.5*αy**2 + 0.5*αz**2 + 0.5*βt**2 + 0.5*βx**
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;\begin</span><span class="si">{align}</span><span class="s2"></span>
-<span class="s2">&lt;o|r&gt;&lt;r|o&gt; &amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(&lt;u|γ* + &lt;d|δ∗)(|u&gt; + |d&gt;)(&lt;u| + &lt;d|)(γ|u&gt; + δ|d&gt;) \\</span>
-<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(γ^* + δ^∗)(γ + δ) \\</span>
-<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(γ^* γ + δ^∗ δ + γ^* δ + δ^* γ) \\</span>
-<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(1 + δ^∗ γ + γ^* δ ) = \frac</span><span class="si">{1}{2}</span><span class="s2">\\</span>
-<span class="s2">\rm</span><span class="si">{ergo}</span><span class="s2">\quad 0 &amp;= δ^∗ γ + γ^* δ</span>
+<span class="s2">&lt;o|r&gt;&lt;r|o&gt; &amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(&lt;u|\gamma* + &lt;d|\delta^∗)(|u&gt; + |d&gt;)(&lt;u| + &lt;d|)(\gamma|u&gt; + \delta|d&gt;) \\</span>
+<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(\gamma^* + \delta^∗)(\gamma + \delta) \\</span>
+<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(\gamma^* \gamma + \delta^∗ \delta + \gamma^* \delta + \delta^* \gamma) \\</span>
+<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(1 + \delta^∗ \gamma + \gamma^* \delta ) = \frac</span><span class="si">{1}{2}</span><span class="s2">\\</span>
+<span class="s2">\rm</span><span class="si">{ergo}</span><span class="s2">\quad 0 &amp;= \delta^∗ \gamma + \gamma^* \delta</span>
 <span class="s2">\end</span><span class="si">{align}</span><span class="s2">&quot;&quot;&quot;</span><span class="p">))</span>
 </pre></div>
 
@@ -13277,11 +13277,11 @@ sum= (0.5*αt**2 + 0.5*αx**2 + 0.5*αy**2 + 0.5*αz**2 + 0.5*βt**2 + 0.5*βx**
 
 <div class="output_latex output_subarea ">
 $$\begin{align}
-<o|r><r|o> &= \frac{1}{2}(<u|γ* + <d|δ∗)(|u> + |d>)(<u| + <d|)(γ|u> + δ|d>) \\
-&= \frac{1}{2}(γ^* + δ^∗)(γ + δ) \\
-&= \frac{1}{2}(γ^* γ + δ^∗ δ + γ^* δ + δ^* γ) \\
-&= \frac{1}{2}(1 + δ^∗ γ + γ^* δ ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= δ^∗ γ + γ^* δ
+<o|r><r|o> &= \frac{1}{2}(<u|\gamma* + <d|\delta^∗)(|u> + |d>)(<u| + <d|)(\gamma|u> + \delta|d>) \\
+&= \frac{1}{2}(\gamma^* + \delta^∗)(\gamma + \delta) \\
+&= \frac{1}{2}(\gamma^* \gamma + \delta^∗ \delta + \gamma^* \delta + \delta^* \gamma) \\
+&= \frac{1}{2}(1 + \delta^∗ \gamma + \gamma^* \delta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \delta^∗ \gamma + \gamma^* \delta
 \end{align}$$
 </div>
 
@@ -13293,15 +13293,15 @@ $$\begin{align}
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;\begin</span><span class="si">{align}</span><span class="s2"></span>
-<span class="s2">&lt;o|L&gt;&lt;L|o&gt; &amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(&lt;u|γ* + &lt;d|δ∗)(|u&gt; - |d&gt;)(&lt;u| - &lt;d|)(γ|u&gt; + δ|d&gt;) \\</span>
-<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(γ^* - δ^∗)(γ - δ) \\</span>
-<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(γ^* γ + δ^∗ δ - γ^* δ - δ^* γ) \\</span>
-<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(1 - δ^∗ γ - γ^* δ ) = \frac</span><span class="si">{1}{2}</span><span class="s2">\\</span>
-<span class="s2">\rm</span><span class="si">{ergo}</span><span class="s2">\quad 0 &amp;= δ^∗ γ + γ^* δ</span>
+<span class="s2">&lt;o|L&gt;&lt;L|o&gt; &amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(&lt;u|\gamma^* + &lt;d|\delta^∗)(|u&gt; - |d&gt;)(&lt;u| - &lt;d|)(\gamma|u&gt; + \delta|d&gt;) \\</span>
+<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(\gamma^* - \delta^∗)(\gamma - \delta) \\</span>
+<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(\gamma^* \gamma + \delta^∗ \delta - \gamma^* \delta - \delta^* \gamma) \\</span>
+<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(1 - \delta^∗ \gamma - \gamma^* \delta ) = \frac</span><span class="si">{1}{2}</span><span class="s2">\\</span>
+<span class="s2">\rm</span><span class="si">{ergo}</span><span class="s2">\quad 0 &amp;= \delta^∗ \gamma + \gamma^* \delta</span>
 <span class="s2">\end</span><span class="si">{align}</span><span class="s2">&quot;&quot;&quot;</span><span class="p">))</span>
 </pre></div>
 
@@ -13322,11 +13322,11 @@ $$\begin{align}
 
 <div class="output_latex output_subarea ">
 $$\begin{align}
-<o|L><L|o> &= \frac{1}{2}(<u|γ* + <d|δ∗)(|u> - |d>)(<u| - <d|)(γ|u> + δ|d>) \\
-&= \frac{1}{2}(γ^* - δ^∗)(γ - δ) \\
-&= \frac{1}{2}(γ^* γ + δ^∗ δ - γ^* δ - δ^* γ) \\
-&= \frac{1}{2}(1 - δ^∗ γ - γ^* δ ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= δ^∗ γ + γ^* δ
+<o|L><L|o> &= \frac{1}{2}(<u|\gamma^* + <d|\delta^∗)(|u> - |d>)(<u| - <d|)(\gamma|u> + \delta|d>) \\
+&= \frac{1}{2}(\gamma^* - \delta^∗)(\gamma - \delta) \\
+&= \frac{1}{2}(\gamma^* \gamma + \delta^∗ \delta - \gamma^* \delta - \delta^* \gamma) \\
+&= \frac{1}{2}(1 - \delta^∗ \gamma - \gamma^* \delta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \delta^∗ \gamma + \gamma^* \delta
 \end{align}$$
 </div>
 
@@ -13338,15 +13338,15 @@ $$\begin{align}
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;\begin</span><span class="si">{align}</span><span class="s2"></span>
-<span class="s2">&lt;i|r&gt;&lt;r|i&gt; &amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(&lt;u|α^* + &lt;d|β^∗)(|u&gt; + |d&gt;)(&lt;u| + &lt;d|)(α|u&gt; + β|d&gt;) \\</span>
-<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(α^* + β^∗)(α + β) \\</span>
-<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(α^* α + β^∗ β + α^* β + β^* α) \\</span>
-<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(1 + β^∗ α + α^* β ) = \frac</span><span class="si">{1}{2}</span><span class="s2">\\</span>
-<span class="s2">\rm</span><span class="si">{ergo}</span><span class="s2">\quad 0 &amp;= β^∗ α + α^* β</span>
+<span class="s2">&lt;i|r&gt;&lt;r|i&gt; &amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(&lt;u|\alpha^* + &lt;d|\beta^∗)(|u&gt; + |d&gt;)(&lt;u| + &lt;d|)(\alpha|u&gt; + \beta|d&gt;) \\</span>
+<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(\alpha^* + \beta^∗)(\alpha + \beta) \\</span>
+<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(\alpha^* \alpha + \beta^∗ \beta + \alpha^* \beta + \beta^* \alpha) \\</span>
+<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(1 + \beta^∗ \alpha + \alpha^* \beta ) = \frac</span><span class="si">{1}{2}</span><span class="s2">\\</span>
+<span class="s2">\rm</span><span class="si">{ergo}</span><span class="s2">\quad 0 &amp;= \beta^∗ \alpha + \alpha^* \beta</span>
 <span class="s2">\end</span><span class="si">{align}</span><span class="s2">&quot;&quot;&quot;</span><span class="p">))</span>
 </pre></div>
 
@@ -13367,11 +13367,11 @@ $$\begin{align}
 
 <div class="output_latex output_subarea ">
 $$\begin{align}
-<i|r><r|i> &= \frac{1}{2}(<u|α^* + <d|β^∗)(|u> + |d>)(<u| + <d|)(α|u> + β|d>) \\
-&= \frac{1}{2}(α^* + β^∗)(α + β) \\
-&= \frac{1}{2}(α^* α + β^∗ β + α^* β + β^* α) \\
-&= \frac{1}{2}(1 + β^∗ α + α^* β ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= β^∗ α + α^* β
+<i|r><r|i> &= \frac{1}{2}(<u|\alpha^* + <d|\beta^∗)(|u> + |d>)(<u| + <d|)(\alpha|u> + \beta|d>) \\
+&= \frac{1}{2}(\alpha^* + \beta^∗)(\alpha + \beta) \\
+&= \frac{1}{2}(\alpha^* \alpha + \beta^∗ \beta + \alpha^* \beta + \beta^* \alpha) \\
+&= \frac{1}{2}(1 + \beta^∗ \alpha + \alpha^* \beta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \beta^∗ \alpha + \alpha^* \beta
 \end{align}$$
 </div>
 
@@ -13383,15 +13383,15 @@ $$\begin{align}
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;\begin</span><span class="si">{align}</span><span class="s2"></span>
-<span class="s2">&lt;i|L&gt;&lt;L|i&gt; &amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(&lt;u|α^* + &lt;d|β^∗)(|u&gt; - |d&gt;)(&lt;u| - &lt;d|)(α|u&gt; + β|d&gt;) \\</span>
-<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(α^* - β^∗)(α - β) \\</span>
-<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(α^* α + β^∗ β - α^* β - β^* α) \\</span>
-<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(1 - β^∗ α - α^* β ) = \frac</span><span class="si">{1}{2}</span><span class="s2">\\</span>
-<span class="s2">\rm</span><span class="si">{ergo}</span><span class="s2">\quad 0 &amp;= β^∗ α + α^* β</span>
+<span class="s2">&lt;i|L&gt;&lt;L|i&gt; &amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(&lt;u|\alpha^* + &lt;d|\beta^∗)(|u&gt; - |d&gt;)(&lt;u| - &lt;d|)(\alpha|u&gt; + \beta|d&gt;) \\</span>
+<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(\alpha^* - \beta^∗)(\alpha - \beta) \\</span>
+<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(\alpha^* \alpha + \beta^∗ \beta - \alpha^* \beta - \beta^* \alpha) \\</span>
+<span class="s2">&amp;= \frac</span><span class="si">{1}{2}</span><span class="s2">(1 - \beta^∗ \alpha - \alpha^* \beta ) = \frac</span><span class="si">{1}{2}</span><span class="s2">\\</span>
+<span class="s2">\rm</span><span class="si">{ergo}</span><span class="s2">\quad 0 &amp;= \beta^∗ \alpha + \alpha^* \beta</span>
 <span class="s2">\end</span><span class="si">{align}</span><span class="s2">&quot;&quot;&quot;</span><span class="p">))</span>
 </pre></div>
 
@@ -13412,11 +13412,11 @@ $$\begin{align}
 
 <div class="output_latex output_subarea ">
 $$\begin{align}
-<i|L><L|i> &= \frac{1}{2}(<u|α^* + <d|β^∗)(|u> - |d>)(<u| - <d|)(α|u> + β|d>) \\
-&= \frac{1}{2}(α^* - β^∗)(α - β) \\
-&= \frac{1}{2}(α^* α + β^∗ β - α^* β - β^* α) \\
-&= \frac{1}{2}(1 - β^∗ α - α^* β ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= β^∗ α + α^* β
+<i|L><L|i> &= \frac{1}{2}(<u|\alpha^* + <d|\beta^∗)(|u> - |d>)(<u| - <d|)(\alpha|u> + \beta|d>) \\
+&= \frac{1}{2}(\alpha^* - \beta^∗)(\alpha - \beta) \\
+&= \frac{1}{2}(\alpha^* \alpha + \beta^∗ \beta - \alpha^* \beta - \beta^* \alpha) \\
+&= \frac{1}{2}(1 - \beta^∗ \alpha - \alpha^* \beta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \beta^∗ \alpha + \alpha^* \beta
 \end{align}$$
 </div>
 
