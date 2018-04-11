@@ -412,51 +412,51 @@ iLLi.print_states("<i|L><L|i>")
 
 # Each of the 4 kets, $|i>$, $|o>$, $|r>$, and $|L>$ are expressed in terms of the orthonormal basis vectors $|u>$ and $|d>$. The products look like this:
 
-# In[20]:
+# In[24]:
 
 
 display(Math(r"""\begin{align}
-<o|r><r|o> &= \frac{1}{2}(<u|\gamma^{ * } + <d|\delta ^{ ∗ })(|u> + |d>)(<u| + <d|)(\gamma|u> + \delta|d>) \\
-&= \frac{1}{2}(\gamma^{ * } + \delta ^{ ∗ })(\gamma + \delta) \\
-&= \frac{1}{2}(\gamma^{ * } \gamma + \delta ^{ * } \delta + \gamma^{\*} \delta + \delta ^{ * } \gamma) \\
-&= \frac{1}{2}(1 + \delta ^{ ∗ } \gamma + \gamma^{ * } \delta ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= \delta ^{ ∗ } \gamma + \gamma^{ * } \delta
+<o|r><r|o> &= \frac{1}{2}(<u|\overline{\gamma} + <d|\overline{\delta})(|u> + |d>)(<u| + <d|)(\gamma|u> + \delta|d>) \\
+&= \frac{1}{2}(\overline{\gamma} + \overline{\delta})(\gamma + \delta) \\
+&= \frac{1}{2}(\overline{\gamma} \gamma + \overline{\delta} \delta + \overline{\gamma} \delta + \overline{\delta} \gamma) \\
+&= \frac{1}{2}(1 + \overline{\delta} \gamma + \overline{\gamma} \delta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \overline{\delta} \gamma + \overline{\gamma} \delta
 \end{align}"""))
 
 
-# In[21]:
+# In[25]:
 
 
 display(Math(r"""\begin{align}
-<o|L><L|o> &= \frac{1}{2}(<u|\gamma^{ * } + <d|\delta ^{ ∗ })(|u> - |d>)(<u| - <d|)(\gamma|u> + \delta|d>) \\
-&= \frac{1}{2}(\gamma^{ * } - \delta ^{ ∗ })(\gamma - \delta) \\
-&= \frac{1}{2}(\gamma^{ * } \gamma + \delta ^{∗} \delta - \gamma^{ * } \delta - \delta ^{ * } \gamma) \\
-&= \frac{1}{2}(1 - \delta ^{ ∗ } \gamma - \gamma^{ * } \delta ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= \delta ^{ ∗ } \gamma + \gamma^{ * } \delta
+<o|L><L|o> &= \frac{1}{2}(<u|\overline{\gamma} + <d|\overline{\delta})(|u> - |d>)(<u| - <d|)(\gamma|u> + \delta|d>) \\
+&= \frac{1}{2}(\overline{\gamma} - \overline{\delta})(\gamma - \delta) \\
+&= \frac{1}{2}(\overline{\gamma} \gamma + \overline{\delta} \delta - \overline{\gamma} \delta - \overline{\delta} \gamma) \\
+&= \frac{1}{2}(1 - \overline{\delta} \gamma - \overline{\gamma} \delta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \overline{\delta} \gamma + \overline{\gamma} \delta
 \end{align}"""))
 
 
-# In[22]:
+# In[26]:
 
 
 display(Math(r"""\begin{align}
-<i|r><r|i> &= \frac{1}{2}(<u|\alpha^{ * } + <d|\beta ^{ ∗ })(|u> + |d>)(<u| + <d|)(\alpha|u> + \beta|d>) \\
-&= \frac{1}{2}(\alpha^{ * } + \beta ^{ ∗ })(\alpha + \beta) \\
-&= \frac{1}{2}(\alpha^{ * } \alpha + \beta ^{ ∗ } \beta + \alpha^{ * } \beta + \beta^{*} \alpha) \\
-&= \frac{1}{2}(1 + \beta ^{ ∗ } \alpha + \alpha^{ * } \beta ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= \beta ^{ ∗ } \alpha + \alpha^{ * } \beta
+<i|r><r|i> &= \frac{1}{2}(<u|\overline{\alpha} + <d|\overline{\beta})(|u> + |d>)(<u| + <d|)(\alpha|u> + \beta|d>) \\
+&= \frac{1}{2}(\overline{\alpha} + \overline{\beta})(\alpha + \beta) \\
+&= \frac{1}{2}(\overline{\alpha} \alpha + \overline{\beta} \beta + \overline{\alpha} \beta + \overline{\beta} \alpha) \\
+&= \frac{1}{2}(1 + \overline{\beta} \alpha + \overline{\alpha} \beta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \overline{\beta} \alpha + \overline{\alpha} \beta
 \end{align}"""))
 
 
-# In[23]:
+# In[27]:
 
 
 display(Math(r"""\begin{align}
-<i|L><L|i> &= \frac{1}{2}(<u|\alpha ^{ * } + <d|\beta ^{ ∗ })(|u> - |d>)(<u| - <d|)(\alpha|u> + \beta|d>) \\
-&= \frac{1}{2}(\alpha ^{ * } - \beta ^{ ∗ })(\alpha - \beta) \\
-&= \frac{1}{2}(\alpha^{ * } \alpha + \beta ^{ ∗ } \beta - \alpha^{ * } \beta - \beta ^{ * } \alpha) \\
-&= \frac{1}{2}(1 - \beta ^{ ∗ } \alpha - \alpha^{ * } \beta ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= \beta ^{ ∗ } \alpha + \alpha^{ * } \beta
+<i|L><L|i> &= \frac{1}{2}(<u|\overline{\alpha} + <d|\overline{\beta})(|u> - |d>)(<u| - <d|)(\alpha|u> + \beta|d>) \\
+&= \frac{1}{2}(\overline{\alpha} - \overline{\beta})(\alpha - \beta) \\
+&= \frac{1}{2}(\overline{\alpha} \alpha + \overline{\beta} \beta - \overline{\alpha} \beta - \overline{\beta} \alpha) \\
+&= \frac{1}{2}(1 - \overline{\beta} \alpha - \overline{\alpha} \beta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \overline{\beta} \alpha + \overline{\alpha} \beta
 \end{align}"""))
 
 
