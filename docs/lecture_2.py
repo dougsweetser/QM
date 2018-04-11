@@ -412,51 +412,51 @@ iLLi.print_states("<i|L><L|i>")
 
 # Each of the 4 kets, $|i>$, $|o>$, $|r>$, and $|L>$ are expressed in terms of the orthonormal basis vectors $|u>$ and $|d>$. The products look like this:
 
-# In[26]:
+# In[20]:
 
 
 display(Math(r"""\begin{align}
-<o|r><r|o> &= \frac{1}{2}(<u|\gamma^{*} + <d|\delta^{∗})(|u> + |d>)(<u| + <d|)(\gamma|u> + \delta|d>) \\
-&= \frac{1}{2}(\gamma^{*} + \delta^{∗})(\gamma + \delta) \\
-&= \frac{1}{2}(\gamma^{*} \gamma + \delta^∗ \delta + \gamma^{*} \delta + \delta^{*} \gamma) \\
-&= \frac{1}{2}(1 + \delta^{∗} \gamma + \gamma^{*} \delta ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= \delta^{∗} \gamma + \gamma^{*} \delta
+<o|r><r|o> &= \frac{1}{2}(<u|\gamma^{ * } + <d|\delta ^{ ∗ })(|u> + |d>)(<u| + <d|)(\gamma|u> + \delta|d>) \\
+&= \frac{1}{2}(\gamma^{ * } + \delta ^{ ∗ })(\gamma + \delta) \\
+&= \frac{1}{2}(\gamma^{ * } \gamma + \delta ^{ * } \delta + \gamma^{\*} \delta + \delta ^{ * } \gamma) \\
+&= \frac{1}{2}(1 + \delta ^{ ∗ } \gamma + \gamma^{ * } \delta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \delta ^{ ∗ } \gamma + \gamma^{ * } \delta
 \end{align}"""))
 
 
-# In[27]:
+# In[21]:
 
 
 display(Math(r"""\begin{align}
-<o|L><L|o> &= \frac{1}{2}(<u|\gamma^{*} + <d|\delta^{∗})(|u> - |d>)(<u| - <d|)(\gamma|u> + \delta|d>) \\
-&= \frac{1}{2}(\gamma^{*} - \delta^{∗})(\gamma - \delta) \\
-&= \frac{1}{2}(\gamma^{*} \gamma + \delta^{∗} \delta - \gamma^{*} \delta - \delta^{*} \gamma) \\
-&= \frac{1}{2}(1 - \delta^{∗} \gamma - \gamma^{*} \delta ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= \delta^{∗} \gamma + \gamma^{*} \delta
+<o|L><L|o> &= \frac{1}{2}(<u|\gamma^{ * } + <d|\delta ^{ ∗ })(|u> - |d>)(<u| - <d|)(\gamma|u> + \delta|d>) \\
+&= \frac{1}{2}(\gamma^{ * } - \delta ^{ ∗ })(\gamma - \delta) \\
+&= \frac{1}{2}(\gamma^{ * } \gamma + \delta ^{∗} \delta - \gamma^{ * } \delta - \delta ^{ * } \gamma) \\
+&= \frac{1}{2}(1 - \delta ^{ ∗ } \gamma - \gamma^{ * } \delta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \delta ^{ ∗ } \gamma + \gamma^{ * } \delta
 \end{align}"""))
 
 
-# In[28]:
+# In[22]:
 
 
 display(Math(r"""\begin{align}
-<i|r><r|i> &= \frac{1}{2}(<u|\alpha^{*} + <d|\beta^{∗})(|u> + |d>)(<u| + <d|)(\alpha|u> + \beta|d>) \\
-&= \frac{1}{2}(\alpha^{*} + \beta^{∗})(\alpha + \beta) \\
-&= \frac{1}{2}(\alpha^{*} \alpha + \beta^{∗} \beta + \alpha^{*} \beta + \beta^{*} \alpha) \\
-&= \frac{1}{2}(1 + \beta^{∗} \alpha + \alpha^{*} \beta ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= \beta^{∗} \alpha + \alpha^{*} \beta
+<i|r><r|i> &= \frac{1}{2}(<u|\alpha^{ * } + <d|\beta ^{ ∗ })(|u> + |d>)(<u| + <d|)(\alpha|u> + \beta|d>) \\
+&= \frac{1}{2}(\alpha^{ * } + \beta ^{ ∗ })(\alpha + \beta) \\
+&= \frac{1}{2}(\alpha^{ * } \alpha + \beta ^{ ∗ } \beta + \alpha^{ * } \beta + \beta^{*} \alpha) \\
+&= \frac{1}{2}(1 + \beta ^{ ∗ } \alpha + \alpha^{ * } \beta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \beta ^{ ∗ } \alpha + \alpha^{ * } \beta
 \end{align}"""))
 
 
-# In[29]:
+# In[23]:
 
 
 display(Math(r"""\begin{align}
-<i|L><L|i> &= \frac{1}{2}(<u|\alpha^{*} + <d|\beta^{∗})(|u> - |d>)(<u| - <d|)(\alpha|u> + \beta|d>) \\
-&= \frac{1}{2}(\alpha^{*} - \beta^{∗})(\alpha - \beta) \\
-&= \frac{1}{2}(\alpha^{*} \alpha + \beta^{∗} \beta - \alpha^{*} \beta - \beta^{*} \alpha) \\
-&= \frac{1}{2}(1 - \beta^{∗} \alpha - \alpha^{*} \beta ) = \frac{1}{2}\\
-\rm{ergo}\quad 0 &= \beta^{∗} \alpha + \alpha^{*} \beta
+<i|L><L|i> &= \frac{1}{2}(<u|\alpha ^{ * } + <d|\beta ^{ ∗ })(|u> - |d>)(<u| - <d|)(\alpha|u> + \beta|d>) \\
+&= \frac{1}{2}(\alpha ^{ * } - \beta ^{ ∗ })(\alpha - \beta) \\
+&= \frac{1}{2}(\alpha^{ * } \alpha + \beta ^{ ∗ } \beta - \alpha^{ * } \beta - \beta ^{ * } \alpha) \\
+&= \frac{1}{2}(1 - \beta ^{ ∗ } \alpha - \alpha^{ * } \beta ) = \frac{1}{2}\\
+\rm{ergo}\quad 0 &= \beta ^{ ∗ } \alpha + \alpha^{ * } \beta
 \end{align}"""))
 
 
