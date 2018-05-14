@@ -27,3 +27,8 @@ is [true for quaternions too](https://dougsweetser.github.io/Q/QM/bracket_notati
 Quantum mechanics is more than just a Hilbert space. I want to find out if
 everything that is done in QMTTM can be done using quaternions. Let the tests
 begin.
+
+Here are the notebooks created so far:
+
+#. [Lecture 1: Systems and Experiments Using Quaternion Series](https://github.com/dougsweetser/QM/blob/master/docs/lecture_1.ipynb)
+#. [Lecture 2: Quantum States](https://github.com/dougsweetser/QM/blob/master/docs/lecture_2.ipynb)
