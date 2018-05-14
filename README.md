@@ -30,5 +30,5 @@ begin.
 
 Here are the notebooks created so far:
 
-#. [Lecture 1: Systems and Experiments Using Quaternion Series](https://github.com/dougsweetser/QM/blob/master/docs/lecture_1.ipynb)
-#. [Lecture 2: Quantum States](https://github.com/dougsweetser/QM/blob/master/docs/lecture_2.ipynb)
+1. [Lecture 1: Systems and Experiments Using Quaternion Series](https://github.com/dougsweetser/QM/blob/master/docs/lecture_1.ipynb)
+1. [Lecture 2: Quantum States](https://github.com/dougsweetser/QM/blob/master/docs/lecture_2.ipynb)
