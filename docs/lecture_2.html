@@ -11799,7 +11799,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">capture</span>
@@ -11901,7 +11901,7 @@ display(HTML(&quot;&lt;style&gt;.container { width:100% !important; }&lt;/style&
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">q_0</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_i</span><span class="p">,</span> <span class="n">q_j</span><span class="p">,</span> <span class="n">q_k</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_0</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_1</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_i</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_j</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_k</span><span class="p">()</span>
@@ -11964,14 +11964,14 @@ sum= (1, 0, 0, 0) 0+1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">A1t</span><span class="p">,</span> <span class="n">A1x</span><span class="p">,</span> <span class="n">A1y</span><span class="p">,</span> <span class="n">A1z</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;A1t A1x A1y A1z&quot;</span><span class="p">)</span>
-<span class="n">A2t</span><span class="p">,</span> <span class="n">A2x</span><span class="p">,</span> <span class="n">A2y</span><span class="p">,</span> <span class="n">A2z</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;A2t A2x A2y A2z&quot;</span><span class="p">)</span>
-<span class="n">A1q</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">A1t</span><span class="p">,</span> <span class="n">A1x</span><span class="p">,</span> <span class="n">A1y</span><span class="p">,</span> <span class="n">A1z</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;a₁&quot;</span><span class="p">)</span>
-<span class="n">A2q</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">A2t</span><span class="p">,</span> <span class="n">A2x</span><span class="p">,</span> <span class="n">A2y</span><span class="p">,</span> <span class="n">A2z</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;a₂&quot;</span><span class="p">)</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">A1q</span><span class="p">,</span> <span class="n">A2q</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">At1</span><span class="p">,</span> <span class="n">Ax1</span><span class="p">,</span> <span class="n">Ay1</span><span class="p">,</span> <span class="n">Az1</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;At1 Ax1 Ay1 Az1&quot;</span><span class="p">)</span>
+<span class="n">At2</span><span class="p">,</span> <span class="n">Ax2</span><span class="p">,</span> <span class="n">Ay2</span><span class="p">,</span> <span class="n">Az2</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;At2 Ax2 Ay2 Az2&quot;</span><span class="p">)</span>
+<span class="n">Aq2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">At2</span><span class="p">,</span> <span class="n">Ax2</span><span class="p">,</span> <span class="n">Ay2</span><span class="p">,</span> <span class="n">Az2</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;a₁&quot;</span><span class="p">)</span>
+<span class="n">Aq2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">At2</span><span class="p">,</span> <span class="n">Ax2</span><span class="p">,</span> <span class="n">Ay2</span><span class="p">,</span> <span class="n">Az2</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;a₂&quot;</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">Aq2</span><span class="p">,</span> <span class="n">Aq2</span><span class="p">])</span>
 <span class="n">A</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -11990,9 +11990,9 @@ sum= (1, 0, 0, 0) 0+1
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>A
-n=1: (A1t, A1x, A1y, A1z) a₁
-n=2: (A2t, A2x, A2y, A2z) a₂
-sum= (A1t + A2t, A1x + A2x, A1y + A2y, A1z + A2z) a₁+a₂
+n=1: (At2, Ax2, Ay2, Az2) a₂
+n=2: (At2, Ax2, Ay2, Az2) a₂
+sum= (2*At2, 2*Ax2, 2*Ay2, 2*Az2) a₂+a₂
 </pre>
 </div>
 </div>

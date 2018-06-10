@@ -7,7 +7,7 @@
 
 # With lecture 1 in the books, this one should be pretty simple and direct. The working hypothesis is that there is an equivalence relation between the way quantum mechanics is represented using a complex-valued vector space and quaternion series. Every calculation done the standard way in lecture 1 was done with quaternion series for the companion iPython notebook. Continue that process with Lecture 2 which fortunately is shorter. It is also simpler, focusing on spin, something that can be described as best we can do with two quantum states. Set up our math tools.
 
-# In[1]:
+# In[2]:
 
 
 get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as np\nimport sympy as sp\nimport matplotlib.pyplot as plt\n\n# To get equations the look like, well, equations, use the following.\nfrom sympy.interactive import printing\nprinting.init_printing(use_latex=True)\nfrom IPython.display import display\n\n# Tools for manipulating quaternions.\nimport Q_tools as qt;\n\nfrom IPython.core.display import display, HTML, Math, Latex\ndisplay(HTML("<style>.container { width:100% !important; }</style>"))')
@@ -33,7 +33,7 @@ get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as
 
 # ![AxB.png](images/lecture_2/AxB.png)
 
-# In[2]:
+# In[3]:
 
 
 q_0, q_1, q_i, q_j, q_k = qt.QH().q_0(), qt.QH().q_1(), qt.QH().q_i(), qt.QH().q_j(), qt.QH().q_k()
@@ -49,14 +49,14 @@ d.print_states("d")
 
 # Construct a general A, not setting any values.
 
-# In[3]:
+# In[4]:
 
 
-A1t, A1x, A1y, A1z = sp.symbols("A1t A1x A1y A1z")
-A2t, A2x, A2y, A2z = sp.symbols("A2t A2x A2y A2z")
-A1q = qt.QH([A1t, A1x, A1y, A1z], qtype="a₁")
-A2q = qt.QH([A2t, A2x, A2y, A2z], qtype="a₂")
-A = qt.QHStates([A1q, A2q])
+At1, Ax1, Ay1, Az1 = sp.symbols("At1 Ax1 Ay1 Az1")
+At2, Ax2, Ay2, Az2 = sp.symbols("At2 Ax2 Ay2 Az2")
+Aq2 = qt.QH([At2, Ax2, Ay2, Az2], qtype="a₁")
+Aq2 = qt.QH([At2, Ax2, Ay2, Az2], qtype="a₂")
+A = qt.QHStates([Aq2, Aq2])
 A.print_states("A")
 
 
