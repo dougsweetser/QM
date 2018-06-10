@@ -80,22 +80,27 @@ class QH(object):
             
         self.qtype = qtype
 
-    def __str__(self):
+    def __str__(self, quiet=False):
         """Customize the output."""
+        
+        qtype = self.qtype
+        
+        if quiet:
+            qtype = ""
         
         if self.representation == "":
             string = "({t}, {x}, {y}, {z}) {qt}".format(
-                t=self.t, x=self.x, y=self.y, z=self.z, qt=self.qtype)
+                t=self.t, x=self.x, y=self.y, z=self.z, qt=qtype)
     
         elif self.representation == "polar":
             rep = self.txyz_2_representation("polar")
             string = "({A} A, {thetaX} 𝜈x, {thetaY} 𝜈y, {thetaZ} 𝜈z) {qt}".format(
-                A=rep[0], thetaX=rep[1], thetaY=rep[2], thetaZ=rep[3], qt=self.qtype)
+                A=rep[0], thetaX=rep[1], thetaY=rep[2], thetaZ=rep[3], qt=qtype)
  
         elif self.representation == "spherical":
             rep = self.txyz_2_representation("spherical")
             string = "({t} t, {R} R, {theta} θ, {phi} φ) {qt}".format(
-                t=rep[0], R=rep[1], theta=rep[2], phi=rep[3], qt=self.qtype)
+                t=rep[0], R=rep[1], theta=rep[2], phi=rep[3], qt=qtype)
 
         return string
 
@@ -1374,22 +1379,27 @@ class QHa(object):
             
         self.qtype = qtype
 
-    def __str__(self):
+    def __str__(self, quiet=False):
         """Customize the output."""
         
+        qtype = self.qtype
+        
+        if quiet:
+            qtype = ""
+            
         if self.representation == "":
-            string = "({t}, {x}, {y}, {z}) {qt}".format(t=self.a[0], x=self.a[1], y=self.a[2], z=self.a[3], qt=self.qtype)
+            string = "({t}, {x}, {y}, {z}) {qt}".format(t=self.a[0], x=self.a[1], y=self.a[2], z=self.a[3], qt=qtype)
     
         elif self.representation == "polar":
             rep = self.txyz_2_representation("polar")
             
             string = "({A} A, {thetaX} 𝜈x, {thetaY} 𝜈y, {thetaZ} 𝜈z) {qt}".format(
-                A=rep[0], thetaX=rep[1], thetaY=rep[2], thetaZ=rep[3], qt=self.qtype)
+                A=rep[0], thetaX=rep[1], thetaY=rep[2], thetaZ=rep[3], qt=qtype)
  
         elif self.representation == "spherical":
             rep = self.txyz_2_representation("spherical")
             string = "({t} t, {R} R, {theta} θ, {phi} φ) {qt}".format(t=rep[0], R=rep[1], theta=rep[2], phi=rep[3], 
-                                                                       qt=self.qtype)
+                                                                       qt=qtype)
         
         return string
     
@@ -3056,15 +3066,20 @@ class Q8(object):
                 
         self.qtype=qtype
                 
-    def __str__(self):
+    def __str__(self, quiet=False):
         """Customize the output."""
         
+        qtype = self.qtype
+        
+        if quiet:
+            qtype = ""
+            
         if self.representation == "":
             string = "(({tp}, {tn}), ({xp}, {xn}), ({yp}, {yn}), ({zp}, {zn})) {qt}".format(tp=self.dt.p, tn=self.dt.n, 
                                                              xp=self.dx.p, xn=self.dx.n, 
                                                              yp=self.dy.p, yn=self.dy.n, 
                                                              zp=self.dz.p, zn=self.dz.n,
-                                                             qt=self.qtype)
+                                                             qt=qtype)
     
         elif self.representation == "polar":
             rep = self.txyz_2_representation("polar")
@@ -3072,7 +3087,7 @@ class Q8(object):
                 Ap=rep[0], An=rep[1], 
                 thetaXp=rep[2], thetaXn=rep[3], 
                 thetaYp=rep[4], thetaYn=rep[5], 
-                thetaZp=rep[6], thetaZn=rep[7], qt=self.qtype)
+                thetaZp=rep[6], thetaZn=rep[7], qt=qtype)
  
         elif self.representation == "spherical":
             rep = self.txyz_2_representation("spherical")
@@ -3080,7 +3095,7 @@ class Q8(object):
                 tp=rep[0], tn=rep[1], 
                 Rp=rep[2], Rn=rep[3], 
                 thetap=rep[4], thetan=rep[5], 
-                phip=rep[6], phin=rep[7], qt=self.qtype)
+                phip=rep[6], phin=rep[7], qt=qtype)
             
         return string 
 
@@ -4507,26 +4522,30 @@ class Q8a(Doubleta):
         
         self.qtype=qtype
                 
-    def __str__(self):
+    def __str__(self, quiet=False):
         """Customize the output."""
         
+        qtype = self.qtype
+        
+        if quiet:
+            qtype = ""
         
         if self.representation == "":
             string = "(({tp}, {tn}), ({xp}, {xn}), ({yp}, {yn}), ({zp}, {zn})) {qt}".format(tp=self.a[0], tn=self.a[1], 
                                                              xp=self.a[2], xn=self.a[3], 
                                                              yp=self.a[4], yn=self.a[5], 
                                                              zp=self.a[6], zn=self.a[7],
-                                                             qt=self.qtype)
+                                                             qt=qtype)
     
         elif self.representation == "polar":
             rep = self.txyz_2_representation("polar")
             string = "(({Ap}, {An}) A, ({thetaXp}, {thetaXn})  𝜈x, ({thetaYp}, {thetaYn}) 𝜈y, ({thetaZp}, {thetaZn}) 𝜈z) {qt}".format(Ap=rep[0], An=rep[1], thetaXp=rep[2], thetaXn=rep[3], thetaYp=rep[4], thetaYn=rep[5], thetaZp=rep[6], thetaZn=rep[7], 
-                                                                    qt=self.qtype)
+                                                                    qt=qtype)
  
         elif self.representation == "spherical":
             rep = self.txyz_2_representation("spherical")
             string = "(({tp}, {tn}) t, ({Rp}, {Rn}) R, ({thetap}, {thetan}) θ , ({phip}, {phin}) φ) {qt}".format(tp=rep[0], tn=rep[1], Rp=rep[2], Rn=rep[3], thetap=rep[4], thetan=rep[5], phip=rep[6], phin=rep[7], 
-                                                                       qt=self.qtype)
+                                                                       qt=qtype)
         return string 
         
         
@@ -4534,7 +4553,7 @@ class Q8a(Doubleta):
                                                              xp=self.a[2], xn=self.a[3], 
                                                              yp=self.a[4], yn=self.a[5], 
                                                              zp=self.a[6], zn=self.a[7],
-                                                             qt=self.qtype)
+                                                             qt=qtype)
     
         return string
     
@@ -6673,7 +6692,7 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[30]:
+# In[91]:
 
 
 class QHStates(QH):
@@ -6691,25 +6710,27 @@ class QHStates(QH):
         self.qtype = qtype
         self.representation = representation
         
-    def __str__(self):
+    def __str__(self, quiet=False):
         """Print out all the states."""
         
         states = ''
         
         for n, q in enumerate(self.qs, start=1):
-            states = states + "n={}: {}\n".format(n, q)
+            states = states + "n={}: {}\n".format(n, q.__str__(quiet))
         
         return states.rstrip()
     
-    def print_states(self, label, spacer=False):
+    def print_states(self, label, spacer=False, quiet=False):
         """Utility for printing states as a quaternion series."""
 
         print(label)
         
-        for n, q in enumerate(self.qs, start=1):
-            print("n={}: {}".format(n, q))
+        for n, q in enumerate(self.qs):
+            ##### print("n={}: {}".format(n + 1, q.__str__(quiet)))
+            print("n={}: {}".format(n + 1, q.__str__()))
         
-        print("sum= {ss}".format(ss=self.summation()))
+        if not quiet:
+            print("sum= {ss}".format(ss=self.summation()))
         
         if spacer:
             print("")
@@ -6738,6 +6759,16 @@ class QHStates(QH):
             
         return QHStates(new_states)
     
+    def simple_q(self):
+        """Simplify the states."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.simple_q())
+            
+        return QHStates(new_states)
+    
     def flip_signs(self):
         """Flip signs of all states."""
         
@@ -6755,6 +6786,16 @@ class QHStates(QH):
         
         for bra in self.qs:
             new_states.append(bra.invert())
+            
+        return QHStates(new_states)
+    
+    def norm(self):
+        """Norm of states."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.norm())
             
         return QHStates(new_states)
     
@@ -6910,13 +6951,16 @@ class QHStates(QH):
         # <A|Op
         elif ket is None:
             if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim):
+                # Operator needs to be transposed.
+                opt = operator.transpose(bra.dim)
+                
                 if operator.dim == 1:
                     one_diagonal = operator.diagonal(bra.dim)                    
                     aop = one_diagonal.qs
 
                 else:
-                    aop = operator.qs
-                                                             
+                    aop = opt.qs
+                        
                 for ops in zip(*[iter(aop)]*bra.dim):
                     bop = None
                     
@@ -6949,7 +6993,7 @@ class QHStates(QH):
                         else:
                             ok = ok.add(op.product(k, kind, reverse))
                     
-                    new_ket.append(ok)
+                    new_ket.append(ok)   
                 
                 new_ket_state = QHStates(new_ket)
                     
@@ -6989,35 +7033,42 @@ class QHStates(QH):
         
         return self.Euclidean_product('bra', ket=self)
     
-    def transpose(self, m=0, n=0):
+    def transpose(self, m=None, n=None):
         """Transposes a series."""
         
-        if m==0:
+        if m is None:
             # test if it is square.
             if math.sqrt(self.dim).is_integer():
-                m = sp.sqrt(self.dim)
+                m = int(sp.sqrt(self.dim))
                 n = m
-                
+               
+        if n is None:
+            n = int(self.dim / m)
+            
         if m * n != self.dim:
-            print("Oops, m * n != state dim: {} {} != {}".format(m, n, self.dim))
             return None
         
-        new_states = [0] * self.dim
+        matrix = [[0 for x in range(m)] for y in range(n)] 
+        qs_t = []
         
         for mi in range(m):
             for ni in range(n):
-                current = mi * n + ni
-                transpose = mi + ni * n
-                new_states[transpose] = self.qs[current]
-                
-        return QHStates(new_states)
+                matrix[ni][mi] = self.qs[mi * n + ni]
         
-    def Hermitian_conj(self, m=0, n=0, conj_type=0):
+        qs_t = []
+        
+        for t in matrix:
+            for q in t:
+                qs_t.append(q)
+                
+        return QHStates(qs_t)
+        
+    def Hermitian_conj(self, m=None, n=None, conj_type=0):
         """Returns the Hermitian conjugate."""
         
         return self.transpose(m, n).conj(conj_type)
     
-    def dagger(self, m=0, n=0, conj_type=0):
+    def dagger(self, m=None, n=None, conj_type=0):
         """Just calls Hermitian_conj()"""
         
         return self.Hermitian_conj(m, n, conj_type)
@@ -7061,9 +7112,9 @@ class QHStates(QH):
 
         sigmas = {}
         sigma['x'] = QHStates([q0, x_factor, x_factor, q0])
-        sigma['y'] = QHStates([q0, y_factor, y_factor.flip_signs(), q0])
+        sigma['y'] = QHStates([q0, y_factor, y_factor.flip_signs(), q0]) 
         sigma['z'] = QHStates([z_factor, q0, q0, z_factor.flip_signs()])
-
+  
         sigmas['xy'] = sigma['x'].add(sigma['y'])
         sigmas['xz'] = sigma['x'].add(sigma['z'])
         sigmas['yz'] = sigma['y'].add(sigma['z'])
@@ -7076,7 +7127,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[31]:
+# In[92]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -7155,16 +7206,16 @@ class TestQHStates(unittest.TestCase):
     def test_product_AOp(self):
         AOp = self.A.product('bra', operator=self.Op)
         print("A Op: ", AOp)
-        self.assertTrue(AOp.qs[0].equals(QH([11, 0, 0, 0])))
-        self.assertTrue(AOp.qs[1].equals(QH([0, 0, 5, 0])))
-        self.assertTrue(AOp.qs[2].equals(QH([4, 0, 0, 0])))
+        self.assertTrue(AOp.qs[0].equals(QH([12, 0, -3, 0])))
+        self.assertTrue(AOp.qs[1].equals(QH([0, 6, 0, 0])))
+        self.assertTrue(AOp.qs[2].equals(QH([-4, 0, 8, 0])))
                       
     def test_Euclidean_product_AOp(self):
         AOp = self.A.Euclidean_product('bra', operator=self.Op)
         print("A* Op: ", AOp)
-        self.assertTrue(AOp.qs[0].equals(QH([13, 0, 0, 0])))
-        self.assertTrue(AOp.qs[1].equals(QH([0, 0, 11, 0])))
-        self.assertTrue(AOp.qs[2].equals(QH([12, 0, 0, 0])))
+        self.assertTrue(AOp.qs[0].equals(QH([12, 0, 3, 0])))
+        self.assertTrue(AOp.qs[1].equals(QH([0, 2, 0, 0])))
+        self.assertTrue(AOp.qs[2].equals(QH([4, 0, 8, 0])))
         
     def test_product_AOp4i(self):
         AOp4i = self.A.product('bra', operator=self.Op4i)
@@ -7250,6 +7301,8 @@ class TestQHStates(unittest.TestCase):
         self.assertTrue(opt.qs[1].t == 3)
         self.assertTrue(opt.qs[2].t == 2)
         self.assertTrue(opt.qs[3].t == 4)
+        optt = self.q1234.transpose().transpose()
+        self.assertTrue(optt.equals(self.q1234))
         
     def test_Hermitian_conj(self):
         q_hc = self.q1234.Hermitian_conj()
@@ -7269,7 +7322,7 @@ class TestQHStates(unittest.TestCase):
         
     def test_is_square(self):
         self.assertFalse(self.Op.is_square())
-        self.assertTrue(self.Op4i.is_square())
+        self.assertTrue(self.Op4i.is_square())    
         
 suite = unittest.TestLoader().loadTestsFromModule(TestQHStates())
 unittest.TextTestRunner().run(suite);
@@ -7278,12 +7331,13 @@ unittest.TextTestRunner().run(suite);
 # Repeat this exercise for:
 # 
 # QHa
+# 
 # Q8
 # Q8a
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[32]:
+# In[95]:
 
 
 class QHaStates(QHa):
@@ -7298,25 +7352,26 @@ class QHaStates(QHa):
         else:
             self.d, self.dim, self.dimensions = len(qs), len(qs), len(qs)
         
-    def __str__(self):
+    def __str__(self, quiet=False):
         """Print out all the states."""
         
         states = ''
         
         for n, q in enumerate(self.qs, start=1):
-            states = states + "n={}: {}\n".format(n, q)
+            states = states + "n={}: {}\n".format(n, q.__str__(quiet))
         
         return states.rstrip()
     
-    def print_states(self, label, spacer=False):
+    def print_states(self, label, spacer=False, quiet=False):
         """Utility for printing states as a quaternion series."""
 
         print(label)
         
         for n, q in enumerate(self.qs, start=1):
-            print("n={}: {}".format(n, q))
+            print("n={}: {}".format(n, q.__str__(quiet)))
         
-        print("sum= {ss}".format(ss=self.summation()))
+        if not quiet:
+            print("sum= {ss}".format(ss=self.summation()))
         
         if spacer:
             print("")
@@ -7366,7 +7421,17 @@ class QHaStates(QHa):
         for bra in self.qs:
             new_states.append(bra.flip_signs())
             
-        return QHStates(new_states)
+        return QHaStates(new_states)
+    
+    def norm(self):
+        """Norm of states."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.norm())
+            
+        return QHaStates(new_states)
     
     def normalize(self):
         """Normalize all states."""
@@ -7503,12 +7568,15 @@ class QHaStates(QHa):
         # <A|Op
         elif ket is None:
             if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim):
+                # Operator needs to be transposed.
+                opt = operator.transpose(bra.dim)
+                
                 if operator.dim == 1:
                     one_diagonal = operator.diagonal(bra.dim)                    
                     aop = one_diagonal.qs
 
                 else:
-                    aop = operator.qs
+                    aop = opt.qs
                                                              
                 for ops in zip(*[iter(aop)]*bra.dim):
                     bop = None
@@ -7582,9 +7650,63 @@ class QHaStates(QHa):
         
         norm = self.Euclidean_product(self).summation()
         return norm
+    
+    def transpose(self, m=None, n=None):
+        """Transposes a series."""
+        
+        if m is None:
+            # test if it is square.
+            if math.sqrt(self.dim).is_integer():
+                m = int(sp.sqrt(self.dim))
+                n = m
+               
+        if n is None:
+            n = int(self.dim / m)
+            
+        if m * n != self.dim:
+            return None
+        
+        matrix = [[0 for x in range(m)] for y in range(n)] 
+        
+        qs = self.qs
+        qs_t = []
+        
+        for mi in range(m):
+            for ni in range(n):
+                matrix[ni][mi] = qs[mi * n + ni]
+        
+        qs_t = []
+        
+        for t in matrix:
+            for q in t:
+                qs_t.append(q)
+                
+        return QHaStates(qs_t)
+    
+    def Hermitian_conj(self, m=None, n=None, conj_type=0):
+        """Returns the Hermitian conjugate."""
+        
+        return self.transpose(m, n).conj(conj_type)
+    
+    def dagger(self, m=None, n=None, conj_type=0):
+        """Just calls Hermitian_conj()"""
+        
+        return self.Hermitian_conj(m, n, conj_type)
+        
+    def is_square(self):
+        """Tests if a quaternion series is square, meaning the dimenion is n^2."""
+                
+        return math.sqrt(self.dim).is_integer()
+
+    def is_Hermitian(self):
+        """Tests if a series is Hermitian."""
+        
+        hc = self.Hermitian_conj()
+        
+        return self.equals(hc)
 
 
-# In[33]:
+# In[105]:
 
 
 class TestQHaStates(unittest.TestCase):
@@ -7601,6 +7723,8 @@ class TestQHaStates(unittest.TestCase):
     Op = QHaStates([QHa([3,0,0,0]),QHa([0,1,0,0]),QHa([0,0,2,0]),QHa([0,0,0,3]),QHa([2,0,0,0]),QHa([0,4,0,0])])
     Op4i = QHaStates([QHa([0,4,0,0])])
     qn = QHaStates([QHa([3,0,0,4])])
+    q1234 = QHStates([QHa([1, 1, 0, 0]), QHa([2, 1, 0, 0]), QHa([3, 1, 0, 0]), QHa([4, 1, 0, 0])])
+    sigma_y = QHStates([QHa([1, 0, 0, 0]), QHa([0, -1, 0, 0]), QHa([0, 1, 0, 0]), QHa([-1, 0, 0, 0])])
     
     def test_init(self):
         self.assertTrue(self.q0_q1.dim == 2)
@@ -7661,16 +7785,16 @@ class TestQHaStates(unittest.TestCase):
     def test_product_AOp(self):
         AOp = self.A.product('bra', operator=self.Op)
         print("A Op: ", AOp)
-        self.assertTrue(AOp.qs[0].equals(QHa([11, 0, 0, 0])))
-        self.assertTrue(AOp.qs[1].equals(QHa([0, 0, 5, 0])))
-        self.assertTrue(AOp.qs[2].equals(QHa([4, 0, 0, 0])))
+        self.assertTrue(AOp.qs[0].equals(QHa([12, 0, -3, 0])))
+        self.assertTrue(AOp.qs[1].equals(QHa([0, 6, 0, 0])))
+        self.assertTrue(AOp.qs[2].equals(QHa([-4, 0, 8, 0])))
                         
     def test_Euclidean_product_AOp(self):
         AOp = self.A.Euclidean_product('bra', operator=self.Op)
         print("A* Op: ", AOp)
-        self.assertTrue(AOp.qs[0].equals(QHa([13, 0, 0, 0])))
-        self.assertTrue(AOp.qs[1].equals(QHa([0, 0, 11, 0])))
-        self.assertTrue(AOp.qs[2].equals(QHa([12, 0, 0, 0])))
+        self.assertTrue(AOp.qs[0].equals(QHa([12, 0, 3, 0])))
+        self.assertTrue(AOp.qs[1].equals(QHa([0, 2, 0, 0])))
+        self.assertTrue(AOp.qs[2].equals(QHa([4, 0, 8, 0])))
 
     def test_product_OpB(self):
         OpB = self.B.product('ket', operator=self.Op)
@@ -7737,11 +7861,57 @@ class TestQHaStates(unittest.TestCase):
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].a[1] == 3)
         
+    def test_transpose(self):
+        opt = self.q1234.transpose()
+        print("op1234 transposed: ", opt)
+        self.assertTrue(opt.qs[0].a[0] == 1)
+        self.assertTrue(opt.qs[1].a[0] == 3)
+        self.assertTrue(opt.qs[2].a[0] == 2)
+        self.assertTrue(opt.qs[3].a[0] == 4)
+        optt = self.q1234.transpose().transpose()
+        self.assertTrue(optt.equals(self.q1234))
+        
+    def test_Hermitian_conj(self):
+        q_hc = self.q1234.Hermitian_conj()
+        print("op1234 Hermitian_conj: ", q_hc)
+        self.assertTrue(q_hc.qs[0].a[0] == 1)
+        self.assertTrue(q_hc.qs[1].a[0] == 3)
+        self.assertTrue(q_hc.qs[2].a[0] == 2)
+        self.assertTrue(q_hc.qs[3].a[0] == 4)
+        self.assertTrue(q_hc.qs[0].a[1] == -1)
+        self.assertTrue(q_hc.qs[1].a[1] == -1)
+        self.assertTrue(q_hc.qs[2].a[1] == -1)
+        self.assertTrue(q_hc.qs[3].a[1] == -1)
+        
+    def test_is_Hermitian(self):
+        self.assertTrue(self.sigma_y.is_Hermitian())
+        self.assertFalse(self.q1234.is_Hermitian())
+        
+    def test_is_square(self):
+        self.assertFalse(self.Op.is_square())
+        self.assertTrue(self.Op4i.is_square()) 
+        
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[34]:
+# In[98]:
+
+
+q0 = QHa().q_0()
+q1 = QHa().q_1()
+qi = QHa().q_i()
+q0_q1 = QHaStates([q0, q1])
+q1_q0 = QHaStates([q1, q0])
+q1_qi = QHaStates([q1, qi])
+A = QHaStates([QHa([4,0,0,0]),QHa([0,1,0,0])])
+B = QHaStates([QHa([0,0,1,0]),QHa([0,0,0,2]),QHa([0,3,0,0])])
+Op = QHaStates([QHa([3,0,0,0]),QHa([0,1,0,0]),QHa([0,0,2,0]),QHa([0,0,0,3]),QHa([2,0,0,0]),QHa([0,4,0,0])])
+Op4i = QHaStates([QHa([0,4,0,0])])
+qn = QHaStates([QHa([3,0,0,4])])
+
+
+# In[99]:
 
 
 class Q8States(Q8):
@@ -7756,25 +7926,26 @@ class Q8States(Q8):
         else:
             self.d, self.dim, self.dimensions = len(qs), len(qs), len(qs)
         
-    def __str__(self):
+    def __str__(self, quiet=False):
         """Print out all the states."""
         
         states = ''
         
         for n, q in enumerate(self.qs, start=1):
-            states = states + "n={}: {}\n".format(n, q)
+            states = states + "n={}: {}\n".format(n, q.__str__(quiet))
         
         return states.rstrip()
     
-    def print_states(self, label, spacer=False):
+    def print_states(self, label, spacer=False, quiet=False):
         """Utility for printing states as a quaternion series."""
 
         print(label)
         
         for n, q in enumerate(self.qs, start=1):
-            print("n={}: {}".format(n, q))
+            print("n={}: {}".format(n, q.__str__(quiet)))
         
-        print("sum= {ss}".format(ss=self.summation()))
+        if not quiet:
+            print("sum= {ss}".format(ss=self.summation()))
         
         if spacer:
             print("")
@@ -7811,7 +7982,17 @@ class Q8States(Q8):
         for bra in self.qs:
             new_states.append(bra.flip_signs())
             
-        return QHStates(new_states)
+        return Q8States(new_states)
+    
+    def norm(self):
+        """Norm of states."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.norm())
+            
+        return Q8States(new_states)
     
     def normalize(self):
         """Normalize all states."""
@@ -7961,6 +8142,9 @@ class Q8States(Q8):
         # <A|Op
         elif ket is None:
             if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim):
+                # Operator needs to be transposed.
+                opt = operator.transpose(bra.dim)
+                
                 if operator.dim == 1:
                     one_diagonal = operator.diagonal(bra.dim)                    
                     aop = one_diagonal.qs
@@ -8040,9 +8224,41 @@ class Q8States(Q8):
         
         norm = self.Euclidean_product(self).summation()
         return norm
+    
+    def transpose(self, m=None, n=None):
+        """Transposes a series."""
+        
+        if m is None:
+            # test if it is square.
+            if math.sqrt(self.dim).is_integer():
+                m = int(sp.sqrt(self.dim))
+                n = m
+               
+        if n is None:
+            n = int(self.dim / m)
+            
+        if m * n != self.dim:
+            return None
+        
+        matrix = [[0 for x in range(m)] for y in range(n)] 
+        
+        qs = self.qs
+        qs_t = []
+        
+        for mi in range(m):
+            for ni in range(n):
+                matrix[ni][mi] = qs[mi * n + ni]
+        
+        qs_t = []
+        
+        for t in matrix:
+            for q in t:
+                qs_t.append(q)
+                
+        return Q8States(qs_t)
 
 
-# In[35]:
+# In[108]:
 
 
 class TestQ8States(unittest.TestCase):
@@ -8200,7 +8416,23 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[36]:
+# In[106]:
+
+
+q0 = Q8a().q_0()
+q1 = Q8a().q_1()
+qi = Q8a().q_i()
+q0_q1 = Q8aStates([q0, q1])
+q1_q0 = Q8aStates([q1, q0])
+q1_qi = Q8aStates([q1, qi])
+A = Q8aStates([Q8a([4,0,0,0]),Q8a([0,1,0,0])])
+B = Q8aStates([Q8a([0,0,1,0]),Q8a([0,0,0,2]),Q8a([0,3,0,0])])
+Op = Q8aStates([Q8a([3,0,0,0]),Q8a([0,1,0,0]),Q8a([0,0,2,0]),Q8a([0,0,0,3]),Q8a([2,0,0,0]),Q8a([0,4,0,0])])
+Op4i = Q8aStates([Q8a([0,4,0,0])])
+qn = Q8aStates([Q8a([3,0,0,4])])
+
+
+# In[111]:
 
 
 class Q8aStates(Q8a):
@@ -8218,25 +8450,27 @@ class Q8aStates(Q8a):
         self.qtype = qtype
         self.representation = representation
         
-    def __str__(self):
+    def __str__(self, quiet=False):
         """Print out all the states."""
         
         states = ''
         
         for n, q in enumerate(self.qs, start=1):
-            states = states + "n={}: {}\n".format(n, q)
+            states = states + "n={}: {}\n".format(n, q.__str__(quiet))
         
         return states.rstrip()
     
-    def print_states(self, label, spacer=False):
+    def print_states(self, label, spacer=False, quiet=False):
         """Utility for printing states as a quaternion series."""
 
         print(label)
         
         for n, q in enumerate(self.qs, start=1):
-            print("n={}: {}".format(n, q))
+            #print("n={}: {}".format(n, q.__str__(quiet)))
+            print("n={}: {}".format(n, q.__str__()))
         
-        print("sum= {ss}".format(ss=self.summation()))
+        if not quiet:
+            print("sum= {ss}".format(ss=self.summation()))
         
         if spacer:
             print("")
@@ -8272,6 +8506,16 @@ class Q8aStates(Q8a):
         
         for bra in self.qs:
             new_states.append(bra.flip_signs())
+            
+        return Q8aStates(new_states)
+    
+    def norm(self):
+        """Norm of states."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.norm())
             
         return Q8aStates(new_states)
     
@@ -8426,12 +8670,15 @@ class Q8aStates(Q8a):
         # <A|Op
         elif ket is None:
             if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim):
+                # Operator needs to be transposed.
+                opt = operator.transpose(bra.dim)
+                
                 if operator.dim == 1:
                     one_diagonal = operator.diagonal(bra.dim)                    
                     aop = one_diagonal.qs
 
                 else:
-                    aop = operator.qs
+                    aop = opt.qs
                                                              
                 for ops in zip(*[iter(aop)]*bra.dim):
                     bop = None
@@ -8505,9 +8752,48 @@ class Q8aStates(Q8a):
         
         norm = self.Euclidean_product(self).summation()
         return norm
+    
+    def transpose(self, m=None, n=None):
+        """Transposes a series."""
+        
+        if m is None:
+            # test if it is square.
+            if math.sqrt(self.dim).is_integer():
+                m = int(sp.sqrt(self.dim))
+                n = m
+               
+        if n is None:
+            n = int(self.dim / m)
+            
+        if m * n != self.dim:
+            return None
+        
+        matrix = [[0 for x in range(m)] for y in range(n)] 
+        
+        qs = self.qs
+        qs_t = []
+        
+        for mi in range(m):
+            for ni in range(n):
+                matrix[ni][mi] = qs[mi * n + ni]
+        
+        qs_t = []
+        
+        for t in matrix:
+            for q in t:
+                qs_t.append(q)
+                
+        return Q8aStates(qs_t)
 
 
-# In[37]:
+# In[112]:
+
+
+B.product("ket", operator=Op).print_states("Bop ket")
+B.product("bra", operator=Op).print_states("Bop b")
+
+
+# In[103]:
 
 
 class TestQ8aStates(unittest.TestCase):
