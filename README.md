@@ -32,3 +32,4 @@ Here are the notebooks created so far:
 
 1. [Lecture 1: Systems and Experiments Using Quaternion Series](https://github.com/dougsweetser/QM/blob/master/docs/lecture_1.ipynb)
 1. [Lecture 2: Quantum States](https://github.com/dougsweetser/QM/blob/master/docs/lecture_2.ipynb)
+1. [Lecture 3: The Principles of Quantum Mechanics](https://github.com/dougsweetser/QM/blob/master/docs/lecture_3.ipynb)
