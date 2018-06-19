@@ -19,19 +19,17 @@ get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as
 
 # ![](images/lecture_3/c3_p52_q3.jpg)
 
-# 
-# 
-# In the first chapter of these companion notebooks, it was shown that for a quaternion series operator $M$ and bra quaternion series $|A>$ and $|B>$, this was the case. One thing not stated explicitly here is that both $|A>$ and $|B>$ have to have the same number of state dimensions or the expression does not make sense. In the quaternion series approach, the number of states in operator $M$ has to be a multiple of the states in the bras.
+# In the first chapter of these companion notebooks, it was shown that for a quaternion series operator $M$ and bra quaternion series $|A>$ and $|B>$, this was the case. One thing not stated explicitly here is that both $|A>$ and $|B>$ have to have the same number of state dimensions or the expression does not make sense. In the quaternion series approach, the number of states in operator $M$ has to be a integer multiple of the states in the bras. For the full bra, operator ket expression, the product of the bra and ket dimensions must equal the operator. These rules will need to be revisited when systems of infinite dimensions are used.
 
 # ![](images/lecture_3/c3_p53_q1.jpg)
 
-# If all I can ever do is multiply quaternion series together, this will always be the case because numbers are nice in that way.
+# If all that can ever done is multiply quaternion series together, there will always be one output because numbers are nice in that way.
 
 # ![](images/lecture_3/c3_p53_q2.jpg)
 
 # This looks like a simple statement, but look at what it presumes. The matrix $M$ has complex values, so $z$ will commute, or $M z = z M$. Now switch to quaternions... does this mean an end to this project because quaternions do not commute? I do think the knee-jerk reaction is to say "yes".
 
-# Careful reflection takes time, so please indulge me. The above in an algebraic expression. Each term has been given a name, $M$ and $z$, and been assigned a specific order at the table. A quaternion product can always be broken into two parts: the even part that commutes, and the odd part or cross product that anti-commutes.
+# Careful reflection takes time, so please indulge me. The above is an algebraic expression. Each term has been given a name, $M$ and $z$, and been assigned a specific order at the table. A quaternion product can always be broken into two parts: the even part that commutes, and the odd part or cross product that anti-commutes.
 # 
 # First define a bunch of quaternions.
 
@@ -64,9 +62,9 @@ z_op = zqs.diagonal(2)
 z_op.print_states("z")
 
 
-# Before trying to understand quaternion series, let's just understand the product of two quaternions. We wish to have an algebraic rule about what exactly it means to reverse two named symbols. When the reversal happens, it means the product of the two reverse quaternions is the difference between the even and odd products. This makes no difference for real and complex numbers since the odd part is always exactly zero. For quaternions, this flips the signs of the thing that flip signs under reversal, so no net change results.
+# Before trying to understand quaternion series, let's just look at the product of two quaternions. We wish to have an algebraic rule about what **exactly** it means to reverse two named symbols. We can create a rule such that reversing symbols does not change the result. Thus when one writes a reversal of symbols, we mean that the product of the two reverse quaternions is the difference between the even and odd products. This makes no difference for real and complex numbers since the odd part is always exactly zero. For quaternions, this flips the signs of the thing that flip signs under reversal, so no net change results.
 
-# In[3]:
+# In[30]:
 
 
 Mq1z = Mq1.product(zq)
@@ -82,7 +80,7 @@ print("difference: ", Mq1z.dif(zMq1))
 # 
 # $$ \frac{d f(q)}{dq} = \lim_{dq \rightarrow 0} (f(q + dq) - f(q)) \;x \;dq^{-1} $$
 # 
-# I would have to consult the literature to find out if this was called a left- or right-derivative. Whatever it is called does not matter with this new rule for reversal in place. Yes, the differential can now be moved to the left so long as one uses the reversal product:
+# I would have to consult the literature to find out if this was called a left- or right-derivative. Whatever it is called does not matter with this new rule for reversal in place. Yes, the differential can now be moved to the left so long as one uses the reverse product:
 # $$\lim_{dq \rightarrow 0} (f(q + dq) - f(q)) \; x \; dq^{-1} = \lim_{dq \rightarrow 0} dq^{-1} \; xR \;(f(q + dq) - f(q)) $$
 # Getting one consistent definition for a quaternion derivative may be just as important as anything else in this collection of work, so I think it was worth the digression.
 
@@ -116,6 +114,8 @@ zMA = A.product("ket", operator=zM)
 print(MzA.dif(zMA))
 
 
+# Again, the qtypes indicated that different roads were taken to get to the same result.
+
 # ![](images/lecture_3/c3_p54_q1.jpg)
 
 # The next sections use 3x3 matrices, so let's make the ket A have 3 elements. To create an orthornormal basis for j, just use 1, j, and j. Here is the ket A in component form:
@@ -133,7 +133,7 @@ A.print_states("A", 1)
 
 # ![](images/lecture_3/c3_p55_q1.jpg)
 
-# Just make M bigger.
+# Make M bigger, $3^2$.
 
 # In[7]:
 
@@ -174,11 +174,11 @@ MA.print_states("MA", quiet=True)
 # With quaternion series quantum mechanics, the accounting system changes, but the products remain the same. There are no matrices. Take the square matrix and stack them all in a line:
 # $$m_{11}\,m_{12}\,m_{13}\,m_{21}\,m_{22}\,m_{23}\,m_{31}\,m_{32}\,m_{33}$$
 # $$= (m_{1}\,m_{2}\,m_{3})(m_{4}\,m_{5}\,m_{6})(m_{7}\,m_{8}\,m_{9})$$
-# The quaternion series is being treated in the algebraic operations as three sets of three, just like matrix.
+# The quaternion series is being treated in the algebraic operations as three sets of three, just like a matrix.
 
 # ![](images/lecture_3/c3_p56_q2.jpg)
 
-# With quaternion series, there are two types of representations going on dealing separately with space-time dimensions and with state dimensions. Space-time information can be written in Euclidean coordinates, polar coordinates, spherical coordinates, etc. The state dimensions can be written with an endless variety of basis vectors. There certainly is nothing special about the 1jj basis vector used to express the ket A.
+# With quaternion series, there are two types of representations going on dealing separately with space-time dimensions and with state dimensions. Space-time information can be written in Euclidean coordinates, polar coordinates, spherical coordinates, etc. The state dimensions can be written with an endless variety of basis vectors. There certainly is nothing special about the 1jj basis vector used to express the ket $|A>$.
 
 # ![](images/lecture_3/c3_p57_q1.jpg)
 
@@ -566,7 +566,7 @@ def sigma(kind, theta=None, phi=None):
 
 # See if the function creates the three sigmas discussed so far:
 
-# In[37]:
+# In[28]:
 
 
 sigma('x').print_states('σx', 1)
@@ -575,7 +575,7 @@ sigma('z').print_states('σz', 1)
 sigma('z').norm_squared().print_states("σz's norm", 1)
 
 
-# In[30]:
+# In[29]:
 
 
 sigma('xy').norm_squared().print_states('σxy', 1)

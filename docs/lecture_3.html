@@ -11849,7 +11849,7 @@ display(HTML(&quot;&lt;style&gt;.container { width:100% !important; }&lt;/style&
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In the first chapter of these companion notebooks, it was shown that for a quaternion series operator $M$ and bra quaternion series $|A&gt;$ and $|B&gt;$, this was the case. One thing not stated explicitly here is that both $|A&gt;$ and $|B&gt;$ have to have the same number of state dimensions or the expression does not make sense. In the quaternion series approach, the number of states in operator $M$ has to be a multiple of the states in the bras.</p>
+<p>In the first chapter of these companion notebooks, it was shown that for a quaternion series operator $M$ and bra quaternion series $|A&gt;$ and $|B&gt;$, this was the case. One thing not stated explicitly here is that both $|A&gt;$ and $|B&gt;$ have to have the same number of state dimensions or the expression does not make sense. In the quaternion series approach, the number of states in operator $M$ has to be a integer multiple of the states in the bras. For the full bra, operator ket expression, the product of the bra and ket dimensions must equal the operator. These rules will need to be revisited when systems of infinite dimensions are used.</p>
 
 </div>
 </div>
@@ -11867,7 +11867,7 @@ display(HTML(&quot;&lt;style&gt;.container { width:100% !important; }&lt;/style&
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If all I can ever do is multiply quaternion series together, this will always be the case because numbers are nice in that way.</p>
+<p>If all that can ever done is multiply quaternion series together, there will always be one output because numbers are nice in that way.</p>
 
 </div>
 </div>
@@ -11894,7 +11894,7 @@ display(HTML(&quot;&lt;style&gt;.container { width:100% !important; }&lt;/style&
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Careful reflection takes time, so please indulge me. The above in an algebraic expression. Each term has been given a name, $M$ and $z$, and been assigned a specific order at the table. A quaternion product can always be broken into two parts: the even part that commutes, and the odd part or cross product that anti-commutes.</p>
+<p>Careful reflection takes time, so please indulge me. The above is an algebraic expression. Each term has been given a name, $M$ and $z$, and been assigned a specific order at the table. A quaternion product can always be broken into two parts: the even part that commutes, and the odd part or cross product that anti-commutes.</p>
 <p>First define a bunch of quaternions.</p>
 
 </div>
@@ -11975,14 +11975,14 @@ sum= (2*zt, 2*zx, 2*zy, 2*zz) z+0+0+z
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Before trying to understand quaternion series, let's just understand the product of two quaternions. We wish to have an algebraic rule about what exactly it means to reverse two named symbols. When the reversal happens, it means the product of the two reverse quaternions is the difference between the even and odd products. This makes no difference for real and complex numbers since the odd part is always exactly zero. For quaternions, this flips the signs of the thing that flip signs under reversal, so no net change results.</p>
+<p>Before trying to understand quaternion series, let's just look at the product of two quaternions. We wish to have an algebraic rule about what <strong>exactly</strong> it means to reverse two named symbols. We can create a rule such that reversing symbols does not change the result. Thus when one writes a reversal of symbols, we mean that the product of the two reverse quaternions is the difference between the even and odd products. This makes no difference for real and complex numbers since the odd part is always exactly zero. For quaternions, this flips the signs of the thing that flip signs under reversal, so no net change results.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">Mq1z</span> <span class="o">=</span> <span class="n">Mq1</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">zq</span><span class="p">)</span>
@@ -12032,7 +12032,7 @@ difference:  (0, 0, 0, 0) m₁xz-zxRm₁
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>A digression from the book... This idea of a rule for reversing positions in algebraic expressions is not in wide use. I think there is a legitimate reason to never use quaternions in practice: the definition of a quaternion derivative remains a topic of study. There are people who work with left- or right-derivatives because they are different. Consider the standard limit definition:</p>
 <p>$$ \frac{d f(q)}{dq} = \lim_{dq \rightarrow 0} (f(q + dq) - f(q)) \;x \;dq^{-1} $$</p>
-<p>I would have to consult the literature to find out if this was called a left- or right-derivative. Whatever it is called does not matter with this new rule for reversal in place. Yes, the differential can now be moved to the left so long as one uses the reversal product:
+<p>I would have to consult the literature to find out if this was called a left- or right-derivative. Whatever it is called does not matter with this new rule for reversal in place. Yes, the differential can now be moved to the left so long as one uses the reverse product:
 $$\lim_{dq \rightarrow 0} (f(q + dq) - f(q)) \; x \; dq^{-1} = \lim_{dq \rightarrow 0} dq^{-1} \; xR \;(f(q + dq) - f(q)) $$
 Getting one consistent definition for a quaternion derivative may be just as important as anything else in this collection of work, so I think it was worth the digression.</p>
 
@@ -12150,6 +12150,15 @@ n=2: (0, 0, 0, 0) m₃xzxa₁+m₄xzxa₂-zxRm₃xa₁+zxRm₄xa₂
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Again, the qtypes indicated that different roads were taken to get to the same result.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p><img src="images/lecture_3/c3_p54_q1.jpg" alt=""></p>
 
 </div>
@@ -12218,7 +12227,7 @@ sum= (At1 - Ay2 - Ay3, Ax1 - Az2 - Az3, At2 + At3 + Ay1, Ax2 + Ax3 + Az1) a₁x1
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Just make M bigger.</p>
+<p>Make M bigger, $3^2$.</p>
 
 </div>
 </div>
@@ -12356,7 +12365,7 @@ n=3: (At1*Mt7 - At2*My8 - At3*My9 - Ax1*Mx7 - Ax2*Mz8 - Ax3*Mz9 - Ay1*My7 - Ay2*
 <p>With quaternion series quantum mechanics, the accounting system changes, but the products remain the same. There are no matrices. Take the square matrix and stack them all in a line:
 $$m_{11}\,m_{12}\,m_{13}\,m_{21}\,m_{22}\,m_{23}\,m_{31}\,m_{32}\,m_{33}$$
 $$= (m_{1}\,m_{2}\,m_{3})(m_{4}\,m_{5}\,m_{6})(m_{7}\,m_{8}\,m_{9})$$
-The quaternion series is being treated in the algebraic operations as three sets of three, just like matrix.</p>
+The quaternion series is being treated in the algebraic operations as three sets of three, just like a matrix.</p>
 
 </div>
 </div>
@@ -12374,7 +12383,7 @@ The quaternion series is being treated in the algebraic operations as three sets
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>With quaternion series, there are two types of representations going on dealing separately with space-time dimensions and with state dimensions. Space-time information can be written in Euclidean coordinates, polar coordinates, spherical coordinates, etc. The state dimensions can be written with an endless variety of basis vectors. There certainly is nothing special about the 1jj basis vector used to express the ket A.</p>
+<p>With quaternion series, there are two types of representations going on dealing separately with space-time dimensions and with state dimensions. Space-time information can be written in Euclidean coordinates, polar coordinates, spherical coordinates, etc. The state dimensions can be written with an endless variety of basis vectors. There certainly is nothing special about the 1jj basis vector used to express the ket $|A&gt;$.</p>
 
 </div>
 </div>
@@ -13864,7 +13873,7 @@ sum= (0.707106781186548, -0.707106781186548, 0, 0) 0xQx1+0x0-Qx0+0x1+1x0x1+Qx0-0
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sigma</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s1">&#39;σx&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -13925,7 +13934,7 @@ sum= (1.0000000000000002, 0.0, 0.0, 0.0) 1xQUxQ*x1xQUxQ+0UxQ*x0UxQ+0UxQ*x0UxQ+-1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sigma</span><span class="p">(</span><span class="s1">&#39;xy&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">norm_squared</span><span class="p">()</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s1">&#39;σxy&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
