@@ -500,13 +500,13 @@ class QH(object):
         
         return a
 
-    def normalize(self, qtype="U"):
+    def normalize(self, n=1, qtype="U"):
         """Normalize a quaternion"""
         
         end_qtype = "{}{}".format(self.qtype, qtype)
         
         abs_q_inv = self.abs_of_q().invert()
-        n_q = self.product(abs_q_inv)
+        n_q = self.product(abs_q_inv).product(QH([n, 0, 0, 0]))
         n_q.qtype = end_qtype
         n_q.representation = self.representation
         
@@ -632,8 +632,7 @@ class QH(object):
         q_norm_squared = self.norm_squared()
 
         if (not self.is_symbolic()) and (q_norm_squared.t == 0):
-            print("oops, zero on the norm_squared.")
-            return self.q0()
+            return self.q_0()
 
         q_norm_squared_inv = QH([1.0 / q_norm_squared.t, 0, 0, 0])
         q_inv = q_conj.product(q_norm_squared_inv)
@@ -1816,13 +1815,13 @@ class QHa(object):
         
         return av
 
-    def normalize(self, qtype="U"):
+    def normalize(self, n=1, qtype="U"):
         """Normalize a quaternion"""
         
         end_qtype = "{}{}".format(self.qtype, qtype)
         
         abs_q_inv = self.abs_of_q().invert()
-        n_q = self.product(abs_q_inv)
+        n_q = self.product(abs_q_inv).product(QHa([n, 0, 0, 0]))
 
         n_q.qtype = end_qtype
         n_q.representation = self.representation
@@ -1937,8 +1936,7 @@ class QHa(object):
         q_norm_squared = self.norm_squared()
 
         if q_norm_squared.a[0] == 0:
-            print("oops, zero on the norm_squared.")
-            return self.q0()
+            return self.q_0()
 
         q_norm_squared_inv = QHa([1.0 / q_norm_squared.a[0], 0, 0, 0])
         q_inv = q_conj.product(q_norm_squared_inv, qtype=self.qtype)
@@ -3505,13 +3503,13 @@ class Q8(object):
         
         return av
     
-    def normalize(self, qtype="U"):
+    def normalize(self, n=1, qtype="U"):
         """Normalize a quaternion"""
         
         end_qtype = "{st}U".format(st=self.qtype)
         
         abs_q_inv = self.abs_of_q().invert()
-        n_q = self.product(abs_q_inv)
+        n_q = self.product(abs_q_inv).product(Q8([n, 0, 0, 0]))
         
         n_q.qtype = end_qtype
         n_q.representation = self.representation
@@ -3619,7 +3617,7 @@ class Q8(object):
         q_norm_squared = self.norm_squared().reduce()
         
         if q_norm_squared.dt.p == 0:
-            return self.q0()
+            return self.q_0()
         
         q_norm_squared_inv = Q8([1.0 / q_norm_squared.dt.p, 0, 0, 0, 0, 0, 0, 0])
 
@@ -5086,13 +5084,13 @@ class Q8a(Doubleta):
         
         return av
     
-    def normalize(self, qtype="U"):
+    def normalize(self, n=1, qtype="U"):
         """Normalize a quaternion"""
         
         end_qtype = "{}U".format(self.qtype)
         
         abs_q_inv = self.abs_of_q().invert()
-        n_q = self.product(abs_q_inv)
+        n_q = self.product(abs_q_inv).product(Q8a([n, 0, 0, 0]))
         n_q.qtype = end_qtype
         n_q.representation=self.representation
         
@@ -5208,7 +5206,7 @@ class Q8a(Doubleta):
         q_norm_squared = self.norm_squared().reduce()
         
         if q_norm_squared.a[0] == 0:
-            return self.q0()
+            return self.q_0()
         
         q_norm_squared_inv = Q8a([1.0 / q_norm_squared.a[0], 0, 0, 0, 0, 0, 0, 0])
 
@@ -6692,7 +6690,7 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[91]:
+# In[30]:
 
 
 class QHStates(QH):
@@ -6799,17 +6797,30 @@ class QHStates(QH):
             
         return QHStates(new_states)
     
-    def normalize(self):
+    def normalize(self, n=1, states=None):
         """Normalize all states."""
         
         new_states = []
         
-        q_dim = QH([math.sqrt(1/self.dim), 0, 0, 0])
+        if states is None:
+            states = self.dim
+        
+        zero_norm_count = 0
         
         for bra in self.qs:
-            new_states.append(bra.normalize().product(q_dim))
+            if bra.norm_squared().t == 0:
+                zero_norm_count += 1
             
-        return QHStates(new_states)
+            new_states.append(bra.normalize(n))
+        
+        new_states_normalized = []
+        
+        non_zero_states = states - zero_norm_count
+        
+        for new_state in new_states:
+            new_states_normalized.append(new_state.product(QH([math.sqrt(1/non_zero_states), 0, 0, 0])))
+            
+        return QHStates(new_states_normalized)
 
     def add(self, ket):
         """Add two states."""
@@ -7127,7 +7138,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[92]:
+# In[31]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -7337,7 +7348,7 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[95]:
+# In[32]:
 
 
 class QHaStates(QHa):
@@ -7433,17 +7444,30 @@ class QHaStates(QHa):
             
         return QHaStates(new_states)
     
-    def normalize(self):
+    def normalize(self, n=1, states=None):
         """Normalize all states."""
         
         new_states = []
         
-        q_dim = QHa([math.sqrt(1/self.dim), 0, 0, 0])
+        if states is None:
+            states = self.dim
+        
+        zero_norm_count = 0
         
         for bra in self.qs:
-            new_states.append(bra.normalize().product(q_dim))
+            if bra.norm_squared().a[0] == 0:
+                zero_norm_count += 1
             
-        return QHaStates(new_states)
+            new_states.append(bra.normalize(n))
+        
+        new_states_normalized = []
+        
+        non_zero_states = states - zero_norm_count
+        
+        for new_state in new_states:
+            new_states_normalized.append(new_state.product(QHa([math.sqrt(1/non_zero_states), 0, 0, 0])))
+            
+        return QHaStates(new_states_normalized)
     
     def add(self, ket):
         """Add two states."""
@@ -7706,7 +7730,7 @@ class QHaStates(QHa):
         return self.equals(hc)
 
 
-# In[105]:
+# In[33]:
 
 
 class TestQHaStates(unittest.TestCase):
@@ -7895,23 +7919,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[98]:
-
-
-q0 = QHa().q_0()
-q1 = QHa().q_1()
-qi = QHa().q_i()
-q0_q1 = QHaStates([q0, q1])
-q1_q0 = QHaStates([q1, q0])
-q1_qi = QHaStates([q1, qi])
-A = QHaStates([QHa([4,0,0,0]),QHa([0,1,0,0])])
-B = QHaStates([QHa([0,0,1,0]),QHa([0,0,0,2]),QHa([0,3,0,0])])
-Op = QHaStates([QHa([3,0,0,0]),QHa([0,1,0,0]),QHa([0,0,2,0]),QHa([0,0,0,3]),QHa([2,0,0,0]),QHa([0,4,0,0])])
-Op4i = QHaStates([QHa([0,4,0,0])])
-qn = QHaStates([QHa([3,0,0,4])])
-
-
-# In[99]:
+# In[34]:
 
 
 class Q8States(Q8):
@@ -7994,17 +8002,30 @@ class Q8States(Q8):
             
         return Q8States(new_states)
     
-    def normalize(self):
+    def normalize(self, n=1, states=None):
         """Normalize all states."""
         
         new_states = []
         
-        q_dim = Q8([math.sqrt(1/self.dim), 0, 0, 0])
+        if states is None:
+            states = self.dim
+        
+        zero_norm_count = 0
         
         for bra in self.qs:
-            new_states.append(bra.normalize().product(q_dim))
+            if bra.norm_squared().reduce().dt.p == 0:
+                zero_norm_count += 1
+            
+            new_states.append(bra.normalize(n))
         
-        return Q8States(new_states)
+        new_states_normalized = []
+        
+        non_zero_states = states - zero_norm_count
+        
+        for new_state in new_states:
+            new_states_normalized.append(new_state.product(Q8([math.sqrt(1/non_zero_states), 0, 0, 0])))
+            
+        return Q8States(new_states_normalized)
     
     def summation(self):
         """Add them all up, return one quaternion."""
@@ -8258,7 +8279,7 @@ class Q8States(Q8):
         return Q8States(qs_t)
 
 
-# In[108]:
+# In[35]:
 
 
 class TestQ8States(unittest.TestCase):
@@ -8275,6 +8296,8 @@ class TestQ8States(unittest.TestCase):
     Op = Q8States([Q8([3,0,0,0]),Q8([0,1,0,0]),Q8([0,0,2,0]),Q8([0,0,0,3]),Q8([2,0,0,0]),Q8([0,4,0,0])])
     Op4i = Q8States([Q8([0,4,0,0])])
     qn = Q8States([Q8([3,0,0,4])])
+    q1234 = Q8States([Q8([1, 1, 0, 0]), Q8([2, 1, 0, 0]), Q8([3, 1, 0, 0]), Q8([4, 1, 0, 0])])
+    sigma_y = Q8States([Q8([1, 0, 0, 0]), Q8([0, -1, 0, 0]), Q8([0, 1, 0, 0]), Q8([-1, 0, 0, 0])])
         
     def test_init(self):
         self.assertTrue(self.q0_q1.dim == 2)
@@ -8416,23 +8439,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[106]:
-
-
-q0 = Q8a().q_0()
-q1 = Q8a().q_1()
-qi = Q8a().q_i()
-q0_q1 = Q8aStates([q0, q1])
-q1_q0 = Q8aStates([q1, q0])
-q1_qi = Q8aStates([q1, qi])
-A = Q8aStates([Q8a([4,0,0,0]),Q8a([0,1,0,0])])
-B = Q8aStates([Q8a([0,0,1,0]),Q8a([0,0,0,2]),Q8a([0,3,0,0])])
-Op = Q8aStates([Q8a([3,0,0,0]),Q8a([0,1,0,0]),Q8a([0,0,2,0]),Q8a([0,0,0,3]),Q8a([2,0,0,0]),Q8a([0,4,0,0])])
-Op4i = Q8aStates([Q8a([0,4,0,0])])
-qn = Q8aStates([Q8a([3,0,0,4])])
-
-
-# In[111]:
+# In[36]:
 
 
 class Q8aStates(Q8a):
@@ -8519,17 +8526,30 @@ class Q8aStates(Q8a):
             
         return Q8aStates(new_states)
     
-    def normalize(self):
+    def normalize(self, n=1, states=None):
         """Normalize all states."""
         
         new_states = []
         
-        q_dim = Q8a([math.sqrt(1/self.dim), 0, 0, 0])
+        if states is None:
+            states = self.dim
+        
+        zero_norm_count = 0
         
         for bra in self.qs:
-            new_states.append(bra.normalize().product(q_dim))
-                
-        return Q8aStates(new_states)
+            if bra.norm_squared().reduce().a[0] == 0:
+                zero_norm_count += 1
+            
+            new_states.append(bra.normalize(n))
+        
+        new_states_normalized = []
+        
+        non_zero_states = states - zero_norm_count
+        
+        for new_state in new_states:
+            new_states_normalized.append(new_state.product(Q8a([math.sqrt(1/non_zero_states), 0, 0, 0])))
+            
+        return Q8aStates(new_states_normalized)
     
     def summation(self):
         """Add them all up, return one quaternion."""
@@ -8770,12 +8790,11 @@ class Q8aStates(Q8a):
         
         matrix = [[0 for x in range(m)] for y in range(n)] 
         
-        qs = self.qs
         qs_t = []
         
         for mi in range(m):
             for ni in range(n):
-                matrix[ni][mi] = qs[mi * n + ni]
+                matrix[ni][mi] = self.qs[mi * n + ni]
         
         qs_t = []
         
@@ -8786,14 +8805,7 @@ class Q8aStates(Q8a):
         return Q8aStates(qs_t)
 
 
-# In[112]:
-
-
-B.product("ket", operator=Op).print_states("Bop ket")
-B.product("bra", operator=Op).print_states("Bop b")
-
-
-# In[103]:
+# In[37]:
 
 
 class TestQ8aStates(unittest.TestCase):
@@ -8810,6 +8822,8 @@ class TestQ8aStates(unittest.TestCase):
     Op = Q8aStates([Q8a([3,0,0,0]),Q8a([0,1,0,0]),Q8a([0,0,2,0]),Q8a([0,0,0,3]),Q8a([2,0,0,0]),Q8a([0,4,0,0])])
     Op4i = Q8aStates([Q8a([0,4,0,0])])
     qn = Q8aStates([Q8a([3,0,0,4])])
+    q1234 = Q8aStates([Q8a([1, 1, 0, 0]), Q8a([2, 1, 0, 0]), Q8a([3, 1, 0, 0]), Q8a([4, 1, 0, 0])])
+    sigma_y = Q8aStates([Q8a([1, 0, 0, 0]), Q8a([0, -1, 0, 0]), Q8a([0, 1, 0, 0]), Q8a([-1, 0, 0, 0])])
     
     def test_init(self):
         self.assertTrue(self.q0_q1.dim == 2)
@@ -8870,16 +8884,16 @@ class TestQ8aStates(unittest.TestCase):
     def test_product_AOp(self):
         AOp = self.A.product('bra', operator=self.Op)
         print("(A|Op: ", AOp)
-        self.assertTrue(AOp.qs[0].equals(Q8a([11, 0, 0, 0])))
-        self.assertTrue(AOp.qs[1].equals(Q8a([0, 0, 5, 0])))
-        self.assertTrue(AOp.qs[2].equals(Q8a([4, 0, 0, 0])))
+        self.assertTrue(AOp.qs[0].equals(Q8a([12, 0, -3, 0])))
+        self.assertTrue(AOp.qs[1].equals(Q8a([0, 6, 0, 0])))
+        self.assertTrue(AOp.qs[2].equals(Q8a([-4, 0,8, 0])))
                         
     def test_Euclidean_product_AOp(self):
         AOp = self.A.Euclidean_product('bra', operator=self.Op)
         print("<A*|Op: ", AOp)
-        self.assertTrue(AOp.qs[0].equals(Q8a([13, 0, 0, 0])))
-        self.assertTrue(AOp.qs[1].equals(Q8a([0, 0, 11, 0])))
-        self.assertTrue(AOp.qs[2].equals(Q8a([12, 0, 0, 0])))
+        self.assertTrue(AOp.qs[0].equals(Q8a([12, 0, 3, 0])))
+        self.assertTrue(AOp.qs[1].equals(Q8a([0, 2, 0, 0])))
+        self.assertTrue(AOp.qs[2].equals(Q8a([4, 0, 8, 0])))
 
     def test_product_OpB(self):
         OpB = self.B.product('ket', operator=self.Op)
