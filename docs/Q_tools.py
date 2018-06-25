@@ -17,7 +17,7 @@
 # 
 # Test driven development was used. The same tests were used for QH, QHa, Q8, and Q8a.  Either class can be used to study quaternions in physics.
 
-# In[38]:
+# In[1]:
 
 
 import IPython
@@ -38,7 +38,7 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 
 # Define the stretch factor $\gamma$ and the $\gamma \beta$ used in special relativity.
 
-# In[39]:
+# In[2]:
 
 
 def sr_gamma(beta_x=0, beta_y=0, beta_z=0):
@@ -58,7 +58,7 @@ def sr_gamma_betas(beta_x=0, beta_y=0, beta_z=0):
 
 # Define a class QH to manipulate quaternions as Hamilton would have done it so many years ago. The "qtype" is a little bit of text to leave a trail of breadcrumbs about how a particular quaternion was generated.
 
-# In[40]:
+# In[3]:
 
 
 class QH(object):
@@ -951,7 +951,7 @@ class QH(object):
 
 # Write tests the QH class.
 
-# In[41]:
+# In[4]:
 
 
 class TestQH(unittest.TestCase):
@@ -1304,7 +1304,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQH())
 unittest.TextTestRunner().run(suite);
 
 
-# In[42]:
+# In[5]:
 
 
 class TestQHRep(unittest.TestCase):
@@ -1355,7 +1355,7 @@ unittest.TextTestRunner().run(suite);
 
 # A separate class is needed for numpy array due to technical issues I have getting sympy and numpy to play nicely with each other...
 
-# In[43]:
+# In[6]:
 
 
 class QHa(object):
@@ -2248,7 +2248,7 @@ class QHa(object):
         return self
 
 
-# In[44]:
+# In[7]:
 
 
 class TestQHa(unittest.TestCase):
@@ -2594,7 +2594,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHa())
 unittest.TextTestRunner().run(suite);
 
 
-# In[45]:
+# In[8]:
 
 
 class TestQHaRep(unittest.TestCase):
@@ -2646,7 +2646,7 @@ unittest.TextTestRunner().run(suite);
 
 # My long term goal is to deal with quaternions on a quaternion manifold. This will have 4 pairs of doublets. Each doublet is paired with its additive inverse. Instead of using real numbers, one uses (3, 0) and (0, 2) to represent +3 and -2 respectively. Numbers such as (5, 6) are allowed. That can be "reduced" to (0, 1).  My sense is that somewhere deep in the depths of relativistic quantum field theory, this will be a "good thing". For now, it is a minor pain to program.
 
-# In[46]:
+# In[9]:
 
 
 class Doublet(object):
@@ -2768,7 +2768,7 @@ class Doublet(object):
         return Doublet([p1, n1])
 
 
-# In[47]:
+# In[10]:
 
 
 class TestDoublet(unittest.TestCase):
@@ -2843,7 +2843,7 @@ unittest.TextTestRunner().run(suite);
 
 # Repeat the exercise for arrays.
 
-# In[48]:
+# In[11]:
 
 
 class Doubleta(object):
@@ -2954,7 +2954,7 @@ class Doubleta(object):
         return Doubleta([p1, n1])
 
 
-# In[49]:
+# In[12]:
 
 
 class TestDoubleta(unittest.TestCase):
@@ -3024,7 +3024,7 @@ class TestDoubleta(unittest.TestCase):
         self.assertTrue(Z2p_red.d[1] == Z2p_2.d[1])
 
 
-# In[50]:
+# In[13]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestDoubleta())
@@ -3035,7 +3035,7 @@ unittest.TextTestRunner().run(suite);
 
 # Write a class to handle quaternions given 8 numbers.
 
-# In[51]:
+# In[14]:
 
 
 class Q8(object):
@@ -4000,7 +4000,7 @@ class Q8(object):
         return self
 
 
-# In[52]:
+# In[15]:
 
 
 class TestQ8(unittest.TestCase):
@@ -4436,7 +4436,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8())
 unittest.TextTestRunner().run(suite);
 
 
-# In[53]:
+# In[16]:
 
 
 class TestQ8Rep(unittest.TestCase):
@@ -4488,7 +4488,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Class Q8a as nparrays
 
-# In[54]:
+# In[17]:
 
 
 class Q8a(Doubleta):
@@ -5592,7 +5592,7 @@ class Q8a(Doubleta):
         return self
 
 
-# In[55]:
+# In[18]:
 
 
 class TestQ8a(unittest.TestCase):
@@ -5958,7 +5958,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8a())
 unittest.TextTestRunner().run(suite);
 
 
-# In[56]:
+# In[19]:
 
 
 class TestQ8aRep(unittest.TestCase):
@@ -6019,7 +6019,7 @@ unittest.TextTestRunner().run(suite);
 # Such an exact relation is not of much interest to physicists since Einstein showed that holds for only one set of observers. If one is moving relative to the reference observer, the two events would look like they occured at different times in the future, presuming perfectly accurate measuring devices.
 # 
 
-# In[57]:
+# In[20]:
 
 
 def round_sig_figs(num, sig_figs):
@@ -6033,7 +6033,7 @@ def round_sig_figs(num, sig_figs):
         return 0  # Can't take the log of 0
 
 
-# In[58]:
+# In[21]:
 
 
 class EQ(object):
@@ -6357,7 +6357,7 @@ class EQ(object):
     
 
 
-# In[59]:
+# In[22]:
 
 
 class TestEQ(unittest.TestCase):
@@ -6467,7 +6467,7 @@ class TestEQ(unittest.TestCase):
         self.assertTrue(eq_small_tiny.norm_squared_of_unity() == 'less_than_unity')
 
 
-# In[60]:
+# In[23]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestEQ())
@@ -6478,7 +6478,7 @@ unittest.TextTestRunner().run(suite);
 
 # Create a class that can make many, many quaternions.
 
-# In[61]:
+# In[24]:
 
 
 class QHArray(QH):
@@ -6551,7 +6551,7 @@ class QHArray(QH):
         return QH([new_t, new_x, new_y, new_z])
 
 
-# In[62]:
+# In[25]:
 
 
 class TestQHArray(unittest.TestCase):
@@ -6579,7 +6579,7 @@ class TestQHArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.z > 13.9)
 
 
-# In[63]:
+# In[26]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHArray())
@@ -6588,7 +6588,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Array of nparrays
 
-# In[64]:
+# In[27]:
 
 
 class QHaArray(QHa):
@@ -6651,7 +6651,7 @@ class QHaArray(QHa):
                 self.q_max.a[3] = q1.a[3]
 
 
-# In[65]:
+# In[28]:
 
 
 class TestQHaArray(unittest.TestCase):
@@ -6679,7 +6679,7 @@ class TestQHaArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.a[3] > 13.9)
 
 
-# In[66]:
+# In[29]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaArray())
@@ -6690,7 +6690,7 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[67]:
+# In[30]:
 
 
 class QHStates(QH):
@@ -7143,7 +7143,7 @@ class QHStates(QH):
         sigmas['xy'] = sigma['x'].add(sigma['y'])
         sigmas['xz'] = sigma['x'].add(sigma['z'])
         sigmas['yz'] = sigma['y'].add(sigma['z'])
-        sigmas['xyz'] = sigma['xy'].add(sigma['z'])
+        sigmas['xyz'] = sigma['x'].add(sigma['y']).add(sigma['z'])
 
         if kind not in sigma:
             print("Oops, I only know about x, y, z, and their combinations.")
@@ -7152,7 +7152,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[68]:
+# In[31]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -7362,7 +7362,7 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[69]:
+# In[32]:
 
 
 class QHaStates(QHa):
@@ -7756,9 +7756,50 @@ class QHaStates(QHa):
         hc = self.Hermitian_conj()
         
         return self.equals(hc)
+    
+    @staticmethod
+    def sigma(kind, theta=None, phi=None):
+        """Returns a sigma when given a type like, x, y, z, xy, xz, yz, xyz, with optional angles theta and phi."""
+        
+        q0, q1, qi = QHa().q_0(), QHa().q_1(), QHa().q_i()
+        
+        # Should work if given angles or not.
+        if theta is None:
+            sin_theta = 1
+            cos_theta = 1
+        else:
+            sin_theta = math.sin(theta)
+            cos_theta = math.cos(theta)
+            
+        if phi is None:
+            sin_phi = 1
+            cos_phi = 1
+        else:
+            sin_phi = math.sin(phi)
+            cos_phi = math.cos(phi)
+            
+        x_factor = q1.product(QHa([sin_theta * cos_phi, 0, 0, 0]))
+        y_factor = qi.product(QHa([sin_theta * sin_phi, 0, 0, 0]))
+        z_factor = q1.product(QHa([cos_theta, 0, 0, 0]))
+
+        sigmas = {}
+        sigma['x'] = QHaStates([q0, x_factor, x_factor, q0])
+        sigma['y'] = QHaStates([q0, y_factor, y_factor.flip_signs(), q0]) 
+        sigma['z'] = QHaStates([z_factor, q0, q0, z_factor.flip_signs()])
+  
+        sigmas['xy'] = sigma['x'].add(sigma['y'])
+        sigmas['xz'] = sigma['x'].add(sigma['z'])
+        sigmas['yz'] = sigma['y'].add(sigma['z'])
+        sigmas['xyz'] = sigma['x'].add(sigma['y']).add(sigma['z'])
+
+        if kind not in sigma:
+            print("Oops, I only know about x, y, z, and their combinations.")
+            return None
+        
+        return signma[kind].normalize()
 
 
-# In[70]:
+# In[33]:
 
 
 class TestQHaStates(unittest.TestCase):
@@ -7947,7 +7988,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[71]:
+# In[34]:
 
 
 class Q8States(Q8):
@@ -8319,9 +8360,50 @@ class Q8States(Q8):
                 qs_t.append(q)
                 
         return Q8States(qs_t)
+    
+    @staticmethod
+    def sigma(kind, theta=None, phi=None):
+        """Returns a sigma when given a type like, x, y, z, xy, xz, yz, xyz, with optional angles theta and phi."""
+        
+        q0, q1, qi = Q8().q_0(), Q8().q_1(), Q8().q_i()
+        
+        # Should work if given angles or not.
+        if theta is None:
+            sin_theta = 1
+            cos_theta = 1
+        else:
+            sin_theta = math.sin(theta)
+            cos_theta = math.cos(theta)
+            
+        if phi is None:
+            sin_phi = 1
+            cos_phi = 1
+        else:
+            sin_phi = math.sin(phi)
+            cos_phi = math.cos(phi)
+            
+        x_factor = q1.product(Q8([sin_theta * cos_phi, 0, 0, 0]))
+        y_factor = qi.product(Q8([sin_theta * sin_phi, 0, 0, 0]))
+        z_factor = q1.product(Q8([cos_theta, 0, 0, 0]))
+
+        sigmas = {}
+        sigma['x'] = Q8States([q0, x_factor, x_factor, q0])
+        sigma['y'] = Q8States([q0, y_factor, y_factor.flip_signs(), q0]) 
+        sigma['z'] = Q8States([z_factor, q0, q0, z_factor.flip_signs()])
+  
+        sigmas['xy'] = sigma['x'].add(sigma['y'])
+        sigmas['xz'] = sigma['x'].add(sigma['z'])
+        sigmas['yz'] = sigma['y'].add(sigma['z'])
+        sigmas['xyz'] = sigma['x'].add(sigma['y']).add(sigma['z'])
+
+        if kind not in sigma:
+            print("Oops, I only know about x, y, z, and their combinations.")
+            return None
+        
+        return signma[kind].normalize()
 
 
-# In[72]:
+# In[35]:
 
 
 class TestQ8States(unittest.TestCase):
@@ -8481,7 +8563,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[73]:
+# In[36]:
 
 
 class Q8aStates(Q8a):
@@ -8859,9 +8941,50 @@ class Q8aStates(Q8a):
                 qs_t.append(q)
                 
         return Q8aStates(qs_t)
+    
+    @staticmethod
+    def sigma(kind, theta=None, phi=None):
+        """Returns a sigma when given a type like, x, y, z, xy, xz, yz, xyz, with optional angles theta and phi."""
+        
+        q0, q1, qi = Q8a().q_0(), Q8a().q_1(), Q8a().q_i()
+        
+        # Should work if given angles or not.
+        if theta is None:
+            sin_theta = 1
+            cos_theta = 1
+        else:
+            sin_theta = math.sin(theta)
+            cos_theta = math.cos(theta)
+            
+        if phi is None:
+            sin_phi = 1
+            cos_phi = 1
+        else:
+            sin_phi = math.sin(phi)
+            cos_phi = math.cos(phi)
+            
+        x_factor = q1.product(Q8a([sin_theta * cos_phi, 0, 0, 0]))
+        y_factor = qi.product(Q8a([sin_theta * sin_phi, 0, 0, 0]))
+        z_factor = q1.product(Q8a([cos_theta, 0, 0, 0]))
+
+        sigmas = {}
+        sigma['x'] = Q8aStates([q0, x_factor, x_factor, q0])
+        sigma['y'] = Q8aStates([q0, y_factor, y_factor.flip_signs(), q0]) 
+        sigma['z'] = Q8aStates([z_factor, q0, q0, z_factor.flip_signs()])
+  
+        sigmas['xy'] = sigma['x'].add(sigma['y'])
+        sigmas['xz'] = sigma['x'].add(sigma['z'])
+        sigmas['yz'] = sigma['y'].add(sigma['z'])
+        sigmas['xyz'] = sigma['x'].add(sigma['y']).add(sigma['z'])
+
+        if kind not in sigma:
+            print("Oops, I only know about x, y, z, and their combinations.")
+            return None
+        
+        return signma[kind].normalize()
 
 
-# In[74]:
+# In[37]:
 
 
 class TestQ8aStates(unittest.TestCase):
