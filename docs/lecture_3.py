@@ -286,6 +286,8 @@ MA.dif(AMd_conj).print_states("M|A> - <A|M†", quiet=True)
 # 
 # The debugging I needed to calculate $<A|M$ correctly was a transpose the operator $M$. The transpose of a transpose is the operator $M$ unchanged. There are no conjugates involved in $M|A>$. There are three for $<A|M†*$: one for the bra vector $<A|$, one for the operator $M$, and finally the product of these two. Then there are three parts to analyze in the product of bra $<A|$ and operator $M$: the scalar terms, the even 3-vector terms, and the odd 3-vector terms. One scalar term gets no changes in sign what-so-ever. Three of the scalar terms flip signs twice, so no net change. The even 3-vector term is composed of a scalar and a 3-vector, so it flips signs once as a product, and once more with the final conjugate, so ends up unchanged. The odd 3-vector is the cross of two 3-vector terms, so the conjugates will change signs twice. There is a third sign change brought about by the change in the order of multiplication. The final conjugate leaves the odd 3-vector unchanged. Since the scalar, even and odd 3-vectors are unchanged, the two are equal. It is fun to see how all the parts shift under these changes in a way the preserves the final result.
 
+# ## Hermitian Operators
+
 # ![](images/lecture_3/c3_p61_q3.jpg)
 
 # Space-time dimensions are orthogonal to state dimensions. This means not only is there a sense of the two being at "right angles", but there is an intimate connection too. Every state dimension must have 4 space-time dimensions, but the number of state dimensions depends on the system under study. This issue is always framed in terms of real versus imaginary numbers, not something that is physical. With the quaternion series approach to quantum mechanics, the real versus imaginary story remains as true as it ever was. Now however, there is a physical interpretation. To say that the imaginary is zero is to say that an observer is located at the spatial location of (0, 0, 0). A measurement involves time or a time-like thing where the observer is in space or a space-like thing.
@@ -306,7 +308,9 @@ MMD.print_states("Is M† + M?", quiet=True)
 
 # ![](images/lecture_3/c3_p63_q1.jpg)
 
-# The conjugate operator flips ths sign of the imaginaries. If $\lamda = \lamba^*$, that can only be the case if the imaginaries are zero. For quaternion series quantum mechanics, that means eigenvalues are time-ish quantities.
+# The conjugate operator flips ths sign of the imaginaries. If $ \lambda = \lambda^* $, that can only be the case if the imaginaries are zero. For quaternion series quantum mechanics, that means eigenvalues are time-ish quantities.
+
+# ## The Fundamental Theorem
 
 # ![](images/lecture_3/c3_p64_q1.jpg)
 
@@ -321,6 +325,8 @@ MMD.print_states("Is M† + M?", quiet=True)
 # Normalizing a basis quaternion series is trivial - just find the right number to normalize by and one is done with that part. It sounds like a bigger deal to be able to construct a collection of vectors that are all orthogonal. This turns out to be straight forward. It is discussed in the next section which covers the Gram-Schmidt procedure. Recall that a Hermitian operator is quite a special animal. All the Eigen-values are real-valued. One implication of this is that a real-value always necessarily commutes with any other quaternion. What does this mean for the corresponding Eigen-kets? They must be orthogonal to each other or else the Eigen-values could mix.
 # 
 # The proper way to prove this is to start with one Eigen-value and create an normalized Eigen-ket basis. Then use the Gram-Schmidt procedure to get the other $n-1$ other basis quaternions.
+
+# ## The Gram-Schmidt Process to Create an Orthonormal Basis
 
 # ![](images/lecture_3/c3_p68_q1.jpg)
 
@@ -555,7 +561,7 @@ def sigma(kind, theta=None, phi=None):
         sigmas['xy'] = sigmas['x'].add(sigmas['y']).normalize()
         sigmas['xz'] = sigmas['x'].add(sigmas['z']).normalize()
         
-        sigmas['xyz'] = sigmas['xy'].add(sigmas['z']).normalize()
+        sigmas['xyz'] = sigmas['x'].add(sigmas['y']).add(sigmas['z']).normalize()
 
         if kind not in sigmas:
             print("Oops, I only know about x, y, z, and their combinations.")
@@ -587,3 +593,54 @@ sigma('xy').normalize().norm_squared().print_states('σxy', 1)
 # ![](images/lecture_3/c3_p89_q1.jpg)
 
 # It is easy for a mind to take the easy road and think spin has something to do with this sphere and spherical coordinates, or x, y, and z for that matter. Spin has two states, that is all it is about. Deciding which one to use for $\sigma_x$, $\sigma_y$, and $\sigma_z$ was arbitrary. In fact, the representation for $\sigma_x$ and $\sigma_z$ only involved time-ish numbers. Oddly enough it was $\sigma_y$ that involved $x$. One could have easily used $j$ which is "y-ish", but that deeply does not matter. Everyone does this calculation since it makes the two states of spin feel like they are part of space-time. With quaternion series quantum mechanics, that need is less needed since space-time is always there.
+
+# ## Epilog: So What Is Spin?
+
+# As I have already argued, spin is not about the three sphere. The three sigmas are about covering all the possibilities. Instead, by looking at the three representations under study (out of an infinite number of possibilities), what spin operators do is rearrange two  state dimensions. The three spin operators ($\sigma_x$, $\sigma_y$, and $\sigma_z$) as a team is cover all possible variations (a covering set). Let's look at what each one does, one at a time, starting with $\sigma_x$. 
+
+# In[30]:
+
+
+A = qt.QHStates([Aq1, Aq2])
+A.print_states("A", 1, quiet=True)
+sigma('x').print_states('σx', 1, quiet=True)
+σxA = A.Euclidean_product("ket", operator=sigma('x'))
+σxA.print_states("σx|A>", quiet=True)
+
+
+# All the first spin operator $\sigma_x$ does is take the first state and put it in the second states place while doing the reverse for the second state. The third operator $\sigma_z$ is also darn simple.
+
+# In[31]:
+
+
+σzA = A.Euclidean_product("ket", operator=sigma('z'))
+σzA.print_states("σz|A>", quiet=True)
+
+
+# Both states stay in place. The difference is that the second term flips signs. It is easy enough to imagine a different representation where it was the first term that flips signs. Just one more to go.
+
+# In[32]:
+
+
+σyA = A.Euclidean_product("ket", operator=sigma('y'))
+σyA.print_states("σz|A>", quiet=True)
+
+
+# Notice that the states "stayed together" in the sense that the first state space is made up of only the 2's, while the second state space has 1's. This time the t and x numbers switched spots. If this pattern is generally true, then one can expect a mixing between the positions, but not the two states per se. Time to do an experiment.
+
+# In[33]:
+
+
+σxyA = A.Euclidean_product("ket", operator=sigma('xy', .1, .2))
+σxyA.print_states("σxy|A>", 1, quiet=True)
+σxzA = A.Euclidean_product("ket", operator=sigma('xz', .1, .2))
+σxzA.print_states("σxz|A>", 1, quiet=True)
+σxyzA = A.Euclidean_product("ket", operator=sigma('xyz', .1, .2))
+σxyzA.print_states("σxyz|A>", quiet=True)
+
+
+# The hypothesis was definitely **wrong**. I consider that a good thing. It means the ideas I am playing with are precise enough to be wrong. Too much work is just vague. The two states can mingle. I think the implication is that the two states can mingle in any possible way. I don't know how easy it will be to figure out the combination of sigmas will be needed to get to a certain state.
+# 
+# Note that this analysis of spin is not dependent on the quaternion series approach to quantum mechanics. One has to look to see what each representation of the spin operator does to a two dimensional state space. That is not complicated, but I know that did not appear in QMTTM, and I don't recall seeing that done in other books on quantum mechanics. What is discussed is the operator $\sigma_n$ as the combination of three orthonormal operators. Yet the implications are again not discussed, namely that information contained in the two states can be shuffled around.
+# 
+# At this point, I don't feel comfortable with what a two state dimension system _is_. The spin operator mixes it around in any and all possible ways, but until I have a solid feeling about the two state dimensional system, I will not be able to answer the question posed in this epilogue, what is spin? Yet I do feel like my view on the topic is different from the standard approach in a good way because it is focused on what spin the operator does.

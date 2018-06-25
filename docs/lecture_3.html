@@ -12854,6 +12854,14 @@ n=3: (0, 0, 0, 0) m₇xa₁x1+0xj+0xj+m₈x0x1+a₂xj+0xj+m₉x0x1+0xj+axj-a₁x
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Hermitian-Operators">Hermitian Operators<a class="anchor-link" href="#Hermitian-Operators">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p><img src="images/lecture_3/c3_p61_q3.jpg" alt=""></p>
 
 </div>
@@ -12950,8 +12958,16 @@ n=9: (0, 2*Mx9, 2*My9, 2*Mz9) m₉-m₉*
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The conjugate operator flips ths sign of the imaginaries. If $\lamda = \lamba^*$, that can only be the case if the imaginaries are zero. For quaternion series quantum mechanics, that means eigenvalues are time-ish quantities.</p>
+<p>The conjugate operator flips ths sign of the imaginaries. If $ \lambda = \lambda^* $, that can only be the case if the imaginaries are zero. For quaternion series quantum mechanics, that means eigenvalues are time-ish quantities.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Fundamental-Theorem">The Fundamental Theorem<a class="anchor-link" href="#The-Fundamental-Theorem">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13007,6 +13023,14 @@ n=9: (0, 2*Mx9, 2*My9, 2*Mz9) m₉-m₉*
 <p>Normalizing a basis quaternion series is trivial - just find the right number to normalize by and one is done with that part. It sounds like a bigger deal to be able to construct a collection of vectors that are all orthogonal. This turns out to be straight forward. It is discussed in the next section which covers the Gram-Schmidt procedure. Recall that a Hermitian operator is quite a special animal. All the Eigen-values are real-valued. One implication of this is that a real-value always necessarily commutes with any other quaternion. What does this mean for the corresponding Eigen-kets? They must be orthogonal to each other or else the Eigen-values could mix.</p>
 <p>The proper way to prove this is to start with one Eigen-value and create an normalized Eigen-ket basis. Then use the Gram-Schmidt procedure to get the other $n-1$ other basis quaternions.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Gram-Schmidt-Process-to-Create-an-Orthonormal-Basis">The Gram-Schmidt Process to Create an Orthonormal Basis<a class="anchor-link" href="#The-Gram-Schmidt-Process-to-Create-an-Orthonormal-Basis">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13848,7 +13872,7 @@ sum= (0.707106781186548, -0.707106781186548, 0, 0) 0xQx1+0x0-Qx0+0x1+1x0x1+Qx0-0
         <span class="n">sigmas</span><span class="p">[</span><span class="s1">&#39;xy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigmas</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sigmas</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
         <span class="n">sigmas</span><span class="p">[</span><span class="s1">&#39;xz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigmas</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sigmas</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
         
-        <span class="n">sigmas</span><span class="p">[</span><span class="s1">&#39;xyz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigmas</span><span class="p">[</span><span class="s1">&#39;xy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sigmas</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+        <span class="n">sigmas</span><span class="p">[</span><span class="s1">&#39;xyz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigmas</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sigmas</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sigmas</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sigmas</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Oops, I only know about x, y, z, and their combinations.&quot;</span><span class="p">)</span>
@@ -14000,6 +14024,222 @@ sum= (1.0, 0.0, 0.0, 0.0) 0UxQ+0UxQUxQUxQ*x0UxQ+0UxQUxQUxQ+1xQUxQ+ixQUxQUxQUxQ*x
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>It is easy for a mind to take the easy road and think spin has something to do with this sphere and spherical coordinates, or x, y, and z for that matter. Spin has two states, that is all it is about. Deciding which one to use for $\sigma_x$, $\sigma_y$, and $\sigma_z$ was arbitrary. In fact, the representation for $\sigma_x$ and $\sigma_z$ only involved time-ish numbers. Oddly enough it was $\sigma_y$ that involved $x$. One could have easily used $j$ which is "y-ish", but that deeply does not matter. Everyone does this calculation since it makes the two states of spin feel like they are part of space-time. With quaternion series quantum mechanics, that need is less needed since space-time is always there.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Epilog:-So-What-Is-Spin?">Epilog: So What Is Spin?<a class="anchor-link" href="#Epilog:-So-What-Is-Spin?">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As I have already argued, spin is not about the three sphere. The three sigmas are about covering all the possibilities. Instead, by looking at the three representations under study (out of an infinite number of possibilities), what spin operators do is rearrange two  state dimensions. The three spin operators ($\sigma_x$, $\sigma_y$, and $\sigma_z$) as a team is cover all possible variations (a covering set). Let's look at what each one does, one at a time, starting with $\sigma_x$.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">Aq1</span><span class="p">,</span> <span class="n">Aq2</span><span class="p">])</span>
+<span class="n">A</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sigma</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s1">&#39;σx&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">σxA</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">sigma</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">))</span>
+<span class="n">σxA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;σx|A&gt;&quot;</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>A
+n=1: (At1, Ax1, Ay1, Az1) a₁
+n=2: (At2, Ax2, Ay2, Az2) a₂
+
+σx
+n=1: (0.0, 0.0, 0.0, 0.0) 0UxQ
+n=2: (0.7071067811865476, 0.0, 0.0, 0.0) 1xQUxQ
+n=3: (0.7071067811865476, 0.0, 0.0, 0.0) 1xQUxQ
+n=4: (0.0, 0.0, 0.0, 0.0) 0UxQ
+
+σx|A&gt;
+n=1: (0.707106781186548*At2, 0.707106781186548*Ax2, 0.707106781186548*Ay2, 0.707106781186548*Az2) 0UxQxa₁+1xQUxQxa₂
+n=2: (0.707106781186548*At1, 0.707106781186548*Ax1, 0.707106781186548*Ay1, 0.707106781186548*Az1) 1xQUxQxa₁+0UxQxa₂
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>All the first spin operator $\sigma_x$ does is take the first state and put it in the second states place while doing the reverse for the second state. The third operator $\sigma_z$ is also darn simple.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">σzA</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">sigma</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">))</span>
+<span class="n">σzA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;σz|A&gt;&quot;</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>σz|A&gt;
+n=1: (0.707106781186548*At1, 0.707106781186548*Ax1, 0.707106781186548*Ay1, 0.707106781186548*Az1) 1xQUxQxa₁+0UxQxa₂
+n=2: (-0.707106781186548*At2, -0.707106781186548*Ax2, -0.707106781186548*Ay2, -0.707106781186548*Az2) 0UxQxa₁+-1xQUxQxa₂
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Both states stay in place. The difference is that the second term flips signs. It is easy enough to imagine a different representation where it was the first term that flips signs. Just one more to go.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">σyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">sigma</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">))</span>
+<span class="n">σyA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;σz|A&gt;&quot;</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>σz|A&gt;
+n=1: (-0.707106781186548*Ax2, 0.707106781186548*At2, -0.707106781186548*Az2, 0.707106781186548*Ay2) 0UxQxa₁+ixQUxQxa₂
+n=2: (0.707106781186548*Ax1, -0.707106781186548*At1, 0.707106781186548*Az1, -0.707106781186548*Ay1) -ixQUxQxa₁+0UxQxa₂
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Notice that the states "stayed together" in the sense that the first state space is made up of only the 2's, while the second state space has 1's. This time the t and x numbers switched spots. If this pattern is generally true, then one can expect a mixing between the positions, but not the two states per se. Time to do an experiment.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">σxyA</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">sigma</span><span class="p">(</span><span class="s1">&#39;xy&#39;</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">σxyA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;σxy|A&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">σxzA</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">sigma</span><span class="p">(</span><span class="s1">&#39;xz&#39;</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">σxzA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;σxz|A&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">σxyzA</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">sigma</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">σxyzA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;σxyz|A&gt;&quot;</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>σxy|A&gt;
+n=1: (0.5*At2 - 0.5*Ax2, 0.5*At2 + 0.5*Ax2, 0.5*Ay2 - 0.5*Az2, 0.5*Ay2 + 0.5*Az2) 0UxQ+0UxQUxQxa₁+1xQUxQ+ixQUxQUxQxa₂
+n=2: (0.5*At1 + 0.5*Ax1, -0.5*At1 + 0.5*Ax1, 0.5*Ay1 + 0.5*Az1, -0.5*Ay1 + 0.5*Az1) 1xQUxQ+-ixQUxQUxQxa₁+0UxQ+0UxQUxQxa₂
+
+σxz|A&gt;
+n=1: (0.5*At1 + 0.5*At2, 0.5*Ax1 + 0.5*Ax2, 0.5*Ay1 + 0.5*Ay2, 0.5*Az1 + 0.5*Az2) 0UxQ+1xQUxQUxQxa₁+1xQUxQ+0UxQUxQxa₂
+n=2: (0.5*At1 - 0.5*At2, 0.5*Ax1 - 0.5*Ax2, 0.5*Ay1 - 0.5*Ay2, 0.5*Az1 - 0.5*Az2) 1xQUxQ+0UxQUxQxa₁+0UxQ+-1xQUxQUxQxa₂
+
+σxyz|A&gt;
+n=1: (0.5*At1 + 0.353553390593274*At2 - 0.353553390593274*Ax2, 0.353553390593274*At2 + 0.5*Ax1 + 0.353553390593274*Ax2, 0.5*Ay1 + 0.353553390593274*Ay2 - 0.353553390593274*Az2, 0.353553390593274*Ay2 + 0.5*Az1 + 0.353553390593274*Az2) 0UxQ+0UxQ+1xQUxQUxQxa₁+1xQUxQ+ixQUxQ+0UxQUxQxa₂
+n=2: (0.353553390593274*At1 - 0.5*At2 + 0.353553390593274*Ax1, -0.353553390593274*At1 + 0.353553390593274*Ax1 - 0.5*Ax2, 0.353553390593274*Ay1 - 0.5*Ay2 + 0.353553390593274*Az1, -0.353553390593274*Ay1 + 0.353553390593274*Az1 - 0.5*Az2) 1xQUxQ+-ixQUxQ+0UxQUxQxa₁+0UxQ+0UxQ+-1xQUxQUxQxa₂
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The hypothesis was definitely <strong>wrong</strong>. I consider that a good thing. It means the ideas I am playing with are precise enough to be wrong. Too much work is just vague. The two states can mingle. I think the implication is that the two states can mingle in any possible way. I don't know how easy it will be to figure out the combination of sigmas will be needed to get to a certain state.</p>
+<p>Note that this analysis of spin is not dependent on the quaternion series approach to quantum mechanics. One has to look to see what each representation of the spin operator does to a two dimensional state space. That is not complicated, but I know that did not appear in QMTTM, and I don't recall seeing that done in other books on quantum mechanics. What is discussed is the operator $\sigma_n$ as the combination of three orthonormal operators. Yet the implications are again not discussed, namely that information contained in the two states can be shuffled around.</p>
+<p>At this point, I don't feel comfortable with what a two state dimension system <em>is</em>. The spin operator mixes it around in any and all possible ways, but until I have a solid feeling about the two state dimensional system, I will not be able to answer the question posed in this epilogue, what is spin? Yet I do feel like my view on the topic is different from the standard approach in a good way because it is focused on what spin the operator does.</p>
 
 </div>
 </div>
