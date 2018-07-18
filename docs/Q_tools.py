@@ -17,7 +17,7 @@
 # 
 # Test driven development was used. The same tests were used for QH, QHa, Q8, and Q8a.  Either class can be used to study quaternions in physics.
 
-# In[1]:
+# In[2]:
 
 
 import IPython
@@ -38,7 +38,7 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 
 # Define the stretch factor $\gamma$ and the $\gamma \beta$ used in special relativity.
 
-# In[2]:
+# In[3]:
 
 
 def sr_gamma(beta_x=0, beta_y=0, beta_z=0):
@@ -58,7 +58,7 @@ def sr_gamma_betas(beta_x=0, beta_y=0, beta_z=0):
 
 # Define a class QH to manipulate quaternions as Hamilton would have done it so many years ago. The "qtype" is a little bit of text to leave a trail of breadcrumbs about how a particular quaternion was generated.
 
-# In[3]:
+# In[4]:
 
 
 class QH(object):
@@ -951,7 +951,7 @@ class QH(object):
 
 # Write tests the QH class.
 
-# In[4]:
+# In[5]:
 
 
 class TestQH(unittest.TestCase):
@@ -1304,7 +1304,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQH())
 unittest.TextTestRunner().run(suite);
 
 
-# In[5]:
+# In[6]:
 
 
 class TestQHRep(unittest.TestCase):
@@ -1355,7 +1355,7 @@ unittest.TextTestRunner().run(suite);
 
 # A separate class is needed for numpy array due to technical issues I have getting sympy and numpy to play nicely with each other...
 
-# In[6]:
+# In[7]:
 
 
 class QHa(object):
@@ -2248,7 +2248,7 @@ class QHa(object):
         return self
 
 
-# In[7]:
+# In[8]:
 
 
 class TestQHa(unittest.TestCase):
@@ -2594,7 +2594,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHa())
 unittest.TextTestRunner().run(suite);
 
 
-# In[8]:
+# In[9]:
 
 
 class TestQHaRep(unittest.TestCase):
@@ -2646,7 +2646,7 @@ unittest.TextTestRunner().run(suite);
 
 # My long term goal is to deal with quaternions on a quaternion manifold. This will have 4 pairs of doublets. Each doublet is paired with its additive inverse. Instead of using real numbers, one uses (3, 0) and (0, 2) to represent +3 and -2 respectively. Numbers such as (5, 6) are allowed. That can be "reduced" to (0, 1).  My sense is that somewhere deep in the depths of relativistic quantum field theory, this will be a "good thing". For now, it is a minor pain to program.
 
-# In[9]:
+# In[10]:
 
 
 class Doublet(object):
@@ -2768,7 +2768,7 @@ class Doublet(object):
         return Doublet([p1, n1])
 
 
-# In[10]:
+# In[11]:
 
 
 class TestDoublet(unittest.TestCase):
@@ -2843,7 +2843,7 @@ unittest.TextTestRunner().run(suite);
 
 # Repeat the exercise for arrays.
 
-# In[11]:
+# In[12]:
 
 
 class Doubleta(object):
@@ -2954,7 +2954,7 @@ class Doubleta(object):
         return Doubleta([p1, n1])
 
 
-# In[12]:
+# In[13]:
 
 
 class TestDoubleta(unittest.TestCase):
@@ -3024,7 +3024,7 @@ class TestDoubleta(unittest.TestCase):
         self.assertTrue(Z2p_red.d[1] == Z2p_2.d[1])
 
 
-# In[13]:
+# In[14]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestDoubleta())
@@ -3035,7 +3035,7 @@ unittest.TextTestRunner().run(suite);
 
 # Write a class to handle quaternions given 8 numbers.
 
-# In[14]:
+# In[15]:
 
 
 class Q8(object):
@@ -4000,7 +4000,7 @@ class Q8(object):
         return self
 
 
-# In[15]:
+# In[16]:
 
 
 class TestQ8(unittest.TestCase):
@@ -4436,7 +4436,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8())
 unittest.TextTestRunner().run(suite);
 
 
-# In[16]:
+# In[17]:
 
 
 class TestQ8Rep(unittest.TestCase):
@@ -4488,7 +4488,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Class Q8a as nparrays
 
-# In[17]:
+# In[18]:
 
 
 class Q8a(Doubleta):
@@ -5592,7 +5592,7 @@ class Q8a(Doubleta):
         return self
 
 
-# In[18]:
+# In[19]:
 
 
 class TestQ8a(unittest.TestCase):
@@ -5958,7 +5958,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8a())
 unittest.TextTestRunner().run(suite);
 
 
-# In[19]:
+# In[20]:
 
 
 class TestQ8aRep(unittest.TestCase):
@@ -6019,7 +6019,7 @@ unittest.TextTestRunner().run(suite);
 # Such an exact relation is not of much interest to physicists since Einstein showed that holds for only one set of observers. If one is moving relative to the reference observer, the two events would look like they occured at different times in the future, presuming perfectly accurate measuring devices.
 # 
 
-# In[20]:
+# In[21]:
 
 
 def round_sig_figs(num, sig_figs):
@@ -6033,7 +6033,7 @@ def round_sig_figs(num, sig_figs):
         return 0  # Can't take the log of 0
 
 
-# In[21]:
+# In[22]:
 
 
 class EQ(object):
@@ -6357,7 +6357,7 @@ class EQ(object):
     
 
 
-# In[22]:
+# In[23]:
 
 
 class TestEQ(unittest.TestCase):
@@ -6467,7 +6467,7 @@ class TestEQ(unittest.TestCase):
         self.assertTrue(eq_small_tiny.norm_squared_of_unity() == 'less_than_unity')
 
 
-# In[23]:
+# In[24]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestEQ())
@@ -6478,7 +6478,7 @@ unittest.TextTestRunner().run(suite);
 
 # Create a class that can make many, many quaternions.
 
-# In[24]:
+# In[25]:
 
 
 class QHArray(QH):
@@ -6551,7 +6551,7 @@ class QHArray(QH):
         return QH([new_t, new_x, new_y, new_z])
 
 
-# In[25]:
+# In[26]:
 
 
 class TestQHArray(unittest.TestCase):
@@ -6579,7 +6579,7 @@ class TestQHArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.z > 13.9)
 
 
-# In[26]:
+# In[27]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHArray())
@@ -6588,7 +6588,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Array of nparrays
 
-# In[27]:
+# In[28]:
 
 
 class QHaArray(QHa):
@@ -6651,7 +6651,7 @@ class QHaArray(QHa):
                 self.q_max.a[3] = q1.a[3]
 
 
-# In[28]:
+# In[29]:
 
 
 class TestQHaArray(unittest.TestCase):
@@ -6679,7 +6679,7 @@ class TestQHaArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.a[3] > 13.9)
 
 
-# In[29]:
+# In[30]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaArray())
@@ -6690,7 +6690,7 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[30]:
+# In[31]:
 
 
 class QHStates(QH):
@@ -6894,6 +6894,12 @@ class QHStates(QH):
                     diagonal.append(QH().q_0())
         
         return QHStates(diagonal)
+        
+    def identity(self, dim):
+        """Identity operator for states."""
+    
+        q_1 = QHStates([QH().q_1()])
+        return QHStates.diagonal(q_1, dim)    
         
     def product(self, product_type, bra=None, ket=None, operator=None, kind="", reverse=False):
         """Forms the quaternion product for each state."""
@@ -7152,7 +7158,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[31]:
+# In[32]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -7161,13 +7167,14 @@ class TestQHStates(unittest.TestCase):
     q0 = QH().q_0()
     q1 = QH().q_1()
     qi = QH().q_i()
+    qi4 = QH([0,4,0,0])
     q0_q1 = QHStates([q0, q1])
     q1_q0 = QHStates([q1, q0])
     q1_qi = QHStates([q1, qi])
     A = QHStates([QH([4,0,0,0]),QH([0,1,0,0])])
     B = QHStates([QH([0,0,1,0]),QH([0,0,0,2]),QH([0,3,0,0])])
     Op = QHStates([QH([3,0,0,0]),QH([0,1,0,0]),QH([0,0,2,0]),QH([0,0,0,3]),QH([2,0,0,0]),QH([0,4,0,0])])
-    Op4i = QHStates([QH([0,4,0,0])])
+    Op4i = QHStates([qi4])
     q1234 = QHStates([QH([1, 1, 0, 0]), QH([2, 1, 0, 0]), QH([3, 1, 0, 0]), QH([4, 1, 0, 0])])
     sigma_y = QHStates([QH([1, 0, 0, 0]), QH([0, -1, 0, 0]), QH([0, 1, 0, 0]), QH([-1, 0, 0, 0])])
     qn = QHStates([QH([3,0,0,4])])
@@ -7215,6 +7222,18 @@ class TestQHStates(unittest.TestCase):
         print("dif 01 10: ", q_0110_dif)
         self.assertTrue(q_0110_dif.qs[0].t == -1)
         self.assertTrue(q_0110_dif.qs[1].t == 1)
+        
+    def test_diagonal(self):
+        Op4iDiag2 = self.Op4i.diagonal(2)
+        print("Op4i on a diagonal 2x2", Op4iDiag2)
+        self.assertTrue(Op4iDiag2.qs[0].equals(self.qi4))
+        self.assertTrue(Op4iDiag2.qs[1].equals(QH().q_0()))
+        
+    def test_identity(self):
+        I2 = QHStates().identity(2)
+        print("Idenity on a diagonal 2x2", I2)
+        self.assertTrue(I2.qs[0].equals(QH().q_1()))
+        self.assertTrue(I2.qs[1].equals(QH().q_0()))
         
     def test_product_AA(self):
         AA = self.A.product('bra', ket=self.A)
@@ -7362,7 +7381,7 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[32]:
+# In[33]:
 
 
 class QHaStates(QHa):
@@ -7538,6 +7557,12 @@ class QHaStates(QHa):
                     diagonal.append(QHa().q_0())
         
         return QHaStates(diagonal)
+        
+    def identity(self, dim):
+        """Identity operator for states."""
+    
+        q_1 = QHaStates([QHa().q_1()])
+        return QHaStates.diagonal(q_1, dim)     
         
     def product(self, product_type, bra=None, ket=None, operator=None, kind=""):
         """Forms the quaternion product for each state."""
@@ -7799,7 +7824,7 @@ class QHaStates(QHa):
         return signma[kind].normalize()
 
 
-# In[33]:
+# In[34]:
 
 
 class TestQHaStates(unittest.TestCase):
@@ -7811,10 +7836,11 @@ class TestQHaStates(unittest.TestCase):
     q0_q1 = QHaStates([q0, q1])
     q1_q0 = QHaStates([q1, q0])
     q1_qi = QHaStates([q1, qi])
+    qi4 = QHa([0,4,0,0])
     A = QHaStates([QHa([4,0,0,0]),QHa([0,1,0,0])])
     B = QHaStates([QHa([0,0,1,0]),QHa([0,0,0,2]),QHa([0,3,0,0])])
     Op = QHaStates([QHa([3,0,0,0]),QHa([0,1,0,0]),QHa([0,0,2,0]),QHa([0,0,0,3]),QHa([2,0,0,0]),QHa([0,4,0,0])])
-    Op4i = QHaStates([QHa([0,4,0,0])])
+    Op4i = QHaStates([qi4])
     qn = QHaStates([QHa([3,0,0,4])])
     q1234 = QHStates([QHa([1, 1, 0, 0]), QHa([2, 1, 0, 0]), QHa([3, 1, 0, 0]), QHa([4, 1, 0, 0])])
     sigma_y = QHStates([QHa([1, 0, 0, 0]), QHa([0, -1, 0, 0]), QHa([0, 1, 0, 0]), QHa([-1, 0, 0, 0])])
@@ -7862,6 +7888,18 @@ class TestQHaStates(unittest.TestCase):
         print("dif 01 10: ", q_0110_dif)
         self.assertTrue(q_0110_dif.qs[0].a[0] == -1)
         self.assertTrue(q_0110_dif.qs[1].a[0] == 1)
+        
+    def test_diagonal(self):
+        Op4iDiag2 = self.Op4i.diagonal(2)
+        print("Op4i on a diagonal 2x2", Op4iDiag2)
+        self.assertTrue(Op4iDiag2.qs[0].equals(self.qi4))
+        self.assertTrue(Op4iDiag2.qs[1].equals(QHa().q_0()))
+        
+    def test_identity(self):
+        I2 = QHaStates().identity(2)
+        print("Idenity on a diagonal 2x2", I2)
+        self.assertTrue(I2.qs[0].equals(QHa().q_1()))
+        self.assertTrue(I2.qs[1].equals(QHa().q_0()))    
         
     def test_product_AA(self):
         AA = self.A.product('bra', ket=self.A)
@@ -7988,7 +8026,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[34]:
+# In[35]:
 
 
 class Q8States(Q8):
@@ -8164,6 +8202,12 @@ class Q8States(Q8):
                     diagonal.append(Q8().q_0())
         
         return Q8States(diagonal)
+        
+    def identity(self, dim):
+        """Identity operator for states."""
+    
+        q_1 = Q8States([Q8().q_1()])
+        return Q8States.diagonal(q_1, dim)     
         
     def product(self, product_type, bra=None, ket=None, operator=None, kind=""):
         """Forms the quaternion product for each state."""
@@ -8403,7 +8447,7 @@ class Q8States(Q8):
         return signma[kind].normalize()
 
 
-# In[35]:
+# In[36]:
 
 
 class TestQ8States(unittest.TestCase):
@@ -8415,10 +8459,11 @@ class TestQ8States(unittest.TestCase):
     q0_q1 = Q8States([q0, q1])
     q1_q0 = Q8States([q1, q0])
     q1_qi = Q8States([q1, qi])
+    qi4 = Q8([0,4,0,0])
     A = Q8States([Q8([4,0,0,0]),Q8([0,1,0,0])])
     B = Q8States([Q8([0,0,1,0]),Q8([0,0,0,2]),Q8([0,3,0,0])])
     Op = Q8States([Q8([3,0,0,0]),Q8([0,1,0,0]),Q8([0,0,2,0]),Q8([0,0,0,3]),Q8([2,0,0,0]),Q8([0,4,0,0])])
-    Op4i = Q8States([Q8([0,4,0,0])])
+    Op4i = Q8States([qi4])
     qn = Q8States([Q8([3,0,0,4])])
     q1234 = Q8States([Q8([1, 1, 0, 0]), Q8([2, 1, 0, 0]), Q8([3, 1, 0, 0]), Q8([4, 1, 0, 0])])
     sigma_y = Q8States([Q8([1, 0, 0, 0]), Q8([0, -1, 0, 0]), Q8([0, 1, 0, 0]), Q8([-1, 0, 0, 0])])
@@ -8467,6 +8512,18 @@ class TestQ8States(unittest.TestCase):
         print("dif 01 10: ", q_0110_dif)
         self.assertTrue(q_0110_dif.qs[0].dt.n== 1)
         self.assertTrue(q_0110_dif.qs[1].dt.p== 1)
+    
+    def test_diagonal(self):
+        Op4iDiag2 = self.Op4i.diagonal(2)
+        print("Op4i on a diagonal 2x2", Op4iDiag2)
+        self.assertTrue(Op4iDiag2.qs[0].equals(self.qi4))
+        self.assertTrue(Op4iDiag2.qs[1].equals(Q8().q_0()))
+        
+    def test_identity(self):
+        I2 = Q8States().identity(2)
+        print("Identity on a diagonal 2x2", I2)
+        self.assertTrue(I2.qs[0].equals(Q8().q_1()))
+        self.assertTrue(I2.qs[1].equals(Q8().q_0()))
         
     def test_product_AA(self):
         AA = self.A.product('bra', ket=self.A)
@@ -8563,7 +8620,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[36]:
+# In[37]:
 
 
 class Q8aStates(Q8a):
@@ -8747,6 +8804,12 @@ class Q8aStates(Q8a):
         
         return Q8aStates(diagonal)
         
+    def identity(self, dim):
+        """Identity operator for states."""
+    
+        q_1 = Q8aStates([Q8a().q_1()])
+        return Q8aStates.diagonal(q_1, dim) 
+    
     def product(self, product_type, bra=None, ket=None, operator=None, kind=""):
         """Forms the quaternion product for each state."""
         
@@ -8984,7 +9047,7 @@ class Q8aStates(Q8a):
         return signma[kind].normalize()
 
 
-# In[37]:
+# In[38]:
 
 
 class TestQ8aStates(unittest.TestCase):
@@ -8996,10 +9059,11 @@ class TestQ8aStates(unittest.TestCase):
     q0_q1 = Q8aStates([q0, q1])
     q1_q0 = Q8aStates([q1, q0])
     q1_qi = Q8aStates([q1, qi])
+    qi4 = Q8a([0,4,0,0])
     A = Q8aStates([Q8a([4,0,0,0]),Q8a([0,1,0,0])])
     B = Q8aStates([Q8a([0,0,1,0]),Q8a([0,0,0,2]),Q8a([0,3,0,0])])
     Op = Q8aStates([Q8a([3,0,0,0]),Q8a([0,1,0,0]),Q8a([0,0,2,0]),Q8a([0,0,0,3]),Q8a([2,0,0,0]),Q8a([0,4,0,0])])
-    Op4i = Q8aStates([Q8a([0,4,0,0])])
+    Op4i = Q8aStates([qi4])
     qn = Q8aStates([Q8a([3,0,0,4])])
     q1234 = Q8aStates([Q8a([1, 1, 0, 0]), Q8a([2, 1, 0, 0]), Q8a([3, 1, 0, 0]), Q8a([4, 1, 0, 0])])
     sigma_y = Q8aStates([Q8a([1, 0, 0, 0]), Q8a([0, -1, 0, 0]), Q8a([0, 1, 0, 0]), Q8a([-1, 0, 0, 0])])
@@ -9047,6 +9111,18 @@ class TestQ8aStates(unittest.TestCase):
         print("dif 01 10: ", q_0110_dif)
         self.assertTrue(q_0110_dif.qs[0].a[1]== 1)
         self.assertTrue(q_0110_dif.qs[1].a[0]== 1)
+        
+    def test_diagonal(self):
+        Op4iDiag2 = self.Op4i.diagonal(2)
+        print("Op4i on a diagonal 2x2", Op4iDiag2)
+        self.assertTrue(Op4iDiag2.qs[0].equals(self.qi4))
+        self.assertTrue(Op4iDiag2.qs[1].equals(Q8a().q_0()))
+        
+    def test_identity(self):
+        I2 = Q8aStates().identity(2)
+        print("Idenity on a diagonal 2x2", I2)
+        self.assertTrue(I2.qs[0].equals(Q8a().q_1()))
+        self.assertTrue(I2.qs[1].equals(Q8a().q_0()))
         
     def test_product_AA(self):
         AA = self.A.product('bra', ket=self.A)
