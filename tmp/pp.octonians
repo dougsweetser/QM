@@ -1,0 +1,44 @@
+Hello again:
+
+Your thought is not random. It looks like a logical extension to my eye, one that people have
+asked of me in the past. My standard reply is that when I need a non-associative algebra to
+solve a problem in physics, I will investigate Octonians.
+
+I actually have been working extensively with non-assiative quaternion series for 5 months!
+
+Quaternions can do space-time all naturally because they have the 4 dimensions. But how could
+one ever hope to handle one to infinite number of states that are a Hilbert vector space? I noticed
+all the way back in 1998 that I could do all the important Hilbert state proofs using the
+product A* B (triangle inequality, Schwarz inequality, some others). I only figured out an
+approach to the state issue earlier this year: quaternion series. A quaternion series can have
+one state, two states,... infinite states because that is the way series are. 
+
+Yet there is sooo much to do: states, unitarity, the uncertainty relations, entanglement...
+At a bare minimum, I need to show how quaternions of the form Sum_n a*_n b_n could actually
+work. Or I got nothing. Susskind and Friedman wrote a book, "Quantum Mechanics: The Theoretical
+Minimum. Great book, goes into useful detail on all of those issues without getting lost
+in graduate-level detail. 
+
+I am testing a hyppthesis: that everything done in that book can also be done in an iPython
+notebook using quaternion series quantum mechanics. I don't chat about it because I have
+only completed 3 of 10 chapters. I get to talk about it in detain if I can do 10 of 10
+chapters. Right now I am in the unitary chapter and am trying to invert a quaternion series
+with 4 or 9 elements. I am certain it can be done, but I haven't done it yet.
+
+Do you know about github? That is a place to store work. The three completed chapters are there
+at https://github.com/dougsweetser/QM. I am working on chapter 4, Time and Change. Progress
+is slow but feels real. 
+
+
+On a different topic.
+
+At one point, you asked about my field theory approach to gravity. Let's NOT dig up what I said.
+I didn't know what I was talking about because I didn't know. Research is like that.
+
+Now I have something concrete, but have yet to discuss it. Why? Well it is odd and funny at
+the same time. 
+
+
+Random thought that popped in my head today.
+Octonians every once in awhile get some attention from physicists. But they are so strange. They don't even have a matrix representation because they are non-associative.  So what if ... there was an even stranger number extension that no one thought of because even addition becomes non-commutative or non-associative?  I can't even figure out what that would even mean.  Since you love exploring number systems, how would you try to explore that and try to come up with definitions to study the properties?
+
