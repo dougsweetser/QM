@@ -1,7 +1,31 @@
 https://www.youtube.com/watch?v=e_RRtsu8T18&lc
 
-This document was not ment to persausde anyone trained in quantum mechanics about my efforts. I certain
-accept it would be an utter failure to do so
+This document was not ment to persausde anyone trained in quantum mechanics
+about my efforts. I certain accept it would be an utter failure to do so.
+
+It is reasonable to ask for a short, coherent blog as you outline. It just is
+not the time.
+
+I have a hypothesis that I am testing. In my lab experience, testing a
+hypothesis involves a crazy volume of detail. That is what is up on github
+today. That is what I will need to add to over the upcoming months.
+
+By the way, I may fail in this precisely defined quest. First because the
+hypothesis being tested is wrong, that one cannot do everything done with a
+complex-valued Hilbert space in quantum mechanics with quaternion series
+quantum mechanics as operationally defined in the github pages. It took me a
+few weeks of hacking to show if M is a Hermitian quaternion series, then M|A> =
+<A|M^daggar. Other steps were more direct, but all steps have to be done (how
+long anything takes is also not relevant).  And there is the possibility that a
+step cound be done, but I, Doug, am not able to complete the task. I waste good
+time on this concern.
+
+My central thesis however is in place. Quantum mechanics using a complex-valued
+Hilbert space is right, but it is not right enough. When a physicist starts off
+say "I have a vector space...", what I see is something that can be right, but
+not right enough. I accept that the vectors can be added, subtracted, and 
+multiplied by a scalar. Bingo, bingo, right. But It would be better if those
+same objects can also multiply or divide each other.
 
 
 
