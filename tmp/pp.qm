@@ -1,0 +1,60 @@
+https://www.youtube.com/watch?v=e_RRtsu8T18&lc
+
+This document was not ment to persausde anyone trained in quantum mechanics about my efforts. I certain
+accept it would be an utter failure to do so
+
+
+
+
+Highlighted reply
+Purple Penguin
+9 hours ago
+I looked through your QM notes.
+Can I offer to help by being a "translator" of sorts?
+The way you write stuff I get the impression you think you are including tons of explicit calculation details and so anyone willing to read through it would be fully convinced your construction works.  The truth is, the presentation is incredibly difficult to follow. You spend a lot of time on calculation details that can just be proved in general, and you jump in right away without explaining what your construction even is ... so someone has to try to "extract" it from all the details.  I think I could help "translate" or "filter" your stuff so it is much more accessible to someone with a physics background.
+
+Here is what I'd suggest, assume they already understand quantum mechanics but summarize the main definitions and postulates with the complex Hilbert space approach to get people started. This is framing the discussion.  Then give the definitions and postulates with your construction. Likely it is then just simple to prove where they agree (completely equivalent?) or highlight where they differ.
+
+I'm not near my textbooks at the moment, so I'll just try to list the postulates of quantum mechanics here, possibly missing some details. Unlike newton's laws, everyone numbers and presents these different.
+
+0) In quantum mechanics, a physical system is described using a Hilbert space.
+1) A state of the system is described by a ray in the Hilbert space. (or alternatively, require that the state vector is normalized; I'll take that route)
+2) If we have two separate systems described by Hilbert1 and Hilbert2, the Hilbert space describing the joint system is the tensor product space Hilbert1 x Hilbert2.
+3) An observable is represented by a Hermitian operator on the Hilbert space.
+4) Evolution of a system (except for measurement) is given by the equation:
+       i hbar (partial/partial t) Psi = H Psi
+    where Psi is the state vector, and H is the Hamiltonian operator.  H is a unitary operator on the Hilbert space.
+5) Measurement: if the observerable A of a system is measured, the state randomly collapses into an eigenstate of A.  The expectation value is given by <Psi, A Psi>, where the probability of collapsing into a particular non-degenerate eigenstate Phi_i is given by the norm squared of the inner product between the system state and that eigenvalue:  || <Psi, Phi_i> ||^2
+
+I think those are all the main points. #2 possibly can be determined somehow from the others, and because things are linear the individual probabilities can probably be determined somehow just by specifying the expectation value. We just want clarity here, so that should be fine.
+
+I stated #2 explicitly because a relatively common mistake for students is to think two particles mean there are two wavefunctions instead of one wavefunction with more degrees of freedom; or to naively think combining two systems each with 2 discrete degrees of freedom results in a four dimensional Hilbert space because 2+2 instead of 2*2. The error should become clear when considering three of those systems: 2*2*2 = 8 dimensional Hilbert space, not 2+2+2=6 dimensional.
+
+Now, in your idea, do all these postulates still hold? Is the only difference how you construct your Hilbert space?
+
+If so, things are much simpler.  If not, things are likely to fall apart quick. So you should make this abundantly clear upfront.
+
+So now, moving onto the details of your Hilbert space. A Hilbert space can be specified by: a field F, a vector space over this field, and an inner product <phi, psi>. Then we can check that the inner product has the necessary properties.
+
+It appears your construction is:
+- the scalars of your Hilbert space are quaternions
+- you have a vector space over the quaternions (but for some reason you call the vectors "Quaternion series")
+- you define the inner product <a, b> = sum (a_i*) b_i, where * is the quaternion conjugate, a_i is the i_th component of the vector 'a', and the implied multiplication is quaternion multiplication.
+
+From that definition, most properties just fall out once you remind or demonstrate that (q*)q >= 0, and only zero when q=0. The main stickler is you now have to be careful with the linearity conditions. With real or complex vector spaces we could just write that for all scalars s, and vectors a, b one linearity condition is  <a, s b> = s <a, b> = <a, b s> = <a,b> s.  That is conflicting or ambiguous with quaternions because they do not commute.  So you need to clarify this.  Maybe you have to choose a side and have it be "right linear", something like it is linear if multiplying the vector from the right.
+<a, b s> = a* b s,    <a s, b> = s* a* b
+This feels almost forced upon us to me, as this feels like the only natural way forward.  As a quick check, searching for "right linear quaternionic Hilbert space" has some hits in literature, so is probably how people do it (although I haven't read any papers to verify).
+
+There are also a lot of things you write in a very confusing manner. For instance instead of representing operators on your space with matrices, you have a series of quaternion series.  These are just matrices. You are even using matrix multiplication to define their action.  At the very least I hope you can see that a series of quaternion series is a different mathematical space than quaternion series.
+
+Just use quaternion valued vectors and matrices; use standard terminology.
+
+Also currently you are burying your idea in a cloud of calculation manipulation clutter. At the very least separate out the explicit examples with components to an appendix. Imagine you wanted to prove for two matrices transpose(AB) = transpose(B) transpose(A) ... would you really demonstrate this by choosing some dimension, writing out all the components, and checking that it matches? This would be messy, be hard to follow, and hard to extract what is going on that made it work.
+
+So in summary my suggestion is
+-- initially frame the discussion by simply stating the physics you are about to jump off from (assume familiarity, just summarize)
+-- then state how you are jumping off from this: while defining your construction, make nods to the familiar construction you just summarized, so it is clear what is the same, what is merely represented different (but mathematically equivalent), and what (if anything) leads to physical differences
+-- then show how this construction simplifies things, or predicts new things
+-- clean up proofs, and move any detailed calculations to an appendix
+
+I feel this could be done in a single clean blog post, allowing you to much more effectively communicate your ideas.﻿
