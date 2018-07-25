@@ -1,0 +1,55 @@
+> I have a hypothesis that I am testing. In my lab experience, testing a
+> hypothesis involves a crazy volume of detail.
+
+Clarifying the material is not just for the audience, it will also help you.
+It will also help me help you. It is not really clear to me what exactly your
+hypothesis is.
+
+Do you agree with the postulates of quantum mechanics, and are just trying to
+come up with different mathematical representations? Or are you proposing some
+of the quantum mechanical postulates are changed as well?
+
+And how exactly do your "Quaternion series" differ from a quaternion valued
+vector?  You seem to think your "Euclidean product" is defining a
+multiplication on the set of these Quaternion series, but it is not.  Your
+Euclidean product is actually an inner product. It maps two Quaternion series
+to one quaternion, not two Quaternion series to another Quaternion series.
+Yes, testing your hypotheses is good, but it also requires a lot of effort to
+clearly lay out your hypothesis so it can be appropriately tested.
+
+
+> I accept that vectors can be added, subtracted, and multiplied by a scalar.
+> ... But It would be better if those same objects can also multiply or divide
+> each other.
+
+Your replacement for the vectors, "Quaternion series", cannot divide each other
+either.  In your code, you are representing everything with collections of
+floating point numbers which serve as approximate representation of Reals ...
+so this is a real valued "algebra". As you know, there are only 4 real valued
+division algebras.  Your Quaternion series are larger than Quaternions, and are
+not Octonians. So it should be clear you do not have a new set of objects you
+which allow: addition, subtraction, multiplication, and division.
+
+If that is too theoretical an argument, let's look at an example. If the
+"Euclidean product" of two Quaternions series 'a' and 'b' is defined as: E =
+<a,b> = sum (a*_i) b_i then that means for the following non-zero "Quaternion
+series"
+
+a = [ [1,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0] ]
+b = [ [0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,1,0], [0,0,0,0] ]
+
+the Euclidean product is zero.  So you have non-zero elements that "multiply"
+to zero. So there are not inverse elements and you cannot define a division.
+
+
+> "My central thesis however is in place."
+
+Please at least clarify your presentation so it is immediately clear what your
+thesis *IS*.
+* What (if any) changes are you making the postulates of quantum mechanics?
+* Clarify and state your definitions up front. Don't be making them up as you
+* go. Otherwise your hypothesis testing is not the "precisely defined quest"
+* you claim it is.
+
+An added benefit of clearly laying our your idea, is that I can probably check
+a lot of the math for you.﻿
