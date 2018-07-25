@@ -1,3 +1,54 @@
+I cannot be in a more precise and demanding situation. On one side is a decent
+book on the nuts and bolts of quantum mecahnics. On the other is iPython where
+any mathematical statement in the book has to be recreated with quaternion
+series. There is a number of equivalence relations:
+
+<bra| -> a*_n
+|ket> -> b_m
+operator -> O_p
+
+I went through 7 simple calculations to show b_m behaved like a typical ket.
+
+> And how exactly do your "Quaternion series" differ from a quaternion valued
+vector?
+
+I would classify this as a poorly formed question. That is my way of saying
+politely (and I am trying to be polite here) that it makes no sense. Let's
+just subsitute in the word "complex" for quaternion, and then shift it ever
+so slightly so that the question in a formal sense makes sense...
+
+< And how exactly does your "Complex series" differ from a complex number?
+
+We really should get a formal math guy to explain this one. Because I have not
+taken a formal math class focused on complex series, I am not going to pretend
+to give a complete answer. Any complex number can be represented by an infinite
+variety of complex series (zero is not an exception). To be consistent with
+my notebook work, I am going to call each element of the quaternion series a
+state. Any complex number can be added or multiplied to any other complex 
+number. The same is not true for complex series. I am certain mathematicians
+have an exhaustive list of rules. One is that the number of state dimensions
+must be equal. This is where I would need to pair up with a math wonk: is it
+ok to add zero states to a smaller series until it equals the number of states
+of the larger one? To me, undefined is NOT zero, so that sounded like an 
+illegal move so did not implement it.
+
+
+If you want to contribute at this time, here is what you have to do:
+
+1. Buy the book
+
+2. Read the book (it should be fun since you know all the content, but Susskind 
+had a clear vision which I have enjoyed).
+
+3. One at a time, download one chapter at a time. Do not rush to get through
+them, there is no time pressure here. I have a section early on titled 
+"Space-time dimensions versus State dimensions". It was fun for me to reread
+because it has a subtle insight that for me just needs to be rechewed once
+in a while.
+
+
+
+
 > I have a hypothesis that I am testing. In my lab experience, testing a
 > hypothesis involves a crazy volume of detail.
 
