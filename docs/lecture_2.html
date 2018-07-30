@@ -11799,7 +11799,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">capture</span>
@@ -11901,7 +11901,7 @@ display(HTML(&quot;&lt;style&gt;.container { width:100% !important; }&lt;/style&
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">q_0</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_i</span><span class="p">,</span> <span class="n">q_j</span><span class="p">,</span> <span class="n">q_k</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_0</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_1</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_i</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_j</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_k</span><span class="p">()</span>
@@ -11964,7 +11964,7 @@ sum= (1, 0, 0, 0) 0+1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">At1</span><span class="p">,</span> <span class="n">Ax1</span><span class="p">,</span> <span class="n">Ay1</span><span class="p">,</span> <span class="n">Az1</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;At1 Ax1 Ay1 Az1&quot;</span><span class="p">)</span>
@@ -12036,14 +12036,14 @@ sum= (2*At2, 2*Ax2, 2*Ay2, 2*Az2) a₂+a₂
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>αu = &lt;u|A&gt;
-n=1: (A1t, A1x, A1y, A1z) 1*xa₁
+n=1: (At2, Ax2, Ay2, Az2) 1*xa₂
 n=2: (0, 0, 0, 0) 0*xa₂
-sum= (A1t, A1x, A1y, A1z) 1*xa₁+0*xa₂
+sum= (At2, Ax2, Ay2, Az2) 1*xa₂+0*xa₂
 
 αd = &lt;d|A&gt;
-n=1: (0, 0, 0, 0) 0*xa₁
-n=2: (A2t, A2x, A2y, A2z) 1*xa₂
-sum= (A2t, A2x, A2y, A2z) 0*xa₁+1*xa₂
+n=1: (0, 0, 0, 0) 0*xa₂
+n=2: (At2, Ax2, Ay2, Az2) 1*xa₂
+sum= (At2, Ax2, Ay2, Az2) 0*xa₂+1*xa₂
 </pre>
 </div>
 </div>
@@ -12114,14 +12114,14 @@ sum= (A2t, A2x, A2y, A2z) 0*xa₁+1*xa₂
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>|αu|²
-n=1: (A1t**2 + A1x**2 + A1y**2 + A1z**2, 0, 0, 0) 1*xa₁*x1*xa₁
+n=1: (At2**2 + Ax2**2 + Ay2**2 + Az2**2, 0, 0, 0) 1*xa₂*x1*xa₂
 n=2: (0, 0, 0, 0) 0*xa₂*x0*xa₂
-sum= (A1t**2 + A1x**2 + A1y**2 + A1z**2, 0, 0, 0) 1*xa₁*x1*xa₁+0*xa₂*x0*xa₂
+sum= (At2**2 + Ax2**2 + Ay2**2 + Az2**2, 0, 0, 0) 1*xa₂*x1*xa₂+0*xa₂*x0*xa₂
 
 |αd|²
-n=1: (0, 0, 0, 0) 0*xa₁*x0*xa₁
-n=2: (A2t**2 + A2x**2 + A2y**2 + A2z**2, 0, 0, 0) 1*xa₂*x1*xa₂
-sum= (A2t**2 + A2x**2 + A2y**2 + A2z**2, 0, 0, 0) 0*xa₁*x0*xa₁+1*xa₂*x1*xa₂
+n=1: (0, 0, 0, 0) 0*xa₂*x0*xa₂
+n=2: (At2**2 + Ax2**2 + Ay2**2 + Az2**2, 0, 0, 0) 1*xa₂*x1*xa₂
+sum= (At2**2 + Ax2**2 + Ay2**2 + Az2**2, 0, 0, 0) 0*xa₂*x0*xa₂+1*xa₂*x1*xa₂
 </pre>
 </div>
 </div>
@@ -12262,14 +12262,14 @@ sum= (0, 0, 0, 0) 1*x0+0*x1
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>A, normalized
-n=1: (0.707106781186548*A1t*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5), 0.707106781186548*A1x*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5), 0.707106781186548*A1y*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5), 0.707106781186548*A1z*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5)) a₁UxQ
-n=2: (0.707106781186548*A2t*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5), 0.707106781186548*A2x*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5), 0.707106781186548*A2y*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5), 0.707106781186548*A2z*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5)) a₂UxQ
-sum= (0.707106781186548*A1t*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5) + 0.707106781186548*A2t*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5), 0.707106781186548*A1x*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5) + 0.707106781186548*A2x*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5), 0.707106781186548*A1y*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5) + 0.707106781186548*A2y*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5), 0.707106781186548*A1z*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5) + 0.707106781186548*A2z*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5)) a₁UxQ+a₂UxQ
+n=1: (0.707106781186548*At2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5), 0.707106781186548*Ax2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5), 0.707106781186548*Ay2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5), 0.707106781186548*Az2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5)) a₂UxQ
+n=2: (0.707106781186548*At2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5), 0.707106781186548*Ax2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5), 0.707106781186548*Ay2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5), 0.707106781186548*Az2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5)) a₂UxQ
+sum= (1.4142135623731*At2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5), 1.4142135623731*Ax2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5), 1.4142135623731*Ay2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5), 1.4142135623731*Az2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5)) a₂UxQ+a₂UxQ
 
 &lt;An|An&gt;
-n=1: (0.5*A1t**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A1x**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A1y**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A1z**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0), 0, 0, 0) a₁UxQ*xa₁UxQ
-n=2: (0.5*A2t**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0) + 0.5*A2x**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0) + 0.5*A2y**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0) + 0.5*A2z**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0), 0, 0, 0) a₂UxQ*xa₂UxQ
-sum= (0.5*A1t**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A1x**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A1y**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A1z**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A2t**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0) + 0.5*A2x**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0) + 0.5*A2y**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0) + 0.5*A2z**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0), 0, 0, 0) a₁UxQ*xa₁UxQ+a₂UxQ*xa₂UxQ
+n=1: (0.5*At2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0) + 0.5*Ax2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0) + 0.5*Ay2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0) + 0.5*Az2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0), 0, 0, 0) a₂UxQ*xa₂UxQ
+n=2: (0.5*At2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0) + 0.5*Ax2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0) + 0.5*Ay2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0) + 0.5*Az2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0), 0, 0, 0) a₂UxQ*xa₂UxQ
+sum= (1.0*At2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0) + 1.0*Ax2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0) + 1.0*Ay2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0) + 1.0*Az2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0), 0, 0, 0) a₂UxQ*xa₂UxQ+a₂UxQ*xa₂UxQ
 simplified t, n=1:  0.500000000000000
 simplified x, n=1:  0
 simplified y, n=1:  0
@@ -12480,14 +12480,14 @@ sum= (0, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>&lt;A|r&gt;
-n=1: (0.707106781186548*A1t, -0.707106781186548*A1x, -0.707106781186548*A1y, -0.707106781186548*A1z) a₁*xQx1+0x0+Qx0+0x1
-n=2: (0.707106781186548*A2t, -0.707106781186548*A2x, -0.707106781186548*A2y, -0.707106781186548*A2z) a₂*x0x1+Qx0+0x0+Qx1
-sum= (0.707106781186548*A1t + 0.707106781186548*A2t, -0.707106781186548*A1x - 0.707106781186548*A2x, -0.707106781186548*A1y - 0.707106781186548*A2y, -0.707106781186548*A1z - 0.707106781186548*A2z) a₁*xQx1+0x0+Qx0+0x1+a₂*x0x1+Qx0+0x0+Qx1
+n=1: (0.707106781186548*At2, -0.707106781186548*Ax2, -0.707106781186548*Ay2, -0.707106781186548*Az2) a₂*xQx1+0x0+Qx0+0x1
+n=2: (0.707106781186548*At2, -0.707106781186548*Ax2, -0.707106781186548*Ay2, -0.707106781186548*Az2) a₂*x0x1+Qx0+0x0+Qx1
+sum= (1.4142135623731*At2, -1.4142135623731*Ax2, -1.4142135623731*Ay2, -1.4142135623731*Az2) a₂*xQx1+0x0+Qx0+0x1+a₂*x0x1+Qx0+0x0+Qx1
 
 &lt;A|L&gt;
-n=1: (0.707106781186548*A1t, -0.707106781186548*A1x, -0.707106781186548*A1y, -0.707106781186548*A1z) a₁*xQx1+0x0-Qx0+0x1
-n=2: (-0.707106781186548*A2t, 0.707106781186548*A2x, 0.707106781186548*A2y, 0.707106781186548*A2z) a₂*x0x1+Qx0-0x0+Qx1
-sum= (0.707106781186548*A1t - 0.707106781186548*A2t, -0.707106781186548*A1x + 0.707106781186548*A2x, -0.707106781186548*A1y + 0.707106781186548*A2y, -0.707106781186548*A1z + 0.707106781186548*A2z) a₁*xQx1+0x0-Qx0+0x1+a₂*x0x1+Qx0-0x0+Qx1
+n=1: (0.707106781186548*At2, -0.707106781186548*Ax2, -0.707106781186548*Ay2, -0.707106781186548*Az2) a₂*xQx1+0x0-Qx0+0x1
+n=2: (-0.707106781186548*At2, 0.707106781186548*Ax2, 0.707106781186548*Ay2, 0.707106781186548*Az2) a₂*x0x1+Qx0-0x0+Qx1
+sum= (0, 0, 0, 0) a₂*xQx1+0x0-Qx0+0x1+a₂*x0x1+Qx0-0x0+Qx1
 
 </pre>
 </div>
@@ -13443,6 +13443,307 @@ $$\begin{align*}
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rL</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">L</span><span class="p">)</span>
+<span class="n">Lr</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
+<span class="n">rLLr</span> <span class="o">=</span> <span class="n">rL</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">Lr</span><span class="p">)</span>
+<span class="n">rL</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;r|L&gt;&quot;</span><span class="p">)</span>
+<span class="n">rL</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;L|r&gt;&quot;</span><span class="p">)</span>
+<span class="n">rLLr</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;r|L&gt;&lt;L|r&gt;&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;r|L&gt;
+n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1
+n=2: (-0.500000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+sum= (0, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+&lt;L|r&gt;
+n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1
+n=2: (-0.500000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+sum= (0, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+&lt;r|L&gt;&lt;L|r&gt;
+n=1: (0.250000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1
+n=2: (0.250000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1
+sum= (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rL</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">L</span><span class="p">)</span>
+<span class="n">Lr</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
+<span class="n">rL</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;r|L&gt;&quot;</span><span class="p">)</span>
+<span class="n">Lr</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;L|R&gt;&quot;</span><span class="p">)</span>
+<span class="n">rLLr</span> <span class="o">=</span> <span class="n">rL</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">Lr</span><span class="p">)</span>
+<span class="n">rLLr</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;r|L&gt;&lt;L|r&gt;&quot;</span><span class="p">)</span>
+<span class="n">rLrL</span> <span class="o">=</span> <span class="n">rL</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">rL</span><span class="p">)</span>
+<span class="n">rLrL</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;r|L&gt;&lt;r|L&gt;&quot;</span><span class="p">)</span>
+<span class="n">rLrL</span> <span class="o">=</span> <span class="n">rL</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">rL</span><span class="p">)</span>
+<span class="n">rLrL</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;r|L&gt;*&lt;r|L&gt;&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;r|L&gt;
+n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1
+n=2: (-0.500000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+sum= (0, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+&lt;L|R&gt;
+n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1
+n=2: (-0.500000000000000, 0, 0, 0) 0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1
+sum= (0, 0, 0, 0) Qx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1+0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1
+&lt;r|L&gt;&lt;L|r&gt;
+n=1: (0.250000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1
+n=2: (0.250000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1
+sum= (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1
+&lt;r|L&gt;&lt;r|L&gt;
+n=1: (0.250000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1
+n=2: (0.250000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+sum= (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+&lt;r|L&gt;*&lt;r|L&gt;
+n=1: (0.250000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1
+n=2: (0.250000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+sum= (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ud</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
+<span class="n">du</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
+<span class="n">uddu</span> <span class="o">=</span> <span class="n">ud</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">du</span><span class="p">)</span>
+<span class="n">uddu</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;u|d&gt;&lt;d|u&gt;&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;u|d&gt;&lt;d|u&gt;
+n=1: (0, 0, 0, 0) 1*x0x0*x1
+n=2: (0, 0, 0, 0) 0*x1x1*x0
+sum= (0, 0, 0, 0) 1*x0x0*x1+0*x1x1*x0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">r</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">L</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;r|L&gt;&quot;</span><span class="p">)</span>
+<span class="n">L</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;L|r&gt;&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;r|L&gt;
+n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1
+n=2: (-0.500000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+sum= (0, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+&lt;L|r&gt;
+n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1
+n=2: (-0.500000000000000, 0, 0, 0) 0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1
+sum= (0, 0, 0, 0) Qx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1+0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">r</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">L</span><span class="p">)</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;rL norm&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">AttributeError</span>                            Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-28-9b6d019ea4b8&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>r<span class="ansi-blue-fg">.</span>Euclidean_product<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;bra&#39;</span><span class="ansi-blue-fg">,</span> ket<span class="ansi-blue-fg">=</span>L<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>norm<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>print_states<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;rL norm&#34;</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/workspace/QM/docs/Q_tools.py</span> in <span class="ansi-cyan-fg">norm</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">   6833</span> 
+<span class="ansi-green-intense-fg ansi-bold">   6834</span>         <span class="ansi-green-fg">for</span> bra <span class="ansi-green-fg">in</span> self<span class="ansi-blue-fg">.</span>qs<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 6835</span><span class="ansi-red-fg">             </span>new_states<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>bra<span class="ansi-blue-fg">.</span>norm<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   6836</span> 
+<span class="ansi-green-intense-fg ansi-bold">   6837</span>         <span class="ansi-green-fg">return</span> QHStates<span class="ansi-blue-fg">(</span>new_states<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-red-fg">AttributeError</span>: &#39;QH&#39; object has no attribute &#39;norm&#39;</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rL</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">rL</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;rL* rL&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rL</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">Lr</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;rL* Lr&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rL</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">rL</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;rL rL&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rL</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">Lr</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;rL Lr&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">io</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">o</span><span class="p">)</span>
+<span class="n">oi</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+<span class="n">io</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|o&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">oi</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;o|i&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">iooi</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">oi</span><span class="p">)</span>
+<span class="n">iooi</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|o&gt; &lt;o|i&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">iooi</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">oi</span><span class="p">)</span>
+<span class="n">iooi</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|o&gt;* &lt;o|i&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ioio</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">io</span><span class="p">)</span>
+<span class="n">ioio</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|o&gt; &lt;i|o&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ioio</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">io</span><span class="p">)</span>
+<span class="n">ioio</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|o&gt;* &lt;i|o&gt;&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
 </div>
     </div>
   </div>

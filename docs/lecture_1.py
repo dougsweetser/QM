@@ -143,7 +143,7 @@ print("phase a+a+b: ", phase_a.product(phase_a).product(phase_b))
 
 
 A = qt.QHStates([qt.QH([0,1,2,3], qtype="A1"), qt.QH([2,2,2,2], qtype="A2")])
-A.print_states("A")
+A.print_state("A")
 
 
 # Each quaternion in the series will be associated with a value of $n$ that can go from 1 out to infinity. The sum of a series is often a key to the analysis.
@@ -176,7 +176,7 @@ Z = qt.QHStates([qt.QH().q_0(), qt.QH().q_0()])
 # In[9]:
 
 
-A.add(B).print_states("|A> + |B> = |New>")
+A.add(B).print_state("|A> + |B> = |New>")
 
 
 # So long as neither A nor B is zero, the addition results in a new quaternion series.
@@ -189,8 +189,8 @@ A.add(B).print_states("|A> + |B> = |New>")
 
 
 print("2. commutative addition, |A> + |B> = |B> + |A>")
-A.add(B).print_states("|A> + |B>", 1)
-B.add(A).print_states("|B> + |A>", 1)
+A.add(B).print_state("|A> + |B>", 1)
+B.add(A).print_state("|B> + |A>", 1)
 print("|A> + |B> = |B> + |A>? ", A.add(B).equals(B.add(A)))
 
 
@@ -200,8 +200,8 @@ print("|A> + |B> = |B> + |A>? ", A.add(B).equals(B.add(A)))
 
 
 print("3. associative addition, (|A> + |B>) + |C> = |A> + (|B> + |C)>")
-A.add(B).add(C).print_states("(|A> + |B>) + |C>", 1)
-A.add(B.add(C)).print_states("|A> + (|B> + |C>)", 1)
+A.add(B).add(C).print_state("(|A> + |B>) + |C>", 1)
+A.add(B.add(C)).print_state("|A> + (|B> + |C>)", 1)
 print("(|A> + |B>) + |C> = |A> + (|B> + |C)>? ", A.add(B).add(C).equals(A.add(B.add(C))))
 
 
@@ -209,8 +209,8 @@ print("(|A> + |B>) + |C> = |A> + (|B> + |C)>? ", A.add(B).add(C).equals(A.add(B.
 
 
 print("4. An additive identity series zero exists")
-A.print_states("A", 1)
-A.add(Z).print_states("A + Z", 1)
+A.print_state("A", 1)
+A.add(Z).print_state("A + Z", 1)
 print("A = A + Z?", A.equals(A.add(Z)))
 
 
@@ -218,8 +218,8 @@ print("A = A + Z?", A.equals(A.add(Z)))
 
 
 print("5. An additive inverse exists, A + (-A) = 0")
-A.flip_signs().print_states("-A", 1)
-A.add(A.flip_signs()).print_states("A + (-A)")
+A.flip_signs().print_state("-A", 1)
+A.add(A.flip_signs()).print_state("A + (-A)")
 
 
 # In[14]:
@@ -227,8 +227,8 @@ A.add(A.flip_signs()).print_states("A + (-A)")
 
 print("6. A number times a ket produces a new ket, q|A> = |New>")
 q = qt.QHStates([qt.QH([4, 3, 2, 1], qtype="q")])
-q.print_states("q", 1)
-A.product("ket", operator=q).print_states("q|A> = |New>")
+q.print_state("q", 1)
+A.product("ket", operator=q).print_state("q|A> = |New>")
 
 
 # What is going on with the *product()* function? The product function can treat the quaternion series as either a bra or a ket. An operator acts on the ket. If the state dimension of the ket is one, then it creates a diagonal series that is the square of the state dimensions of ket. The ket has 2 state dimensions, so the operator has 4 state dimensions. The zeros of the diagonalized operator appear in the qtype.
@@ -238,9 +238,9 @@ A.product("ket", operator=q).print_states("q|A> = |New>")
 
 print("7a. Distributive property, q(|A> + |B>) = q|A> + q|B>")
 qAB = A.add(B).product("ket", operator=q)
-qAB.print_states("q(|A> + |B>)", 1)
+qAB.print_state("q(|A> + |B>)", 1)
 qAqB = A.product("ket", operator=q).add(B.product("ket", operator=q))
-qAqB.print_states("q|A> + q|B>", 1)
+qAqB.print_state("q|A> + q|B>", 1)
 print("q(|A> + |B>) = q|A> + q|B>? ", qAB.equals(qAqB))
 
 
@@ -250,9 +250,9 @@ print("q(|A> + |B>) = q|A> + q|B>? ", qAB.equals(qAqB))
 w = qt.QHStates([qt.QH([1, -1, 1, 100])])
 print("7b. Distributive property, (q + w)|A> = q|A> + w|A>")
 qwA = A.product("ket", operator=q.add(w))
-qwA.print_states("(q + w)|A>)", 1)
+qwA.print_state("(q + w)|A>)", 1)
 qAwA = A.product("ket", operator=q).add(A.product("ket", operator=w))
-qAwA.print_states("q|A> + w|A>", 1)
+qAwA.print_state("q|A> + w|A>", 1)
 print("(q + w)|A> = q|A> + w|A>? ", qwA.equals(qAwA))
 
 
@@ -265,7 +265,7 @@ print("(q + w)|A> = q|A> + w|A>? ", qwA.equals(qAwA))
 # In[17]:
 
 
-A.conj().print_states("A*")
+A.conj().print_state("A*")
 
 
 # The signal that one is doing a calculation in quantum mechanics may just be the use of mirrors via the conjugate operator. No wonder the subject is such a struggle to understand!
@@ -283,9 +283,9 @@ print("z|A> ? <A|z*")
 Ac = qt.QHStates([qt.QH([1,2,0,0], qtype="A1i"), qt.QH([3,4,0,0], qtype="A2i")])
 i3 = qt.QHStates([qt.QH([1,3,0,0], qtype="13i")])
 zA = Ac.product("ket", operator=i3)
-zA.print_states("zA", 1)
+zA.print_state("zA", 1)
 Azc = Ac.conj().product("bra", operator=i3.conj())
-Azc.print_states("Az*")
+Azc.print_state("Az*")
 
 
 # The "correspondence" is that the two need one more conjugate operation to be equal, like so:
@@ -302,9 +302,9 @@ print("z|A> = (<A|z*)* ?", zA.equals(Azc.conj()))
 
 
 qA = A.product("ket", operator=q)
-qA.print_states("q|A>", 1)
+qA.print_state("q|A>", 1)
 Aqc = A.conj().product("bra", operator=q.conj())
-Aqc.print_states("<A|q*", 1)
+Aqc.print_state("<A|q*", 1)
 print("q|A> = (<A|q*)* ?", qA.equals(Aqc.conj()))
 
 
@@ -324,9 +324,9 @@ print("q|A> = (<A|q*)* ?", qA.equals(Aqc.conj()))
 
 print("1. linear inner product, <C|(|A> + |B>) = <C|A> + <C|B>")
 CAB = C.Euclidean_product("bra", ket=A.add(B))
-CAB.print_states("<C|(|A> + |B>)", 1)
+CAB.print_state("<C|(|A> + |B>)", 1)
 CABA = C.Euclidean_product("bra", ket=A).add(C.Euclidean_product("bra", ket=B))
-CABA.print_states("<C|A> + <C|B>", 1)
+CABA.print_state("<C|A> + <C|B>", 1)
 print("<C|(|A> + |B>) = <C|A> + <C|B>? ", CAB.equals(CABA))
 
 
@@ -339,9 +339,9 @@ print("<C|(|A> + |B>) = <C|A> + <C|B>? ", CAB.equals(CABA))
 
 print("2. For inner product, change order AND conjugate, <B|A> = <A|B>*")
 BdotA = B.Euclidean_product("bra", ket=A)
-BdotA.print_states("<B|A>", 1)
+BdotA.print_state("<B|A>", 1)
 AdotBc = A.Euclidean_product("bra", ket=B).conj()
-AdotBc.print_states("<A|B>*", 1)
+AdotBc.print_state("<A|B>*", 1)
 print("<B|A> = <A|B>* ?", BdotA.equals(AdotBc))
 
 
@@ -356,9 +356,9 @@ print("<B|A> = <A|B>* ?", BdotA.equals(AdotBc))
 
 print("Exercise 1.1: A) linear inner products, (<A| + <B|)|C> = <A|C> + <B|C>")
 ABC = A.add(B).Euclidean_product("bra", ket=C)
-ABC.print_states("(<A| + <B|)|C>", 1)
+ABC.print_state("(<A| + <B|)|C>", 1)
 ACBC = A.Euclidean_product("bra", ket=C).add(B.Euclidean_product("bra", ket=C))
-ACBC.print_states("<A|C> + <B|C>", 1)
+ACBC.print_state("<A|C> + <B|C>", 1)
 print("<C|(|A> + |B>) = <C|A> + <C|B>? ", CAB.equals(CABA))
 
 
@@ -367,9 +367,9 @@ print("<C|(|A> + |B>) = <C|A> + <C|B>? ", CAB.equals(CABA))
 # In[24]:
 
 
-A.Euclidean_product("bra", ket=A).print_states("<A|A>", 1)
-B.Euclidean_product("bra", ket=B).print_states("<B|B>", 1)
-C.Euclidean_product("bra", ket=C).print_states("<C|C>")
+A.Euclidean_product("bra", ket=A).print_state("<A|A>", 1)
+B.Euclidean_product("bra", ket=B).print_state("<B|B>", 1)
+C.Euclidean_product("bra", ket=C).print_state("<C|C>")
 
 
 # ![](images/lecture_1/101.31.2.50.jpg)
@@ -387,7 +387,7 @@ q_k = qt.QH().q_k()
 
 B5 = qt.QHStates([q_0, q_1, q_i, q_j, q_k])
 A5 = qt.QHStates([q_1, q_1, q_1, q_1, q_1])
-B5.Euclidean_product("bra", ket=A5).print_states("<B5|A5>")
+B5.Euclidean_product("bra", ket=A5).print_state("<B5|A5>")
 
 
 # ![](images/lecture_1/101.32.2.50.jpg)
@@ -399,9 +399,9 @@ B5.Euclidean_product("bra", ket=A5).print_states("<B5|A5>")
 
 Ai = qt.QHStates([q_i, q_i, q_i, q_i])
 Bi = qt.QHStates([q_i, q_i.conj(), q_i, q_i.conj()])
-Ai.Euclidean_product("bra", ket=Ai).print_states("<Ai|Ai>", 1)
-Bi.Euclidean_product("bra", ket=Bi).print_states("<Bi|Bi>", 1)
-Bi.Euclidean_product("bra", ket=Ai).print_states("<Bi|Ai>")
+Ai.Euclidean_product("bra", ket=Ai).print_state("<Ai|Ai>", 1)
+Bi.Euclidean_product("bra", ket=Bi).print_state("<Bi|Bi>", 1)
+Bi.Euclidean_product("bra", ket=Ai).print_state("<Bi|Ai>")
 
 
 # None of the elements in the series are equal to zero, but the sum of the series is zero. There should be about an infinite number of ways to make orthogonal states, give or take.
@@ -414,8 +414,8 @@ Bi.Euclidean_product("bra", ket=Ai).print_states("<Bi|Ai>")
 
 
 αi = qt.QHStates([qt.QH([1,1,0,0]),qt.QH([2,0,2,0]),qt.QH([3,1,3,0]),qt.QH([4,0,0,4])]).diagonal(4)
-αi.print_states("αi", 1)
-Ai.product("ket", operator=αi).print_states("|A> = Sum αi|Ai>")
+αi.print_state("αi", 1)
+Ai.product("ket", operator=αi).print_state("|A> = Sum αi|Ai>")
 
 
 # Good, now just take Euclidean product with <j|.
@@ -423,7 +423,7 @@ Ai.product("ket", operator=αi).print_states("|A> = Sum αi|Ai>")
 # In[28]:
 
 
-Ai.Euclidean_product("ket", bra=Bi, operator=αi).print_states("<j|A>")
+Ai.Euclidean_product("ket", bra=Bi, operator=αi).print_state("<j|A>")
 
 
 # I don't think there is much meaning to this calculation. It does show the machinery is in place to do more.

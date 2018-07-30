@@ -17,7 +17,7 @@
 # 
 # Test driven development was used. The same tests were used for QH, QHa, Q8, and Q8a.  Either class can be used to study quaternions in physics.
 
-# In[2]:
+# In[39]:
 
 
 import IPython
@@ -38,7 +38,7 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 
 # Define the stretch factor $\gamma$ and the $\gamma \beta$ used in special relativity.
 
-# In[3]:
+# In[40]:
 
 
 def sr_gamma(beta_x=0, beta_y=0, beta_z=0):
@@ -58,7 +58,7 @@ def sr_gamma_betas(beta_x=0, beta_y=0, beta_z=0):
 
 # Define a class QH to manipulate quaternions as Hamilton would have done it so many years ago. The "qtype" is a little bit of text to leave a trail of breadcrumbs about how a particular quaternion was generated.
 
-# In[4]:
+# In[77]:
 
 
 class QH(object):
@@ -104,6 +104,16 @@ class QH(object):
 
         return string
 
+    def print_state(self, label, spacer=False, quiet=False):
+        """Utility for printing a quaternion."""
+
+        print(label)
+        
+        print(self.__str__(quiet))
+        
+        if spacer:
+            print("")
+    
     def is_symbolic(self):
         """Figures out if an expression has symbolic terms."""
         
@@ -951,7 +961,7 @@ class QH(object):
 
 # Write tests the QH class.
 
-# In[5]:
+# In[42]:
 
 
 class TestQH(unittest.TestCase):
@@ -1304,7 +1314,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQH())
 unittest.TextTestRunner().run(suite);
 
 
-# In[6]:
+# In[43]:
 
 
 class TestQHRep(unittest.TestCase):
@@ -1355,7 +1365,7 @@ unittest.TextTestRunner().run(suite);
 
 # A separate class is needed for numpy array due to technical issues I have getting sympy and numpy to play nicely with each other...
 
-# In[7]:
+# In[44]:
 
 
 class QHa(object):
@@ -1402,6 +1412,16 @@ class QHa(object):
         
         return string
     
+    def print_state(self, label, spacer=False, quiet=False):
+        """Utility for printing a quaternion."""
+
+        print(label)
+        
+        print(self.__str__(quiet))
+        
+        if spacer:
+            print("")
+            
     def is_symbolic(self):
         """Figures out if an expression is symbolic."""
         
@@ -2248,7 +2268,7 @@ class QHa(object):
         return self
 
 
-# In[8]:
+# In[45]:
 
 
 class TestQHa(unittest.TestCase):
@@ -2594,7 +2614,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHa())
 unittest.TextTestRunner().run(suite);
 
 
-# In[9]:
+# In[46]:
 
 
 class TestQHaRep(unittest.TestCase):
@@ -2646,7 +2666,7 @@ unittest.TextTestRunner().run(suite);
 
 # My long term goal is to deal with quaternions on a quaternion manifold. This will have 4 pairs of doublets. Each doublet is paired with its additive inverse. Instead of using real numbers, one uses (3, 0) and (0, 2) to represent +3 and -2 respectively. Numbers such as (5, 6) are allowed. That can be "reduced" to (0, 1).  My sense is that somewhere deep in the depths of relativistic quantum field theory, this will be a "good thing". For now, it is a minor pain to program.
 
-# In[10]:
+# In[47]:
 
 
 class Doublet(object):
@@ -2768,7 +2788,7 @@ class Doublet(object):
         return Doublet([p1, n1])
 
 
-# In[11]:
+# In[48]:
 
 
 class TestDoublet(unittest.TestCase):
@@ -2843,7 +2863,7 @@ unittest.TextTestRunner().run(suite);
 
 # Repeat the exercise for arrays.
 
-# In[12]:
+# In[49]:
 
 
 class Doubleta(object):
@@ -2954,7 +2974,7 @@ class Doubleta(object):
         return Doubleta([p1, n1])
 
 
-# In[13]:
+# In[50]:
 
 
 class TestDoubleta(unittest.TestCase):
@@ -3024,7 +3044,7 @@ class TestDoubleta(unittest.TestCase):
         self.assertTrue(Z2p_red.d[1] == Z2p_2.d[1])
 
 
-# In[14]:
+# In[51]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestDoubleta())
@@ -3035,7 +3055,7 @@ unittest.TextTestRunner().run(suite);
 
 # Write a class to handle quaternions given 8 numbers.
 
-# In[15]:
+# In[52]:
 
 
 class Q8(object):
@@ -3097,6 +3117,16 @@ class Q8(object):
             
         return string 
 
+    def print_state(self, label, spacer=False, quiet=False):
+        """Utility for printing a quaternion."""
+
+        print(label)
+        
+        print(self.__str__(quiet))
+        
+        if spacer:
+            print("")
+            
     def is_symbolic(self):
         """Looks to see if a symbol is inside one of the terms."""
         
@@ -4000,7 +4030,7 @@ class Q8(object):
         return self
 
 
-# In[16]:
+# In[53]:
 
 
 class TestQ8(unittest.TestCase):
@@ -4436,7 +4466,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8())
 unittest.TextTestRunner().run(suite);
 
 
-# In[17]:
+# In[54]:
 
 
 class TestQ8Rep(unittest.TestCase):
@@ -4488,7 +4518,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Class Q8a as nparrays
 
-# In[18]:
+# In[55]:
 
 
 class Q8a(Doubleta):
@@ -4555,6 +4585,16 @@ class Q8a(Doubleta):
     
         return string
     
+    def print_state(self, label, spacer=False, quiet=False):
+        """Utility for printing a quaternion."""
+
+        print(label)
+        
+        print(self.__str__(quiet))
+        
+        if spacer:
+            print("")
+            
     def is_symbolic(self):
         """Looks to see if a symbol is inside one of the terms."""
         
@@ -5592,7 +5632,7 @@ class Q8a(Doubleta):
         return self
 
 
-# In[19]:
+# In[56]:
 
 
 class TestQ8a(unittest.TestCase):
@@ -5958,7 +5998,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8a())
 unittest.TextTestRunner().run(suite);
 
 
-# In[20]:
+# In[57]:
 
 
 class TestQ8aRep(unittest.TestCase):
@@ -6019,7 +6059,7 @@ unittest.TextTestRunner().run(suite);
 # Such an exact relation is not of much interest to physicists since Einstein showed that holds for only one set of observers. If one is moving relative to the reference observer, the two events would look like they occured at different times in the future, presuming perfectly accurate measuring devices.
 # 
 
-# In[21]:
+# In[58]:
 
 
 def round_sig_figs(num, sig_figs):
@@ -6033,7 +6073,7 @@ def round_sig_figs(num, sig_figs):
         return 0  # Can't take the log of 0
 
 
-# In[22]:
+# In[59]:
 
 
 class EQ(object):
@@ -6357,7 +6397,7 @@ class EQ(object):
     
 
 
-# In[23]:
+# In[60]:
 
 
 class TestEQ(unittest.TestCase):
@@ -6467,7 +6507,7 @@ class TestEQ(unittest.TestCase):
         self.assertTrue(eq_small_tiny.norm_squared_of_unity() == 'less_than_unity')
 
 
-# In[24]:
+# In[61]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestEQ())
@@ -6478,7 +6518,7 @@ unittest.TextTestRunner().run(suite);
 
 # Create a class that can make many, many quaternions.
 
-# In[25]:
+# In[62]:
 
 
 class QHArray(QH):
@@ -6551,7 +6591,7 @@ class QHArray(QH):
         return QH([new_t, new_x, new_y, new_z])
 
 
-# In[26]:
+# In[63]:
 
 
 class TestQHArray(unittest.TestCase):
@@ -6579,7 +6619,7 @@ class TestQHArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.z > 13.9)
 
 
-# In[27]:
+# In[64]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHArray())
@@ -6588,7 +6628,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Array of nparrays
 
-# In[28]:
+# In[65]:
 
 
 class QHaArray(QHa):
@@ -6651,7 +6691,7 @@ class QHaArray(QHa):
                 self.q_max.a[3] = q1.a[3]
 
 
-# In[29]:
+# In[66]:
 
 
 class TestQHaArray(unittest.TestCase):
@@ -6679,7 +6719,7 @@ class TestQHaArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.a[3] > 13.9)
 
 
-# In[30]:
+# In[67]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaArray())
@@ -6690,7 +6730,7 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[31]:
+# In[68]:
 
 
 class QHStates(QH):
@@ -6718,7 +6758,7 @@ class QHStates(QH):
         
         return states.rstrip()
     
-    def print_states(self, label, spacer=False, quiet=False):
+    def print_state(self, label, spacer=False, quiet=False):
         """Utility for printing states as a quaternion series."""
 
         print(label)
@@ -6777,15 +6817,54 @@ class QHStates(QH):
             
         return QHStates(new_states)
     
-    def invert(self):
-        """Invert states."""
+    def invert(self, operator=False):
+        """Inverting bras and kets calls invert() once for each.
+        Inverting operators is more tricky as one needs a diagonal identity matrix."""
+    
+        if operator:
+            if self.dim == 1:
+                q_inv = QHStates(self.qs[0].invert())
         
-        new_states = []
+            elif self.dim == 4:
+                det = self.determinant()
+                detinv = det.invert()
+
+                q0 = self.qs[3].product(detinv)
+                q1 = self.qs[1].flip_signs().product(detinv)
+                q2 = self.qs[2].flip_signs().product(detinv)
+                q3 = self.qs[0].product(detinv)
+
+                q_inv = QHStates([q0, q1, q2, q3])
+    
+            elif self.dim == 9:
+                det = self.determinant()
+                detinv = det.invert()
         
-        for bra in self.qs:
-            new_states.append(bra.invert())
-            
-        return QHStates(new_states)
+                q0 = self.qs[4].product(self.qs[8]).dif(self.qs[5].product(self.qs[7])).product(detinv)
+                q1 = self.qs[7].product(self.qs[2]).dif(self.qs[8].product(self.qs[1])).product(detinv)
+                q2 = self.qs[1].product(self.qs[5]).dif(self.qs[2].product(self.qs[4])).product(detinv)
+                q3 = self.qs[6].product(self.qs[5]).dif(self.qs[8].product(self.qs[3])).product(detinv)
+                q4 = self.qs[0].product(self.qs[8]).dif(self.qs[2].product(self.qs[6])).product(detinv)
+                q5 = self.qs[3].product(self.qs[2]).dif(self.qs[5].product(self.qs[0])).product(detinv)
+                q6 = self.qs[3].product(self.qs[7]).dif(self.qs[4].product(self.qs[6])).product(detinv)
+                q7 = self.qs[6].product(self.qs[1]).dif(self.qs[7].product(self.qs[0])).product(detinv)
+                q8 = self.qs[0].product(self.qs[4]).dif(self.qs[1].product(self.qs[3])).product(detinv)
+        
+                q_inv = QHStates([q0, q1, q2, q3, q4, q5, q6, q7, q8])
+        
+            else:
+                print("Oops, don't know how to invert.")
+                q_inv = QHStates([QH().q_0()])
+        
+        else:
+            new_states = []
+        
+            for bra in self.qs:
+                new_states.append(bra.invert())
+        
+            q_inv = QHStates(new_states).normalize()
+    
+        return q_inv
     
     def norm(self):
         """Norm of states."""
@@ -6802,20 +6881,18 @@ class QHStates(QH):
         
         new_states = []
         
-        if states is None:
-            states = self.dim
-        
         zero_norm_count = 0
         
         for bra in self.qs:
             if bra.norm_squared().t == 0:
                 zero_norm_count += 1
-            
-            new_states.append(bra.normalize(n))
+                new_states.append(QH().q_0())
+            else:
+                new_states.append(bra.normalize(n))
         
         new_states_normalized = []
         
-        non_zero_states = states - zero_norm_count
+        non_zero_states = self.dim - zero_norm_count
         
         for new_state in new_states:
             new_states_normalized.append(new_state.product(QH([math.sqrt(1/non_zero_states), 0, 0, 0])))
@@ -6835,6 +6912,36 @@ class QHStates(QH):
             last_q = orthonormal_q
         
         return QHStates(orthonormal_qs)
+    
+    def determinant(self):
+        """Calculate the determinant of a 'square' quaternion series."""
+    
+        if self.dim == 1:
+            q_det = self.qs[0]
+        
+        elif self.dim == 4:
+            ad =self.qs[0].product(self.qs[3])
+            bc = self.qs[1].product(self.qs[2])
+            q_det = ad.dif(bc)  
+        
+        elif self.dim == 9:
+            aei = self.qs[0].product(self.qs[4].product(self.qs[8]))
+            bfg = self.qs[3].product(self.qs[7].product(self.qs[2]))
+            cdh = self.qs[6].product(self.qs[1].product(self.qs[5]))
+            ceg = self.qs[6].product(self.qs[4].product(self.qs[2]))
+            bdi = self.qs[3].product(self.qs[1].product(self.qs[8]))
+            afh = self.qs[0].product(self.qs[7].product(self.qs[5]))
+        
+            sum_pos = aei.add(bfg.add(cdh))
+            sum_neg = ceg.add(bdi.add(afh))
+        
+            q_det = sum_pos.dif(sum_neg)
+        
+        else:
+            print("Oops, don't know how to calculate the determinant of this one.")
+            q_det = QHStates([QH().q_0()])
+        
+        return q_det
     
     def add(self, ket):
         """Add two states."""
@@ -6895,12 +7002,20 @@ class QHStates(QH):
         
         return QHStates(diagonal)
         
-    def identity(self, dim):
-        """Identity operator for states."""
+    @staticmethod    
+    def identity(dim, operator=False):
+        """Identity operator for states or operators which are diagonal."""
     
-        q_1 = QHStates([QH().q_1()])
-        return QHStates.diagonal(q_1, dim)    
-        
+        if operator:
+            q_1 = QHStates([QH().q_1() ])
+            ident = QHStates.diagonal(q_1, dim)    
+    
+        else:
+            i_list = [QH().q_1() for i in range(dim)]
+            ident = QHStates(i_list)
+            
+        return ident
+    
     def product(self, product_type, bra=None, ket=None, operator=None, kind="", reverse=False):
         """Forms the quaternion product for each state."""
         
@@ -7158,67 +7273,114 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[32]:
+# In[69]:
 
 
 class TestQHStates(unittest.TestCase):
     """Test states."""
     
-    q0 = QH().q_0()
-    q1 = QH().q_1()
-    qi = QH().q_i()
-    qi4 = QH([0,4,0,0])
-    q0_q1 = QHStates([q0, q1])
-    q1_q0 = QHStates([q1, q0])
-    q1_qi = QHStates([q1, qi])
+    q_0 = QH().q_0()
+    q_1 = QH().q_1()
+    q_i = QH().q_i()
+    q_n1 = QH([-1,0,0,0])
+    q_2 = QH([2,0,0,0])
+    q_n2 = QH([-2,0,0,0])
+    q_3 = QH([3,0,0,0])
+    q_n3 = QH([-3,0,0,0])
+    q_4 = QH([4,0,0,0])
+    q_n5 = QH([-5,0,0,0])
+    q_7 = QH([7,0,0,0])
+    q_8 = QH([8,0,0,0])
+    q_9 = QH([9,0,0,0])
+    q_n11 = QH([-11,0,0,0])
+    q_21 = QH([21,0,0,0])
+    q_n34 = QH([-34,0,0,0])
+    v3 = QHStates([q_3])
+    v1123 = QHStates([q_1, q_1, q_2, q_3])
+    v3n1n21 = QHStates([q_3,q_n1,q_n2,q_1])
+    v9 = QHStates([q_1, q_1, q_2, q_3, q_1, q_1, q_2, q_3, q_2])
+    v9i = QHStates([QH([0,1,0,0]), QH([0,2,0,0]), QH([0,3,0,0]), QH([0,4,0,0]), QH([0,5,0,0]), QH([0,6,0,0]), QH([0,7,0,0]), QH([0,8,0,0]), QH([0,9,0,0])])
+    vv9 = v9.add(v9i)
+    qn627 = QH([-6,27,0,0])
+    v33 = QHStates([q_7, q_0, q_n3, q_2, q_3, q_4, q_1, q_n1, q_n2])
+    v33inv = QHStates([q_n2, q_3, q_9, q_8, q_n11, q_n34, q_n5, q_7, q_21])
+    q_i3 = QHStates([q_1, q_1, q_1])
+    q_i2d = QHStates([q_1, q_0, q_0, q_1])
+    q_i4 = QH([0,4,0,0])
+    q_0_q_1 = QHStates([q_0, q_1])
+    q_1_q_0 = QHStates([q_1, q_0])
+    q_1_q_i = QHStates([q_1, q_i])
     A = QHStates([QH([4,0,0,0]),QH([0,1,0,0])])
     B = QHStates([QH([0,0,1,0]),QH([0,0,0,2]),QH([0,3,0,0])])
     Op = QHStates([QH([3,0,0,0]),QH([0,1,0,0]),QH([0,0,2,0]),QH([0,0,0,3]),QH([2,0,0,0]),QH([0,4,0,0])])
-    Op4i = QHStates([qi4])
-    q1234 = QHStates([QH([1, 1, 0, 0]), QH([2, 1, 0, 0]), QH([3, 1, 0, 0]), QH([4, 1, 0, 0])])
+    Op4i = QHStates([q_i4])
+    q_1234 = QHStates([QH([1, 1, 0, 0]), QH([2, 1, 0, 0]), QH([3, 1, 0, 0]), QH([4, 1, 0, 0])])
     sigma_y = QHStates([QH([1, 0, 0, 0]), QH([0, -1, 0, 0]), QH([0, 1, 0, 0]), QH([-1, 0, 0, 0])])
     qn = QHStates([QH([3,0,0,4])])
     
     def test_init(self):
-        self.assertTrue(self.q0_q1.dim == 2)
+        self.assertTrue(self.q_0_q_1.dim == 2)
         
     def test_equals(self):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
         
     def test_conj(self):
-        qc = self.q1_qi.conj()
-        qc1 = self.q1_qi.conj(1)
-        print("q1_qi*: ", qc)
-        print("q1_qc*1: ", qc1)
+        qc = self.q_1_q_i.conj()
+        qc1 = self.q_1_q_i.conj(1)
+        print("q_1_q_i*: ", qc)
+        print("q_1_qc*1: ", qc1)
         self.assertTrue(qc.qs[1].x == -1)
         self.assertTrue(qc1.qs[1].x == 1)
     
     def test_flip_signs(self):
-        qf = self.q1_qi.flip_signs()
-        print("-q1_qi: ", qf)
+        qf = self.q_1_q_i.flip_signs()
+        print("-q_1_q_i: ", qf)
         self.assertTrue(qf.qs[1].x == -1)
+        
+    def test_invert(self):
+        inv_v1123 = self.v1123.invert(operator=True)
+        print("inv_v1123 operator", inv_v1123)
+        self.assertTrue(inv_v1123.equals(self.v3n1n21))
+
+        inv_v33 = self.v33.invert(operator=True)
+        print("inv_v33 operator", inv_v33)
+        self.assertTrue(inv_v33.equals(self.v33inv))
         
     def test_normalize(self):
         qn = self.qn.normalize()
         print("Op normalized: ", qn)
         self.assertAlmostEqual(qn.qs[0].t, 0.6)
         self.assertTrue(qn.qs[0].z == 0.8)
+    
+    def test_determinant(self):
+        det_v3 = self.v3.determinant()
+        print("det v3:", det_v3)
+        self.assertTrue(det_v3.equals(self.q_3))
+        det_v1123 = self.v1123.determinant()
+        print("det v1123", det_v1123)
+        self.assertTrue(det_v1123.equals(self.q_1))
+        det_v9 = self.v9.determinant()
+        print("det_v9", det_v9)
+        self.assertTrue(det_v9.equals(self.q_9))
+        det_vv9 = self.vv9.determinant()
+        print("det_vv9", det_vv9)
+        self.assertTrue(det_vv9.equals(self.qn627))
         
     def test_summation(self):
-        q_01_sum = self.q0_q1.summation()
+        q_01_sum = self.q_0_q_1.summation()
         print("sum: ", q_01_sum)
         self.assertTrue(type(q_01_sum) is QH)
         self.assertTrue(q_01_sum.t == 1)
         
     def test_add(self):
-        q_0110_add = self.q0_q1.add(self.q1_q0)
+        q_0110_add = self.q_0_q_1.add(self.q_1_q_0)
         print("add 01 10: ", q_0110_add)
         self.assertTrue(q_0110_add.qs[0].t == 1)
         self.assertTrue(q_0110_add.qs[1].t == 1)
         
     def test_dif(self):
-        q_0110_dif = self.q0_q1.dif(self.q1_q0)
+        q_0110_dif = self.q_0_q_1.dif(self.q_1_q_0)
         print("dif 01 10: ", q_0110_dif)
         self.assertTrue(q_0110_dif.qs[0].t == -1)
         self.assertTrue(q_0110_dif.qs[1].t == 1)
@@ -7226,15 +7388,19 @@ class TestQHStates(unittest.TestCase):
     def test_diagonal(self):
         Op4iDiag2 = self.Op4i.diagonal(2)
         print("Op4i on a diagonal 2x2", Op4iDiag2)
-        self.assertTrue(Op4iDiag2.qs[0].equals(self.qi4))
+        self.assertTrue(Op4iDiag2.qs[0].equals(self.q_i4))
         self.assertTrue(Op4iDiag2.qs[1].equals(QH().q_0()))
         
     def test_identity(self):
-        I2 = QHStates().identity(2)
-        print("Idenity on a diagonal 2x2", I2)
+        I2 = QHStates().identity(2, operator=True)
+        print("Operator Idenity, diagonal 2x2", I2)
         self.assertTrue(I2.qs[0].equals(QH().q_1()))
         self.assertTrue(I2.qs[1].equals(QH().q_0()))
-        
+        I2 = QHStates().identity(2)
+        print("Idenity on 2 state ket", I2)
+        self.assertTrue(I2.qs[0].equals(QH().q_1()))
+        self.assertTrue(I2.qs[1].equals(QH().q_1()))        
+
     def test_product_AA(self):
         AA = self.A.product('bra', ket=self.A)
         print("AA: ", AA)
@@ -7334,22 +7500,22 @@ class TestQHStates(unittest.TestCase):
         self.assertTrue(AOp4iB.dim == 0)
 
     def test_op_n(self):
-        opn = self.Op.op_n(n=self.qi)
+        opn = self.Op.op_n(n=self.q_i)
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].x == 3)
         
     def test_transpose(self):
-        opt = self.q1234.transpose()
+        opt = self.q_1234.transpose()
         print("op1234 transposed: ", opt)
         self.assertTrue(opt.qs[0].t == 1)
         self.assertTrue(opt.qs[1].t == 3)
         self.assertTrue(opt.qs[2].t == 2)
         self.assertTrue(opt.qs[3].t == 4)
-        optt = self.q1234.transpose().transpose()
-        self.assertTrue(optt.equals(self.q1234))
+        optt = self.q_1234.transpose().transpose()
+        self.assertTrue(optt.equals(self.q_1234))
         
     def test_Hermitian_conj(self):
-        q_hc = self.q1234.Hermitian_conj()
+        q_hc = self.q_1234.Hermitian_conj()
         print("op1234 Hermitian_conj: ", q_hc)
         self.assertTrue(q_hc.qs[0].t == 1)
         self.assertTrue(q_hc.qs[1].t == 3)
@@ -7362,7 +7528,7 @@ class TestQHStates(unittest.TestCase):
         
     def test_is_Hermitian(self):
         self.assertTrue(self.sigma_y.is_Hermitian())
-        self.assertFalse(self.q1234.is_Hermitian())
+        self.assertFalse(self.q_1234.is_Hermitian())
         
     def test_is_square(self):
         self.assertFalse(self.Op.is_square())
@@ -7381,7 +7547,7 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[33]:
+# In[70]:
 
 
 class QHaStates(QHa):
@@ -7406,7 +7572,7 @@ class QHaStates(QHa):
         
         return states.rstrip()
     
-    def print_states(self, label, spacer=False, quiet=False):
+    def print_state(self, label, spacer=False, quiet=False):
         """Utility for printing states as a quaternion series."""
 
         print(label)
@@ -7516,6 +7682,36 @@ class QHaStates(QHa):
         
         return QHaStates(orthonormal_qs)
     
+    def determinant(self):
+        """Calculate the determinant of a 'square' quaternion series."""
+    
+        if self.dim == 1:
+            q_det = self.qs[0]
+        
+        elif self.dim == 4:
+            ad =self.qs[0].product(self.qs[3])
+            bc = self.qs[1].product(self.qs[2])
+            q_det = ad.dif(bc)  
+        
+        elif self.dim == 9:
+            aei = self.qs[0].product(self.qs[4].product(self.qs[8]))
+            bfg = self.qs[3].product(self.qs[7].product(self.qs[2]))
+            cdh = self.qs[6].product(self.qs[1].product(self.qs[5]))
+            ceg = self.qs[6].product(self.qs[4].product(self.qs[2]))
+            bdi = self.qs[3].product(self.qs[1].product(self.qs[8]))
+            afh = self.qs[0].product(self.qs[7].product(self.qs[5]))
+        
+            sum_pos = aei.add(bfg.add(cdh))
+            sum_neg = ceg.add(bdi.add(afh))
+        
+            q_det = sum_pos.dif(sum_neg)
+        
+        else:
+            print("Oops, don't know how to calculate the determinant of this one.")
+            q_det = QHaStates([QHa().q_0()])
+        
+        return q_det
+    
     def add(self, ket):
         """Add two states."""
         
@@ -7557,15 +7753,25 @@ class QHaStates(QHa):
                     diagonal.append(QHa().q_0())
         
         return QHaStates(diagonal)
-        
-    def identity(self, dim):
-        """Identity operator for states."""
     
-        q_1 = QHaStates([QHa().q_1()])
-        return QHaStates.diagonal(q_1, dim)     
+    @staticmethod
+    def identity(dim, operator=False):
+        """Identity operator for states or operators which are diagonal."""
+    
+        if operator:
+            q_1 = QHaStates([QHa().q_1() ])
+            ident = QHaStates.diagonal(q_1, dim)    
+    
+        else:
+            i_list = [QHa().q_1() for i in range(dim)]
+            ident = QHaStates(i_list)
+            
+        return ident
         
     def product(self, product_type, bra=None, ket=None, operator=None, kind=""):
-        """Forms the quaternion product for each state."""
+        """Forms the quaternion product for each state.
+        If given both the bra and ket, returns 1 quaternion.
+        If not, returns a quaternion series."""
         
         if product_type == 'bra':
             bra = self
@@ -7620,6 +7826,13 @@ class QHaStates(QHa):
             if _check_dimensions(state_1_dim=bra.dim, state_2_dim=ket.dim, equals=True):
                 for b, k in zip(bra.qs, ket.qs):
                     new_states.append(b.product(k, kind))
+            
+                dot_product = new_states.pop(0)
+                
+                for new_state in new_states:
+                    dot_product = dot_product.add(new_state)
+                    
+                return dot_product
             
         # Op|B>
         elif bra is None:
@@ -7694,6 +7907,13 @@ class QHaStates(QHa):
                 for b, k in zip(bra.qs, new_ket_state.qs):
                     new_states.append(b.product(k, kind))
                 
+                dot_product = new_states.pop(0)
+                
+                for new_state in new_states:
+                    dot_product = dot_product.add(new_state)
+                
+                return dot_product
+            
         return QHaStates(new_states)
 
     def Euclidean_product(self, product_type, bra=None, ket=None, operator=None, kind=""):
@@ -7824,49 +8044,72 @@ class QHaStates(QHa):
         return signma[kind].normalize()
 
 
-# In[34]:
+# In[71]:
 
 
 class TestQHaStates(unittest.TestCase):
     """Test states."""
     
-    q0 = QHa().q_0()
-    q1 = QHa().q_1()
-    qi = QHa().q_i()
-    q0_q1 = QHaStates([q0, q1])
-    q1_q0 = QHaStates([q1, q0])
-    q1_qi = QHaStates([q1, qi])
-    qi4 = QHa([0,4,0,0])
+    q_0 = QHa().q_0()
+    q_1 = QHa().q_1()
+    q_i = QHa().q_i()
+    q_n1 = QHa([-1,0,0,0])
+    q_2 = QHa([2,0,0,0])
+    q_n2 = QHa([-2,0,0,0])
+    q_3 = QHa([3,0,0,0])
+    q_n3 = QHa([-3,0,0,0])
+    q_4 = QHa([4,0,0,0])
+    q_n5 = QHa([-5,0,0,0])
+    q_7 = QHa([7,0,0,0])
+    q_8 = QHa([8,0,0,0])
+    q_9 = QHa([9,0,0,0])
+    q_n11 = QHa([-11,0,0,0])
+    q_21 = QHa([21,0,0,0])
+    q_n34 = QHa([-34,0,0,0])
+    v3 = QHaStates([q_3])
+    v1123 = QHaStates([q_1, q_1, q_2, q_3])
+    v3n1n21 = QHaStates([q_3,q_n1,q_n2,q_1])
+    v9 = QHaStates([q_1, q_1, q_2, q_3, q_1, q_1, q_2, q_3, q_2])
+    v9i = QHaStates([QHa([0,1,0,0]), QHa([0,2,0,0]), QHa([0,3,0,0]), QHa([0,4,0,0]), QHa([0,5,0,0]), QHa([0,6,0,0]), QHa([0,7,0,0]), QHa([0,8,0,0]), QHa([0,9,0,0])])
+    vv9 = v9.add(v9i)
+    qn627 = QHa([-6,27,0,0])
+    v33 = QHaStates([q_7, q_0, q_n3, q_2, q_3, q_4, q_1, q_n1, q_n2])
+    v33inv = QHaStates([q_n2, q_3, q_9, q_8, q_n11, q_n34, q_n5, q_7, q_21])
+    q_i3 = QHaStates([q_1, q_1, q_1])
+    q_i2d = QHaStates([q_1, q_0, q_0, q_1])
+    q_i4 = QHa([0,4,0,0])
+    q_0_q_1 = QHaStates([q_0, q_1])
+    q_1_q_0 = QHaStates([q_1, q_0])
+    q_1_q_i = QHaStates([q_1, q_i])
     A = QHaStates([QHa([4,0,0,0]),QHa([0,1,0,0])])
     B = QHaStates([QHa([0,0,1,0]),QHa([0,0,0,2]),QHa([0,3,0,0])])
     Op = QHaStates([QHa([3,0,0,0]),QHa([0,1,0,0]),QHa([0,0,2,0]),QHa([0,0,0,3]),QHa([2,0,0,0]),QHa([0,4,0,0])])
-    Op4i = QHaStates([qi4])
+    Op4i = QHaStates([q_i4])
+    q_1234 = QHaStates([QHa([1, 1, 0, 0]), QHa([2, 1, 0, 0]), QHa([3, 1, 0, 0]), QHa([4, 1, 0, 0])])
+    sigma_y = QHaStates([QHa([1, 0, 0, 0]), QHa([0, -1, 0, 0]), QHa([0, 1, 0, 0]), QHa([-1, 0, 0, 0])])
     qn = QHaStates([QHa([3,0,0,4])])
-    q1234 = QHStates([QHa([1, 1, 0, 0]), QHa([2, 1, 0, 0]), QHa([3, 1, 0, 0]), QHa([4, 1, 0, 0])])
-    sigma_y = QHStates([QHa([1, 0, 0, 0]), QHa([0, -1, 0, 0]), QHa([0, 1, 0, 0]), QHa([-1, 0, 0, 0])])
-    
     def test_init(self):
-        self.assertTrue(self.q0_q1.dim == 2)
+        self.assertTrue(self.q_0_q_1.dim == 2)
         
     def test_equals(self):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
         
     def test_conj(self):
-        qc = self.q1_qi.conj()
-        qc1 = self.q1_qi.conj(1)
-        print("q1_qi*: ", qc)
-        print("q1_qc*1: ", qc1)
+        qc = self.q_1_q_i.conj()
+        qc1 = self.q_1_q_i.conj(1)
+        print("q_1_q_i*: ", qc)
+        print("q_1_qc*1: ", qc1)
         self.assertTrue(qc.qs[1].a[1] == -1)
         self.assertTrue(qc1.qs[1].a[1] == 1)
     
     def test_flip_signs(self):
-        qf = self.q1_qi.flip_signs()
-        print("-q1_qi: ", qf)
+        qf = self.q_1_q_i.flip_signs()
+        print("-q_1_q_i: ", qf)
         self.assertTrue(qf.qs[1].a[1] == -1)  
         
     def test_summation(self):
-        q_01_sum = self.q0_q1.summation()
+        q_01_sum = self.q_0_q_1.summation()
         print("sum: ", q_01_sum)
         self.assertTrue(type(q_01_sum) is QHa)
         self.assertTrue(q_01_sum.a[0] == 1)
@@ -7877,14 +8120,28 @@ class TestQHaStates(unittest.TestCase):
         self.assertAlmostEqual(qn.qs[0].a[0], 0.6)
         self.assertTrue(qn.qs[0].a[3] == 0.8)    
         
+    def test_determinant(self):
+        det_v3 = self.v3.determinant()
+        print("det v3:", det_v3)
+        self.assertTrue(det_v3.equals(self.q_3))
+        det_v1123 = self.v1123.determinant()
+        print("det v1123", det_v1123)
+        self.assertTrue(det_v1123.equals(self.q_1))
+        det_v9 = self.v9.determinant()
+        print("det_v9", det_v9)
+        self.assertTrue(det_v9.equals(self.q_9))
+        det_vv9 = self.vv9.determinant()
+        print("det_vv9", det_vv9)
+        self.assertTrue(det_vv9.equals(self.qn627))    
+        
     def test_add(self):
-        q_0110_add = self.q0_q1.add(self.q1_q0)
+        q_0110_add = self.q_0_q_1.add(self.q_1_q_0)
         print("add 01 10: ", q_0110_add)
         self.assertTrue(q_0110_add.qs[0].a[0] == 1)
         self.assertTrue(q_0110_add.qs[1].a[0] == 1)
         
     def test_dif(self):
-        q_0110_dif = self.q0_q1.dif(self.q1_q0)
+        q_0110_dif = self.q_0_q_1.dif(self.q_1_q_0)
         print("dif 01 10: ", q_0110_dif)
         self.assertTrue(q_0110_dif.qs[0].a[0] == -1)
         self.assertTrue(q_0110_dif.qs[1].a[0] == 1)
@@ -7892,14 +8149,18 @@ class TestQHaStates(unittest.TestCase):
     def test_diagonal(self):
         Op4iDiag2 = self.Op4i.diagonal(2)
         print("Op4i on a diagonal 2x2", Op4iDiag2)
-        self.assertTrue(Op4iDiag2.qs[0].equals(self.qi4))
+        self.assertTrue(Op4iDiag2.qs[0].equals(self.q_i4))
         self.assertTrue(Op4iDiag2.qs[1].equals(QHa().q_0()))
         
     def test_identity(self):
-        I2 = QHaStates().identity(2)
-        print("Idenity on a diagonal 2x2", I2)
+        I2 = QHaStates().identity(2, operator=True)
+        print("Operator Idenity, diagonal 2x2", I2)
         self.assertTrue(I2.qs[0].equals(QHa().q_1()))
-        self.assertTrue(I2.qs[1].equals(QHa().q_0()))    
+        self.assertTrue(I2.qs[1].equals(QHa().q_0())) 
+        I2 = QHaStates().identity(2)
+        print("Idenity on a 2 state ket", I2)
+        self.assertTrue(I2.qs[0].equals(QHa().q_1()))
+        self.assertTrue(I2.qs[1].equals(QHa().q_1()))    
         
     def test_product_AA(self):
         AA = self.A.product('bra', ket=self.A)
@@ -7988,22 +8249,22 @@ class TestQHaStates(unittest.TestCase):
         self.assertTrue(AOp4iB.dim == 0)
         
     def test_op_n(self):
-        opn = self.Op.op_n(n=self.qi)
+        opn = self.Op.op_n(n=self.q_i)
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].a[1] == 3)
         
     def test_transpose(self):
-        opt = self.q1234.transpose()
+        opt = self.q_1234.transpose()
         print("op1234 transposed: ", opt)
         self.assertTrue(opt.qs[0].a[0] == 1)
         self.assertTrue(opt.qs[1].a[0] == 3)
         self.assertTrue(opt.qs[2].a[0] == 2)
         self.assertTrue(opt.qs[3].a[0] == 4)
-        optt = self.q1234.transpose().transpose()
-        self.assertTrue(optt.equals(self.q1234))
+        optt = self.q_1234.transpose().transpose()
+        self.assertTrue(optt.equals(self.q_1234))
         
     def test_Hermitian_conj(self):
-        q_hc = self.q1234.Hermitian_conj()
+        q_hc = self.q_1234.Hermitian_conj()
         print("op1234 Hermitian_conj: ", q_hc)
         self.assertTrue(q_hc.qs[0].a[0] == 1)
         self.assertTrue(q_hc.qs[1].a[0] == 3)
@@ -8016,7 +8277,7 @@ class TestQHaStates(unittest.TestCase):
         
     def test_is_Hermitian(self):
         self.assertTrue(self.sigma_y.is_Hermitian())
-        self.assertFalse(self.q1234.is_Hermitian())
+        self.assertFalse(self.q_1234.is_Hermitian())
         
     def test_is_square(self):
         self.assertFalse(self.Op.is_square())
@@ -8026,7 +8287,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[35]:
+# In[72]:
 
 
 class Q8States(Q8):
@@ -8051,7 +8312,7 @@ class Q8States(Q8):
         
         return states.rstrip()
     
-    def print_states(self, label, spacer=False, quiet=False):
+    def print_state(self, label, spacer=False, quiet=False):
         """Utility for printing states as a quaternion series."""
 
         print(label)
@@ -8148,6 +8409,36 @@ class Q8States(Q8):
         
         return Q8States(orthonormal_qs)
     
+    def determinant(self):
+        """Calculate the determinant of a 'square' quaternion series."""
+    
+        if self.dim == 1:
+            q_det = self.qs[0]
+        
+        elif self.dim == 4:
+            ad =self.qs[0].product(self.qs[3])
+            bc = self.qs[1].product(self.qs[2])
+            q_det = ad.dif(bc)  
+        
+        elif self.dim == 9:
+            aei = self.qs[0].product(self.qs[4].product(self.qs[8]))
+            bfg = self.qs[3].product(self.qs[7].product(self.qs[2]))
+            cdh = self.qs[6].product(self.qs[1].product(self.qs[5]))
+            ceg = self.qs[6].product(self.qs[4].product(self.qs[2]))
+            bdi = self.qs[3].product(self.qs[1].product(self.qs[8]))
+            afh = self.qs[0].product(self.qs[7].product(self.qs[5]))
+        
+            sum_pos = aei.add(bfg.add(cdh))
+            sum_neg = ceg.add(bdi.add(afh))
+        
+            q_det = sum_pos.dif(sum_neg)
+        
+        else:
+            print("Oops, don't know how to calculate the determinant of this one.")
+            q_det = Q8States([Q8().q_0()])
+        
+        return q_det
+    
     def summation(self):
         """Add them all up, return one quaternion."""
         
@@ -8202,12 +8493,20 @@ class Q8States(Q8):
                     diagonal.append(Q8().q_0())
         
         return Q8States(diagonal)
-        
-    def identity(self, dim):
-        """Identity operator for states."""
+
+    @staticmethod
+    def identity(dim, operator=False):
+        """Identity operator for states or operators which are diagonal."""
     
-        q_1 = Q8States([Q8().q_1()])
-        return Q8States.diagonal(q_1, dim)     
+        if operator:
+            q_1 = Q8States([Q8().q_1() ])
+            ident = Q8States.diagonal(q_1, dim)    
+    
+        else:
+            i_list = [Q8().q_1() for i in range(dim)]
+            ident = Q8States(i_list)
+            
+        return ident
         
     def product(self, product_type, bra=None, ket=None, operator=None, kind=""):
         """Forms the quaternion product for each state."""
@@ -8265,6 +8564,13 @@ class Q8States(Q8):
             if _check_dimensions(state_1_dim=bra.dim, state_2_dim=ket.dim, equals=True):
                 for b, k in zip(bra.qs, ket.qs):
                     new_states.append(b.product(k, kind))
+                    
+                dot_product = new_states.pop(0)
+                
+                for new_state in new_states:
+                    dot_product = dot_product.add(new_state)
+                
+                return dot_product
             
         # Op|B>
         elif bra is None:
@@ -8338,7 +8644,14 @@ class Q8States(Q8):
                     
                 for b, k in zip(bra.qs, new_ket_state.qs):
                     new_states.append(b.product(k, kind))
+                    
+                dot_product = new_states.pop(0)
                 
+                for new_state in new_states:
+                    dot_product = dot_product.add(new_state)
+                
+                return dot_product
+            
         return Q8States(new_states)
 
     def Euclidean_product(self, product_type, bra=None, ket=None, operator=None, kind=""):
@@ -8447,46 +8760,69 @@ class Q8States(Q8):
         return signma[kind].normalize()
 
 
-# In[36]:
+# In[73]:
 
 
 class TestQ8States(unittest.TestCase):
     """Test states."""
     
-    q0 = Q8().q_0()
-    q1 = Q8().q_1()
-    qi = Q8().q_i()
-    q0_q1 = Q8States([q0, q1])
-    q1_q0 = Q8States([q1, q0])
-    q1_qi = Q8States([q1, qi])
-    qi4 = Q8([0,4,0,0])
+    q_0 = Q8().q_0()
+    q_1 = Q8().q_1()
+    q_i = Q8().q_i()
+    q_n1 = Q8([-1,0,0,0])
+    q_2 = Q8([2,0,0,0])
+    q_n2 = Q8([-2,0,0,0])
+    q_3 = Q8([3,0,0,0])
+    q_n3 = Q8([-3,0,0,0])
+    q_4 = Q8([4,0,0,0])
+    q_n5 = Q8([-5,0,0,0])
+    q_7 = Q8([7,0,0,0])
+    q_8 = Q8([8,0,0,0])
+    q_9 = Q8([9,0,0,0])
+    q_n11 = Q8([-11,0,0,0])
+    q_21 = Q8([21,0,0,0])
+    q_n34 = Q8([-34,0,0,0])
+    v3 = Q8States([q_3])
+    v1123 = Q8States([q_1, q_1, q_2, q_3])
+    v3n1n21 = Q8States([q_3,q_n1,q_n2,q_1])
+    v9 = Q8States([q_1, q_1, q_2, q_3, q_1, q_1, q_2, q_3, q_2])
+    v9i = Q8States([Q8([0,1,0,0]), Q8([0,2,0,0]), Q8([0,3,0,0]), Q8([0,4,0,0]), Q8([0,5,0,0]), Q8([0,6,0,0]), Q8([0,7,0,0]), Q8([0,8,0,0]), Q8([0,9,0,0])])
+    vv9 = v9.add(v9i)
+    qn627 = Q8([-6,27,0,0])
+    v33 = Q8States([q_7, q_0, q_n3, q_2, q_3, q_4, q_1, q_n1, q_n2])
+    v33inv = Q8States([q_n2, q_3, q_9, q_8, q_n11, q_n34, q_n5, q_7, q_21])
+    q_i3 = Q8States([q_1, q_1, q_1])
+    q_i2d = Q8States([q_1, q_0, q_0, q_1])
+    q_i4 = Q8([0,4,0,0])
+    q_0_q_1 = Q8States([q_0, q_1])
+    q_1_q_0 = Q8States([q_1, q_0])
+    q_1_q_i = Q8States([q_1, q_i])
     A = Q8States([Q8([4,0,0,0]),Q8([0,1,0,0])])
     B = Q8States([Q8([0,0,1,0]),Q8([0,0,0,2]),Q8([0,3,0,0])])
     Op = Q8States([Q8([3,0,0,0]),Q8([0,1,0,0]),Q8([0,0,2,0]),Q8([0,0,0,3]),Q8([2,0,0,0]),Q8([0,4,0,0])])
-    Op4i = Q8States([qi4])
-    qn = Q8States([Q8([3,0,0,4])])
-    q1234 = Q8States([Q8([1, 1, 0, 0]), Q8([2, 1, 0, 0]), Q8([3, 1, 0, 0]), Q8([4, 1, 0, 0])])
+    Op4i = Q8States([q_i4])
+    q_1234 = Q8States([Q8([1, 1, 0, 0]), Q8([2, 1, 0, 0]), Q8([3, 1, 0, 0]), Q8([4, 1, 0, 0])])
     sigma_y = Q8States([Q8([1, 0, 0, 0]), Q8([0, -1, 0, 0]), Q8([0, 1, 0, 0]), Q8([-1, 0, 0, 0])])
-        
+    qn = Q8States([Q8([3,0,0,4])])    
     def test_init(self):
-        self.assertTrue(self.q0_q1.dim == 2)
+        self.assertTrue(self.q_0_q_1.dim == 2)
         
     def test_equals(self):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
          
     def test_conj(self):
-        qc = self.q1_qi.conj()
-        qc1 = self.q1_qi.conj(1)
-        print("q1_qi*: ", qc)
-        print("q1_qc*1: ", qc1)
+        qc = self.q_1_q_i.conj()
+        qc1 = self.q_1_q_i.conj(1)
+        print("q_1_q_i*: ", qc)
+        print("q_1_qc*1: ", qc1)
         print("qc.qs[1]: ", qc.qs[1])
         self.assertTrue(qc.qs[1].dx.n == 1)
         self.assertTrue(qc1.qs[1].dx.p == 1)   
 
     def test_flip_signs(self):
-        qf = self.q1_qi.flip_signs()
-        print("-q1_qi: ", qf)
+        qf = self.q_1_q_i.flip_signs()
+        print("-q_1_q_i: ", qf)
         self.assertTrue(qf.qs[1].dx.n == 1)
     
     def test_normalize(self):
@@ -8495,20 +8831,34 @@ class TestQ8States(unittest.TestCase):
         self.assertAlmostEqual(qn.qs[0].dt.p, 0.6)
         self.assertTrue(qn.qs[0].dz.p == 0.8)
         
+    def test_determinant(self):
+        det_v3 = self.v3.determinant()
+        print("det v3:", det_v3)
+        self.assertTrue(det_v3.equals(self.q_3))
+        det_v1123 = self.v1123.determinant()
+        print("det v1123", det_v1123)
+        self.assertTrue(det_v1123.equals(self.q_1))
+        det_v9 = self.v9.determinant()
+        print("det_v9", det_v9)
+        self.assertTrue(det_v9.equals(self.q_9))
+        det_vv9 = self.vv9.determinant()
+        print("det_vv9", det_vv9)
+        self.assertTrue(det_vv9.equals(self.qn627))
+        
     def test_summation(self):
-        q_01_sum = self.q0_q1.summation()
+        q_01_sum = self.q_0_q_1.summation()
         print("sum: ", q_01_sum)
         self.assertTrue(type(q_01_sum) is Q8)
         self.assertTrue(q_01_sum.dt.p== 1)
         
     def test_add(self):
-        q_0110_add = self.q0_q1.add(self.q1_q0)
+        q_0110_add = self.q_0_q_1.add(self.q_1_q_0)
         print("add 01 10: ", q_0110_add)
         self.assertTrue(q_0110_add.qs[0].dt.p== 1)
         self.assertTrue(q_0110_add.qs[1].dt.p== 1)
         
     def test_dif(self):
-        q_0110_dif = self.q0_q1.dif(self.q1_q0)
+        q_0110_dif = self.q_0_q_1.dif(self.q_1_q_0)
         print("dif 01 10: ", q_0110_dif)
         self.assertTrue(q_0110_dif.qs[0].dt.n== 1)
         self.assertTrue(q_0110_dif.qs[1].dt.p== 1)
@@ -8516,14 +8866,18 @@ class TestQ8States(unittest.TestCase):
     def test_diagonal(self):
         Op4iDiag2 = self.Op4i.diagonal(2)
         print("Op4i on a diagonal 2x2", Op4iDiag2)
-        self.assertTrue(Op4iDiag2.qs[0].equals(self.qi4))
+        self.assertTrue(Op4iDiag2.qs[0].equals(self.q_i4))
         self.assertTrue(Op4iDiag2.qs[1].equals(Q8().q_0()))
         
     def test_identity(self):
-        I2 = Q8States().identity(2)
-        print("Identity on a diagonal 2x2", I2)
+        I2 = Q8States().identity(2, operator=True)
+        print("Operator Identity, diagonal 2x2", I2)
         self.assertTrue(I2.qs[0].equals(Q8().q_1()))
         self.assertTrue(I2.qs[1].equals(Q8().q_0()))
+        I2 = Q8States().identity(2)
+        print("Identity for a 2 state ket", I2)
+        self.assertTrue(I2.qs[0].equals(Q8().q_1()))
+        self.assertTrue(I2.qs[1].equals(Q8().q_1()))
         
     def test_product_AA(self):
         AA = self.A.product('bra', ket=self.A)
@@ -8612,7 +8966,7 @@ class TestQ8States(unittest.TestCase):
         self.assertTrue(AOp4iB.dim == 0)
         
     def test_op_n(self):
-        opn = self.Op.op_n(n=self.qi)
+        opn = self.Op.op_n(n=self.q_i)
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].dx.p == 3)
         
@@ -8620,7 +8974,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[37]:
+# In[74]:
 
 
 class Q8aStates(Q8a):
@@ -8648,7 +9002,7 @@ class Q8aStates(Q8a):
         
         return states.rstrip()
     
-    def print_states(self, label, spacer=False, quiet=False):
+    def print_state(self, label, spacer=False, quiet=False):
         """Utility for printing states as a quaternion series."""
 
         print(label)
@@ -8746,6 +9100,36 @@ class Q8aStates(Q8a):
         
         return Q8aStates(orthonormal_qs)
     
+    def determinant(self):
+        """Calculate the determinant of a 'square' quaternion series."""
+    
+        if self.dim == 1:
+            q_det = self.qs[0]
+        
+        elif self.dim == 4:
+            ad =self.qs[0].product(self.qs[3])
+            bc = self.qs[1].product(self.qs[2])
+            q_det = ad.dif(bc)  
+        
+        elif self.dim == 9:
+            aei = self.qs[0].product(self.qs[4].product(self.qs[8]))
+            bfg = self.qs[3].product(self.qs[7].product(self.qs[2]))
+            cdh = self.qs[6].product(self.qs[1].product(self.qs[5]))
+            ceg = self.qs[6].product(self.qs[4].product(self.qs[2]))
+            bdi = self.qs[3].product(self.qs[1].product(self.qs[8]))
+            afh = self.qs[0].product(self.qs[7].product(self.qs[5]))
+        
+            sum_pos = aei.add(bfg.add(cdh))
+            sum_neg = ceg.add(bdi.add(afh))
+        
+            q_det = sum_pos.dif(sum_neg)
+        
+        else:
+            print("Oops, don't know how to calculate the determinant of this one.")
+            q_det = Q8aStates([Q8a().q_0()])
+        
+        return q_det
+    
     def summation(self):
         """Add them all up, return one quaternion."""
         
@@ -8803,12 +9187,20 @@ class Q8aStates(Q8a):
                     diagonal.append(Q8a().q_0())
         
         return Q8aStates(diagonal)
-        
-    def identity(self, dim):
-        """Identity operator for states."""
     
-        q_1 = Q8aStates([Q8a().q_1()])
-        return Q8aStates.diagonal(q_1, dim) 
+    @staticmethod
+    def identity(dim, operator=False):
+        """Identity operator for states or operators which are diagonal."""
+    
+        if operator:
+            q_1 = Q8aStates([Q8a().q_1() ])
+            ident = Q8aStates.diagonal(q_1, dim)    
+    
+        else:
+            i_list = [Q8a().q_1() for i in range(dim)]
+            ident = Q8aStates(i_list)
+            
+        return ident
     
     def product(self, product_type, bra=None, ket=None, operator=None, kind=""):
         """Forms the quaternion product for each state."""
@@ -8866,6 +9258,13 @@ class Q8aStates(Q8a):
             if _check_dimensions(state_1_dim=bra.dim, state_2_dim=ket.dim, equals=True):
                 for b, k in zip(bra.qs, ket.qs):
                     new_states.append(b.product(k, kind))
+                
+                dot_product = new_states.pop(0)
+                
+                for new_state in new_states:
+                    dot_product = dot_product.add(new_state)
+                
+                return dot_product
             
         # Op|B>
         elif bra is None:
@@ -8940,6 +9339,13 @@ class Q8aStates(Q8a):
                 for b, k in zip(bra.qs, new_ket_state.qs):
                     new_states.append(b.product(k, kind))
                 
+                dot_product = new_states.pop(0)
+                
+                for new_state in new_states:
+                    dot_product = dot_product.add(new_state)
+                
+                return dot_product
+            
         return Q8aStates(new_states)
 
     def Euclidean_product(self, product_type, bra=None, ket=None, operator=None, kind=""):
@@ -9047,45 +9453,69 @@ class Q8aStates(Q8a):
         return signma[kind].normalize()
 
 
-# In[38]:
+# In[75]:
 
 
 class TestQ8aStates(unittest.TestCase):
     """Test states."""
     
-    q0 = Q8a().q_0()
-    q1 = Q8a().q_1()
-    qi = Q8a().q_i()
-    q0_q1 = Q8aStates([q0, q1])
-    q1_q0 = Q8aStates([q1, q0])
-    q1_qi = Q8aStates([q1, qi])
-    qi4 = Q8a([0,4,0,0])
+    q_0 = Q8a().q_0()
+    q_1 = Q8a().q_1()
+    q_i = Q8a().q_i()
+    q_n1 = Q8a([-1,0,0,0])
+    q_2 = Q8a([2,0,0,0])
+    q_n2 = Q8a([-2,0,0,0])
+    q_3 = Q8a([3,0,0,0])
+    q_n3 = Q8a([-3,0,0,0])
+    q_4 = Q8a([4,0,0,0])
+    q_n5 = Q8a([-5,0,0,0])
+    q_7 = Q8a([7,0,0,0])
+    q_8 = Q8a([8,0,0,0])
+    q_9 = Q8a([9,0,0,0])
+    q_n11 = Q8a([-11,0,0,0])
+    q_21 = Q8a([21,0,0,0])
+    q_n34 = Q8a([-34,0,0,0])
+    v3 = Q8aStates([q_3])
+    v1123 = Q8aStates([q_1, q_1, q_2, q_3])
+    v3n1n21 = Q8aStates([q_3,q_n1,q_n2,q_1])
+    v9 = Q8aStates([q_1, q_1, q_2, q_3, q_1, q_1, q_2, q_3, q_2])
+    v9i = Q8aStates([Q8a([0,1,0,0]), Q8a([0,2,0,0]), Q8a([0,3,0,0]), Q8a([0,4,0,0]), Q8a([0,5,0,0]), Q8a([0,6,0,0]), Q8a([0,7,0,0]), Q8a([0,8,0,0]), Q8a([0,9,0,0])])
+    vv9 = v9.add(v9i)
+    qn627 = Q8a([-6,27,0,0])
+    v33 = Q8aStates([q_7, q_0, q_n3, q_2, q_3, q_4, q_1, q_n1, q_n2])
+    v33inv = Q8aStates([q_n2, q_3, q_9, q_8, q_n11, q_n34, q_n5, q_7, q_21])
+    q_i3 = Q8aStates([q_1, q_1, q_1])
+    q_i2d = Q8aStates([q_1, q_0, q_0, q_1])
+    q_i4 = Q8a([0,4,0,0])
+    q_0_q_1 = Q8aStates([q_0, q_1])
+    q_1_q_0 = Q8aStates([q_1, q_0])
+    q_1_q_i = Q8aStates([q_1, q_i])
     A = Q8aStates([Q8a([4,0,0,0]),Q8a([0,1,0,0])])
     B = Q8aStates([Q8a([0,0,1,0]),Q8a([0,0,0,2]),Q8a([0,3,0,0])])
     Op = Q8aStates([Q8a([3,0,0,0]),Q8a([0,1,0,0]),Q8a([0,0,2,0]),Q8a([0,0,0,3]),Q8a([2,0,0,0]),Q8a([0,4,0,0])])
-    Op4i = Q8aStates([qi4])
-    qn = Q8aStates([Q8a([3,0,0,4])])
-    q1234 = Q8aStates([Q8a([1, 1, 0, 0]), Q8a([2, 1, 0, 0]), Q8a([3, 1, 0, 0]), Q8a([4, 1, 0, 0])])
+    Op4i = Q8aStates([q_i4])
+    q_1234 = Q8aStates([Q8a([1, 1, 0, 0]), Q8a([2, 1, 0, 0]), Q8a([3, 1, 0, 0]), Q8a([4, 1, 0, 0])])
     sigma_y = Q8aStates([Q8a([1, 0, 0, 0]), Q8a([0, -1, 0, 0]), Q8a([0, 1, 0, 0]), Q8a([-1, 0, 0, 0])])
+    qn = Q8aStates([Q8a([3,0,0,4])])
     
     def test_init(self):
-        self.assertTrue(self.q0_q1.dim == 2)
+        self.assertTrue(self.q_0_q_1.dim == 2)
 
     def test_equals(self):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
         
     def test_conj(self):
-        qc = self.q1_qi.conj()
-        qc1 = self.q1_qi.conj(1)
-        print("q1_qi*: ", qc)
-        print("q1_qc*1: ", qc1)
+        qc = self.q_1_q_i.conj()
+        qc1 = self.q_1_q_i.conj(1)
+        print("q_1_q_i*: ", qc)
+        print("q_1_qc*1: ", qc1)
         self.assertTrue(qc.qs[1].a[3] == 1)
         self.assertTrue(qc1.qs[1].a[2] == 1)
     
     def test_flip_signs(self):
-        qf = self.q1_qi.flip_signs()
-        print("-q1_qi: ", qf)
+        qf = self.q_1_q_i.flip_signs()
+        print("-q_1_q_i: ", qf)
         self.assertTrue(qf.qs[1].a[3] == 1)    
     
     def test_normalize(self):
@@ -9094,20 +9524,34 @@ class TestQ8aStates(unittest.TestCase):
         self.assertAlmostEqual(qn.qs[0].a[0], 0.6)
         self.assertTrue(qn.qs[0].a[6] == 0.8)
     
+    def test_determinant(self):
+        det_v3 = self.v3.determinant()
+        print("det v3:", det_v3)
+        self.assertTrue(det_v3.equals(self.q_3))
+        det_v1123 = self.v1123.determinant()
+        print("det v1123", det_v1123)
+        self.assertTrue(det_v1123.equals(self.q_1))
+        det_v9 = self.v9.determinant()
+        print("det_v9", det_v9)
+        self.assertTrue(det_v9.equals(self.q_9))
+        det_vv9 = self.vv9.determinant()
+        print("det_vv9", det_vv9)
+        self.assertTrue(det_vv9.equals(self.qn627))
+    
     def test_summation(self):
-        q_01_sum = self.q0_q1.summation()
+        q_01_sum = self.q_0_q_1.summation()
         print("sum: ", q_01_sum)
         self.assertTrue(type(q_01_sum) is Q8a)
         self.assertTrue(q_01_sum.a[0]== 2)
         
     def test_add(self):
-        q_0110_add = self.q0_q1.add(self.q1_q0)
+        q_0110_add = self.q_0_q_1.add(self.q_1_q_0)
         print("add 01 10: ", q_0110_add)
         self.assertTrue(q_0110_add.qs[0].a[0]== 1)
         self.assertTrue(q_0110_add.qs[1].a[0]== 1)
         
     def test_dif(self):
-        q_0110_dif = self.q0_q1.dif(self.q1_q0)
+        q_0110_dif = self.q_0_q_1.dif(self.q_1_q_0)
         print("dif 01 10: ", q_0110_dif)
         self.assertTrue(q_0110_dif.qs[0].a[1]== 1)
         self.assertTrue(q_0110_dif.qs[1].a[0]== 1)
@@ -9115,14 +9559,18 @@ class TestQ8aStates(unittest.TestCase):
     def test_diagonal(self):
         Op4iDiag2 = self.Op4i.diagonal(2)
         print("Op4i on a diagonal 2x2", Op4iDiag2)
-        self.assertTrue(Op4iDiag2.qs[0].equals(self.qi4))
+        self.assertTrue(Op4iDiag2.qs[0].equals(self.q_i4))
         self.assertTrue(Op4iDiag2.qs[1].equals(Q8a().q_0()))
         
     def test_identity(self):
-        I2 = Q8aStates().identity(2)
-        print("Idenity on a diagonal 2x2", I2)
+        I2 = Q8aStates().identity(2, operator=True)
+        print("Operator Idenity, diagonal 2x2", I2)
         self.assertTrue(I2.qs[0].equals(Q8a().q_1()))
         self.assertTrue(I2.qs[1].equals(Q8a().q_0()))
+        I2 = Q8aStates().identity(2)
+        print("Idenity on a 2 state ket", I2)
+        self.assertTrue(I2.qs[0].equals(Q8a().q_1()))
+        self.assertTrue(I2.qs[1].equals(Q8a().q_1()))
         
     def test_product_AA(self):
         AA = self.A.product('bra', ket=self.A)
@@ -9211,10 +9659,16 @@ class TestQ8aStates(unittest.TestCase):
         self.assertTrue(AOp4iB.dim == 0)
         
     def test_op_n(self):
-        opn = self.Op.op_n(n=self.qi)
+        opn = self.Op.op_n(n=self.q_i)
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].a[2] == 3)
         
 suite = unittest.TestLoader().loadTestsFromModule(TestQ8aStates())
 unittest.TextTestRunner().run(suite);
+
+
+# In[76]:
+
+
+3+2
 

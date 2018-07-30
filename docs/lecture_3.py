@@ -41,7 +41,7 @@ At2, Ax2, Ay2, Az2 = sp.symbols("At2 Ax2 Ay2 Az2")
 Aq1 = qt.QH([At1, Ax1, Ay1, Az1], qtype="a₁")
 Aq2 = qt.QH([At2, Ax2, Ay2, Az2], qtype="a₂")
 A = qt.QHStates([Aq1, Aq2])
-A.print_states("A", 1)
+A.print_state("A", 1)
 
 Mt1, Mx1, My1, Mz1 = sp.symbols("Mt1 Mx1 My1 Mz1")
 Mt2, Mx2, My2, Mz2 = sp.symbols("Mt2 Mx2 My2 Mz2")
@@ -53,13 +53,13 @@ Mq3 = qt.QH([Mt3, Mx3, My3, Mz3], qtype="m₃")
 Mq4 = qt.QH([Mt4, Mx4, My4, Mz4], qtype="m₄")
 
 M = qt.QHStates([Mq1, Mq2, Mq3, Mq4])
-M.print_states("M", 1)
+M.print_state("M", 1)
 
 zt, zx, zy, zz = sp.symbols("zt zx zy zz")
 zq = qt.QH([zt, zx, zy, zz], qtype="z")
 zqs = qt.QHStates([zq])
 z_op = zqs.diagonal(2)
-z_op.print_states("z")
+z_op.print_state("z")
 
 
 # Before trying to understand quaternion series, let's just look at the product of two quaternions. We wish to have an algebraic rule about what **exactly** it means to reverse two named symbols. We can create a rule such that reversing symbols does not change the result. Thus when one writes a reversal of symbols, we mean that the product of the two reverse quaternions is the difference between the even and odd products. This makes no difference for real and complex numbers since the odd part is always exactly zero. For quaternions, this flips the signs of the thing that flip signs under reversal, so no net change results.
@@ -94,14 +94,14 @@ Mq2z = Mq2.product(zq)
 Mq3z = Mq3.product(zq)
 Mq4z = Mq4.product(zq)
 Mz = qt.QHStates([Mq1z, Mq2z, Mq3z, Mq4z])
-Mz.print_states("Mz", 1)
+Mz.print_state("Mz", 1)
 
 zMq1 = zq.product(Mq1, reverse=True)
 zMq2 = zq.product(Mq2, reverse=True)
 zMq3 = zq.product(Mq3, reverse=True)
 zMq4 = zq.product(Mq4, reverse=True)
 zM = qt.QHStates([zMq1, zMq2, zMq3, zMq4])
-zM.print_states("zM")
+zM.print_state("zM")
 
 
 # If you stare at these long enough, they do look identical. Prove it.
@@ -128,7 +128,7 @@ Aq3 = qt.QH([At3, Ax3, Ay3, Az3], qtype="a")
 aj = qt.QHStates([Aq1, Aq2, Aq3]).diagonal(3)
 jj = qt.QHStates([qt.QH().q_1(), qt.QH().q_j(), qt.QH().q_j()])
 A = jj.product("ket", operator=aj)
-A.print_states("A", 1)
+A.print_state("A", 1)
 
 
 # ![](images/lecture_3/c3_p55_q1.jpg)
@@ -151,7 +151,7 @@ Mq8 = qt.QH([Mt8, Mx8, My8, Mz8], qtype="m₈")
 Mq9 = qt.QH([Mt9, Mx9, My9, Mz9], qtype="m₉")
 
 M = qt.QHStates([Mq1, Mq2, Mq3, Mq4, Mq5, Mq6, Mq7, Mq8, Mq9])
-M.print_states("M")
+M.print_state("M")
 
 
 # ![](images/lecture_3/c3_p55_q2.jpg)
@@ -162,7 +162,7 @@ M.print_states("M")
 
 
 MA = A.Euclidean_product("ket", operator=M)
-MA.print_states("MA", quiet=True)
+MA.print_state("MA", quiet=True)
 
 
 # This simple result is crazy complex. Every term has 4 space-time dimensions. There are three state dimensions, so that makes 12 terms for the ket A. The operator M has nine state dimensions so has 36 spots to fill. All in all the ket $\beta$ is composed of the sum of $3 * 4 * 4 * 3 = 12 * 12 = 144$ terms. Quantum mechanics done over the field of complex numbers would have half this number, or 72, so it is still complicated.
@@ -196,7 +196,7 @@ q_2 = qt.QH([2, 0, 0, 0])
 M12 = qt.QHStates([q_1, q_2, q_2, q_1])
 k11 = qt.QHStates([q_1, q_1])
 M12k11 = k11.product("ket", operator=M12)
-M12k11.print_states("M12 k11, an eigen pair?: ")
+M12k11.print_state("M12 k11, an eigen pair?: ")
 
 
 # The matrix $M$ has an Eigen-value of $3$ and and Eigen-ket of $|1 1>$.
@@ -209,7 +209,7 @@ M12k11.print_states("M12 k11, an eigen pair?: ")
 q_n1 = qt.QH([-1, 0, 0, 0])
 k1n1 = qt.QHStates([q_1, q_n1])
 M12k1n1 = k1n1.product("ket", operator=M12)
-M12k11.print_states("M12 k1n1, an eigen pair?: ")
+M12k11.print_state("M12 k1n1, an eigen pair?: ")
 
 
 # Nice, same Eigen-value, different Eigen-ket.
@@ -222,7 +222,7 @@ M12k11.print_states("M12 k1n1, an eigen pair?: ")
 q_0 = qt.QH()
 k10 = qt.QHStates([q_1, q_0])
 M12k10 = k10.product("ket", operator=M12)
-M12k10.print_states("M12 k10, an eigen pair?: ")
+M12k10.print_state("M12 k10, an eigen pair?: ")
 
 
 # Just not the same. So k10 is not an Eigen-ket for the operator $M$. Most kets are not. Being an Eigen-ket for an operator is a rare thing.
@@ -236,7 +236,7 @@ q_i = qt.QH([0, 1, 0, 0])
 Mn11 = qt.QHStates([q_0, q_n1, q_1, q_0])
 k1i = qt.QHStates([q_1, q_i])
 Mn11_k1i = k1i.product("ket", operator=Mn11)
-Mn11_k1i.print_states("Mn11 k1i, an eigen pair?: ")
+Mn11_k1i.print_state("Mn11 k1i, an eigen pair?: ")
 
 
 # What? This doesn't look like the first Eigen-value/Eigen-ket pair with repeated values. That "easy to spot" quality arose from the fact that both Eigen-values were real numbers.
@@ -247,7 +247,7 @@ Mn11_k1i.print_states("Mn11 k1i, an eigen pair?: ")
 q_ni = qt.QH([0, -1, 0, 0])
 op_ni = qt.QHStates([q_ni])
 op_ni_k1i = k1i.product("ket", operator=op_ni)
-op_ni_k1i.print_states("op_ni_k1i eigen pair?: ")
+op_ni_k1i.print_state("op_ni_k1i eigen pair?: ")
 
 
 # This is the same result as above, so for operator $Mn11$, the Eigen-value is $-i$ for Eigen-ket $|1 i>$. This three-way relationship between operator, Eigen-value, and Eigen-ket is tricky, making the study of quantum mechanics every bit as hard as expected.
@@ -261,8 +261,8 @@ op_ni_k1i.print_states("op_ni_k1i eigen pair?: ")
 # In[14]:
 
 
-M.print_states("M", 1)
-M.dagger().print_states("M†")
+M.print_state("M", 1)
+M.dagger().print_state("M†")
 
 
 # Three of the nine states "stay in place", those being n=1, n=5, and n=9. A little game can be made of spotting how the other states shuffle. Every term gets conjugated, no exceptions.
@@ -277,9 +277,9 @@ M.dagger().print_states("M†")
 
 
 AMd_conj = A.Euclidean_product("bra", operator=M.dagger()).conj()
-MA.print_states("MA", 1, quiet=True)
-AMd_conj.print_states("AM†*", 1, quiet=True)
-MA.dif(AMd_conj).print_states("M|A> - <A|M†", quiet=True)
+MA.print_state("MA", 1, quiet=True)
+AMd_conj.print_state("AM†*", 1, quiet=True)
+MA.dif(AMd_conj).print_state("M|A> - <A|M†", quiet=True)
 
 
 # Bingo, bingo. But _why_ is it true, particularly since quaternion series do not commute?
@@ -301,7 +301,7 @@ MA.dif(AMd_conj).print_states("M|A> - <A|M†", quiet=True)
 
 MD = M.dagger()
 MMD = M.dif(MD)
-MMD.print_states("Is M† + M?", quiet=True)
+MMD.print_state("Is M† + M?", quiet=True)
 
 
 # Notice how the diagonal terms **are** the same? That is kind of fascinating. The goal is to find observables where all those other terms drop out.
@@ -356,13 +356,13 @@ def orthonormalize(qh):
 qa, qb, qc = qt.QH([0, 1, 2, 3]), qt.QH([1, 1, 3, 2]), qt.QH([2, 1, -2, 3])
 qabc = qt.QHStates([qa, qb, qc])
 qabc_on = orthonormalize(qabc)
-qabc_on.print_states("qabc_orthonormalized", quiet=True)
+qabc_on.print_state("qabc_orthonormalized", quiet=True)
 
 
 # In[19]:
 
 
-qabc_on.norm_squared().print_states("square it up")
+qabc_on.norm_squared().print_state("square it up")
 
 
 # The orthonormalization process will always work because it only involves forming a product, subtraction, and normalization, which will always be legal operations for quaternion series. 
@@ -393,11 +393,11 @@ d2 = d.Euclidean_product('ket', operator=sqrt_2op)
 r = u2.add(d2)
 L = u2.dif(d2)
 
-u.print_states("u", 1)
-d.print_states("d", 1)
+u.print_state("u", 1)
+d.print_state("d", 1)
 
-r.print_states("r", 1)
-L.print_states("L")
+r.print_state("r", 1)
+L.print_state("L")
 
 
 # ![](images/lecture_3/c3_p72_q2.jpg)
@@ -407,8 +407,8 @@ L.print_states("L")
 # In[21]:
 
 
-u.Euclidean_product("bra", ket=d).print_states("<u|d> - orthonormal", 1)
-u.Euclidean_product("bra", ket=r).print_states("<u|r> - not orthonormal")
+u.Euclidean_product("bra", ket=d).print_state("<u|d> - orthonormal", 1)
+u.Euclidean_product("bra", ket=r).print_state("<u|r> - not orthonormal")
 
 
 # ![](images/lecture_3/c3_p73_q1.jpg)
@@ -437,9 +437,9 @@ u.Euclidean_product("bra", ket=r).print_states("<u|r> - not orthonormal")
 
 
 σz = qt.QHStates([q_1, q_0, q_0, q_n1])
-σz.print_states("σz operator", 1)
-u.product("ket", operator=σz).print_states("σz|u>", 1)
-d.product("ket", operator=σz).print_states("σz|d>")
+σz.print_state("σz operator", 1)
+u.product("ket", operator=σz).print_state("σz|u>", 1)
+d.product("ket", operator=σz).print_state("σz|d>")
 
 
 # Bingo, bingo.
@@ -459,9 +459,9 @@ d.product("ket", operator=σz).print_states("σz|d>")
 
 
 σx = qt.QHStates([q_0, q_1, q_1, q_0])
-σx.print_states("σx operator", 1)
-r.product("ket", operator=σx).print_states("σx|r>", 1)
-L.product("ket", operator=σx).print_states("σx|L>")
+σx.print_state("σx operator", 1)
+r.product("ket", operator=σx).print_state("σx|r>", 1)
+L.product("ket", operator=σx).print_state("σx|L>")
 
 
 # ![](images/lecture_3/c3_p80_q1.jpg)
@@ -478,8 +478,8 @@ q_2i = qt.QHStates([qt.QH([0, sp.sqrt(1/2), 0, 0])])
 i = u.product("ket", operator=q_2).add(d.product("ket", operator=q_2i))
 o = u.product("ket", operator=q_2).dif(d.product("ket", operator=q_2i))
 
-i.print_states("i", 1)
-o.print_states("o", 1)
+i.print_state("i", 1)
+o.print_state("o", 1)
 
 
 # Show they are orthonormal.
@@ -487,9 +487,9 @@ o.print_states("o", 1)
 # In[25]:
 
 
-i.Euclidean_product("bra", ket=i).print_states("<i|i>", 1)
-o.Euclidean_product("bra", ket=o).print_states("<o|o>", 1)
-i.Euclidean_product("bra", ket=o).print_states("<i|o>")
+i.Euclidean_product("bra", ket=i).print_state("<i|i>", 1)
+o.Euclidean_product("bra", ket=o).print_state("<o|o>", 1)
+i.Euclidean_product("bra", ket=o).print_state("<i|o>")
 
 
 # Define σy and put it to work.
@@ -498,9 +498,9 @@ i.Euclidean_product("bra", ket=o).print_states("<i|o>")
 
 
 σy = qt.QHStates([q_0, q_ni, q_i, q_0])
-σy.print_states("σy operator", 1)
-i.product("ket", operator=σy).print_states("σy|i>", 1)
-o.product("ket", operator=σx).print_states("σy|o>")
+σy.print_state("σy operator", 1)
+i.product("ket", operator=σy).print_state("σy|i>", 1)
+o.product("ket", operator=σx).print_state("σy|o>")
 
 
 # I will need to put some effort into this to make the result look more "obvious". The problem will only become more acute as operators get more longer.
@@ -575,17 +575,17 @@ def sigma(kind, theta=None, phi=None):
 # In[28]:
 
 
-sigma('x').print_states('σx', 1)
-sigma('y').print_states('σy', 1)
-sigma('z').print_states('σz', 1)
-sigma('z').norm_squared().print_states("σz's norm", 1)
+sigma('x').print_state('σx', 1)
+sigma('y').print_state('σy', 1)
+sigma('z').print_state('σz', 1)
+sigma('z').norm_squared().print_state("σz's norm", 1)
 
 
 # In[29]:
 
 
-sigma('xy').norm_squared().print_states('σxy', 1)
-sigma('xy').normalize().norm_squared().print_states('σxy', 1)
+sigma('xy').norm_squared().print_state('σxy', 1)
+sigma('xy').normalize().norm_squared().print_state('σxy', 1)
 
 
 # It is important not to lose sight about what is going on here. There is a nice picture of a sphere at the end of the lecture:
@@ -602,10 +602,10 @@ sigma('xy').normalize().norm_squared().print_states('σxy', 1)
 
 
 A = qt.QHStates([Aq1, Aq2])
-A.print_states("A", 1, quiet=True)
-sigma('x').print_states('σx', 1, quiet=True)
+A.print_state("A", 1, quiet=True)
+sigma('x').print_state('σx', 1, quiet=True)
 σxA = A.Euclidean_product("ket", operator=sigma('x'))
-σxA.print_states("σx|A>", quiet=True)
+σxA.print_state("σx|A>", quiet=True)
 
 
 # All the first spin operator $\sigma_x$ does is take the first state and put it in the second states place while doing the reverse for the second state. The third operator $\sigma_z$ is also darn simple.
@@ -614,7 +614,7 @@ sigma('x').print_states('σx', 1, quiet=True)
 
 
 σzA = A.Euclidean_product("ket", operator=sigma('z'))
-σzA.print_states("σz|A>", quiet=True)
+σzA.print_state("σz|A>", quiet=True)
 
 
 # Both states stay in place. The difference is that the second term flips signs. It is easy enough to imagine a different representation where it was the first term that flips signs. Just one more to go.
@@ -623,7 +623,7 @@ sigma('x').print_states('σx', 1, quiet=True)
 
 
 σyA = A.Euclidean_product("ket", operator=sigma('y'))
-σyA.print_states("σz|A>", quiet=True)
+σyA.print_state("σz|A>", quiet=True)
 
 
 # Notice that the states "stayed together" in the sense that the first state space is made up of only the 2's, while the second state space has 1's. This time the t and x numbers switched spots. If this pattern is generally true, then one can expect a mixing between the positions, but not the two states per se. Time to do an experiment.
@@ -632,11 +632,11 @@ sigma('x').print_states('σx', 1, quiet=True)
 
 
 σxyA = A.Euclidean_product("ket", operator=sigma('xy', .1, .2))
-σxyA.print_states("σxy|A>", 1, quiet=True)
+σxyA.print_state("σxy|A>", 1, quiet=True)
 σxzA = A.Euclidean_product("ket", operator=sigma('xz', .1, .2))
-σxzA.print_states("σxz|A>", 1, quiet=True)
+σxzA.print_state("σxz|A>", 1, quiet=True)
 σxyzA = A.Euclidean_product("ket", operator=sigma('xyz', .1, .2))
-σxyzA.print_states("σxyz|A>", quiet=True)
+σxyzA.print_state("σxyz|A>", quiet=True)
 
 
 # The hypothesis was definitely **wrong**. I consider that a good thing. It means the ideas I am playing with are precise enough to be wrong. Too much work is just vague. The two states can mingle. I think the implication is that the two states can mingle in any possible way. I don't know how easy it will be to figure out the combination of sigmas will be needed to get to a certain state.
