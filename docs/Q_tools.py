@@ -6730,7 +6730,7 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[30]:
+# In[38]:
 
 
 class QHStates(QH):
@@ -7071,7 +7071,7 @@ class QHStates(QH):
         # <A|B>                                                     
         elif operator is None:
             if _check_dimensions(state_1_dim=bra.dim, state_2_dim=ket.dim, equals=True):
-                dot_product_flat = True
+                dot_product_flag = True
                 
                 for b, k in zip(bra.qs, ket.qs):
                     new_states.append(b.product(k, kind, reverse))
@@ -7149,15 +7149,18 @@ class QHStates(QH):
                     
                 for b, k in zip(bra.qs, new_ket_state.qs):
                     new_states.append(b.product(k, kind, reverse))
-                    
-                dot_product = new_states.pop(0)
+              
+        # Return either the dot product or a new quaternion series.
+        if dot_product_flag:
+            dot_product = new_states.pop(0)
                 
-                for new_state in new_states:
-                    dot_product = dot_product.add(new_state)
+            for new_state in new_states:
+                dot_product = dot_product.add(new_state)
                 
-                return dot_product
-            
-        return QHStates(new_states)
+            return dot_product
+        
+        else:
+            return QHStates(new_states)
 
     def Euclidean_product(self, product_type, bra=None, ket=None, operator=None, kind="", reverse=False):
         """Forms the Euclidean product, what is used in QM all the time."""
@@ -7284,7 +7287,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[31]:
+# In[39]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -7554,7 +7557,7 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[40]:
+# In[32]:
 
 
 class QHaStates(QHa):
@@ -7815,6 +7818,7 @@ class QHaStates(QHa):
             else:
                 return True
         
+        dot_product_flag = False
         new_states = []
         
         if bra is None and ket is None:
@@ -7829,15 +7833,10 @@ class QHaStates(QHa):
         # <A|B>                                                     
         elif operator is None:
             if _check_dimensions(state_1_dim=bra.dim, state_2_dim=ket.dim, equals=True):
+                dot_product_flag = True
+                
                 for b, k in zip(bra.qs, ket.qs):
                     new_states.append(b.product(k, kind))
-            
-                dot_product = new_states.pop(0)
-                
-                for new_state in new_states:
-                    dot_product = dot_product.add(new_state)
-                    
-                return dot_product
             
         # Op|B>
         elif bra is None:
@@ -7887,6 +7886,7 @@ class QHaStates(QHa):
         # <A|Op|B>
         else:
             if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim, state_2_dim=ket.dim):
+                dot_product_flag = True
                 new_ket = []
                 
                 if operator.dim == 1:
@@ -7912,15 +7912,18 @@ class QHaStates(QHa):
                 for b, k in zip(bra.qs, new_ket_state.qs):
                     new_states.append(b.product(k, kind))
                 
-                dot_product = new_states.pop(0)
+        # Return either the dot product or a new quaternion series.
+        if dot_product_flag:
+            dot_product = new_states.pop(0)
                 
-                for new_state in new_states:
-                    dot_product = dot_product.add(new_state)
+            for new_state in new_states:
+                dot_product = dot_product.add(new_state)
                 
-                return dot_product
-            
-        return QHaStates(new_states)
-
+            return dot_product
+        
+        else:
+            return QHaStates(new_states)
+        
     def Euclidean_product(self, product_type, bra=None, ket=None, operator=None, kind=""):
         """Forms the Euclidean product, what is used in QM all the time."""
         
@@ -8049,7 +8052,7 @@ class QHaStates(QHa):
         return signma[kind].normalize()
 
 
-# In[41]:
+# In[33]:
 
 
 class TestQHaStates(unittest.TestCase):
@@ -8288,7 +8291,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[42]:
+# In[34]:
 
 
 class Q8States(Q8):
@@ -8547,6 +8550,7 @@ class Q8States(Q8):
             else:
                 return True
         
+        dot_product_flag = False
         new_states = []
         
         if bra is None and ket is None:
@@ -8561,15 +8565,10 @@ class Q8States(Q8):
         # <A|B>                                                     
         elif operator is None:
             if _check_dimensions(state_1_dim=bra.dim, state_2_dim=ket.dim, equals=True):
+                dot_product_flag = True
+                
                 for b, k in zip(bra.qs, ket.qs):
                     new_states.append(b.product(k, kind))
-                    
-                dot_product = new_states.pop(0)
-                
-                for new_state in new_states:
-                    dot_product = dot_product.add(new_state)
-                
-                return dot_product
             
         # Op|B>
         elif bra is None:
@@ -8619,6 +8618,7 @@ class Q8States(Q8):
         # <A|Op|B>
         else:
             if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim, state_2_dim=ket.dim):
+                dot_product_flag = True
                 new_ket = []
                 
                 if operator.dim == 1:
@@ -8644,14 +8644,17 @@ class Q8States(Q8):
                 for b, k in zip(bra.qs, new_ket_state.qs):
                     new_states.append(b.product(k, kind))
                     
-                dot_product = new_states.pop(0)
+        # Return either the dot product or a new quaternion series.
+        if dot_product_flag:
+            dot_product = new_states.pop(0)
                 
-                for new_state in new_states:
-                    dot_product = dot_product.add(new_state)
+            for new_state in new_states:
+                dot_product = dot_product.add(new_state)
                 
-                return dot_product
-            
-        return Q8States(new_states)
+            return dot_product
+        
+        else:
+            return Q8States(new_states)
 
     def Euclidean_product(self, product_type, bra=None, ket=None, operator=None, kind=""):
         """Forms the Euclidean product, what is used in QM all the time."""
@@ -8759,7 +8762,7 @@ class Q8States(Q8):
         return signma[kind].normalize()
 
 
-# In[43]:
+# In[35]:
 
 
 class TestQ8States(unittest.TestCase):
@@ -8969,7 +8972,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[44]:
+# In[36]:
 
 
 class Q8aStates(Q8a):
@@ -9235,6 +9238,7 @@ class Q8aStates(Q8a):
             else:
                 return True
         
+        dot_product_flag = False
         new_states = []
         
         if bra is None and ket is None:
@@ -9249,16 +9253,11 @@ class Q8aStates(Q8a):
         # <A|B>                                                     
         elif operator is None:
             if _check_dimensions(state_1_dim=bra.dim, state_2_dim=ket.dim, equals=True):
+                dot_product_flag = True
+                
                 for b, k in zip(bra.qs, ket.qs):
                     new_states.append(b.product(k, kind))
                 
-                dot_product = new_states.pop(0)
-                
-                for new_state in new_states:
-                    dot_product = dot_product.add(new_state)
-                
-                return dot_product
-            
         # Op|B>
         elif bra is None:
             if _check_dimensions(op_dim=operator.dim, state_1_dim=ket.dim):
@@ -9307,6 +9306,7 @@ class Q8aStates(Q8a):
         # <A|Op|B>
         else:
             if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim, state_2_dim=ket.dim):
+                dot_product_flag = True
                 new_ket = []
                 
                 if operator.dim == 1:
@@ -9332,14 +9332,17 @@ class Q8aStates(Q8a):
                 for b, k in zip(bra.qs, new_ket_state.qs):
                     new_states.append(b.product(k, kind))
                 
-                dot_product = new_states.pop(0)
+        # Return either the dot product or a new quaternion series.
+        if dot_product_flag:
+            dot_product = new_states.pop(0)
                 
-                for new_state in new_states:
-                    dot_product = dot_product.add(new_state)
+            for new_state in new_states:
+                dot_product = dot_product.add(new_state)
                 
-                return dot_product
-            
-        return Q8aStates(new_states)
+            return dot_product
+        
+        else:
+            return Q8aStates(new_states)
 
     def Euclidean_product(self, product_type, bra=None, ket=None, operator=None, kind=""):
         """Forms the Euclidean product, what is used in QM all the time."""
@@ -9446,7 +9449,7 @@ class Q8aStates(Q8a):
         return signma[kind].normalize()
 
 
-# In[45]:
+# In[37]:
 
 
 class TestQ8aStates(unittest.TestCase):
