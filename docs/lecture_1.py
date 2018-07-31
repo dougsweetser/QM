@@ -397,8 +397,8 @@ B5.Euclidean_product("bra", ket=A5).print_state("<B5|A5>")
 # In[26]:
 
 
-Ai = qt.QHStates([q_i, q_i, q_i, q_i])
-Bi = qt.QHStates([q_i, q_i.conj(), q_i, q_i.conj()])
+Ai = qt.QHStates([q_i, q_i, q_i, q_i]).normalize()
+Bi = qt.QHStates([q_i, q_i.conj(), q_i, q_i.conj()]).normalize()
 Ai.Euclidean_product("bra", ket=Ai).print_state("<Ai|Ai>", 1)
 Bi.Euclidean_product("bra", ket=Bi).print_state("<Bi|Bi>", 1)
 Bi.Euclidean_product("bra", ket=Ai).print_state("<Bi|Ai>")
