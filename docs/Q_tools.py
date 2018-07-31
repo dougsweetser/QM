@@ -7659,23 +7659,21 @@ class QHaStates(QHa):
         
         new_states = []
         
-        if states is None:
-            states = self.dim
-        
         zero_norm_count = 0
         
         for bra in self.qs:
-            if bra.norm_squared().a[0] == 0:
+            if bra.norm_squared().t == 0:
                 zero_norm_count += 1
-            
-            new_states.append(bra.normalize(n))
+                new_states.append(QH().q_0())
+            else:
+                new_states.append(bra.normalize(n))
         
         new_states_normalized = []
         
-        non_zero_states = states - zero_norm_count
+        non_zero_states = self.dim - zero_norm_count
         
         for new_state in new_states:
-            new_states_normalized.append(new_state.product(QHa([math.sqrt(1/non_zero_states), 0, 0, 0])))
+            new_states_normalized.append(new_state.product(QH([math.sqrt(1/non_zero_states), 0, 0, 0])))
             
         return QHaStates(new_states_normalized)
     
@@ -8382,25 +8380,23 @@ class Q8States(Q8):
         
         new_states = []
         
-        if states is None:
-            states = self.dim
-        
         zero_norm_count = 0
         
         for bra in self.qs:
-            if bra.norm_squared().reduce().dt.p == 0:
+            if bra.norm_squared().t == 0:
                 zero_norm_count += 1
-            
-            new_states.append(bra.normalize(n))
+                new_states.append(QH().q_0())
+            else:
+                new_states.append(bra.normalize(n))
         
         new_states_normalized = []
         
-        non_zero_states = states - zero_norm_count
+        non_zero_states = self.dim - zero_norm_count
         
         for new_state in new_states:
-            new_states_normalized.append(new_state.product(Q8([math.sqrt(1/non_zero_states), 0, 0, 0])))
+            new_states_normalized.append(new_state.product(QH([math.sqrt(1/non_zero_states), 0, 0, 0])))
             
-        return Q8States(new_states_normalized)
+        return QHStates(new_states_normalized)
 
     def orthonormalize(self):
         """Given a quaternion series, resturn a normalized orthoganl basis."""
