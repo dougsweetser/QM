@@ -17,7 +17,7 @@
 # 
 # Test driven development was used. The same tests were used for QH, QHa, Q8, and Q8a.  Either class can be used to study quaternions in physics.
 
-# In[2]:
+# In[1]:
 
 
 import IPython
@@ -38,7 +38,7 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 
 # Define the stretch factor $\gamma$ and the $\gamma \beta$ used in special relativity.
 
-# In[3]:
+# In[2]:
 
 
 def sr_gamma(beta_x=0, beta_y=0, beta_z=0):
@@ -58,7 +58,7 @@ def sr_gamma_betas(beta_x=0, beta_y=0, beta_z=0):
 
 # Define a class QH to manipulate quaternions as Hamilton would have done it so many years ago. The "qtype" is a little bit of text to leave a trail of breadcrumbs about how a particular quaternion was generated.
 
-# In[4]:
+# In[3]:
 
 
 class QH(object):
@@ -961,7 +961,7 @@ class QH(object):
 
 # Write tests the QH class.
 
-# In[5]:
+# In[4]:
 
 
 class TestQH(unittest.TestCase):
@@ -1314,7 +1314,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQH())
 unittest.TextTestRunner().run(suite);
 
 
-# In[6]:
+# In[5]:
 
 
 class TestQHRep(unittest.TestCase):
@@ -1365,7 +1365,7 @@ unittest.TextTestRunner().run(suite);
 
 # A separate class is needed for numpy array due to technical issues I have getting sympy and numpy to play nicely with each other...
 
-# In[7]:
+# In[6]:
 
 
 class QHa(object):
@@ -2268,7 +2268,7 @@ class QHa(object):
         return self
 
 
-# In[8]:
+# In[7]:
 
 
 class TestQHa(unittest.TestCase):
@@ -2614,7 +2614,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHa())
 unittest.TextTestRunner().run(suite);
 
 
-# In[9]:
+# In[8]:
 
 
 class TestQHaRep(unittest.TestCase):
@@ -2666,7 +2666,7 @@ unittest.TextTestRunner().run(suite);
 
 # My long term goal is to deal with quaternions on a quaternion manifold. This will have 4 pairs of doublets. Each doublet is paired with its additive inverse. Instead of using real numbers, one uses (3, 0) and (0, 2) to represent +3 and -2 respectively. Numbers such as (5, 6) are allowed. That can be "reduced" to (0, 1).  My sense is that somewhere deep in the depths of relativistic quantum field theory, this will be a "good thing". For now, it is a minor pain to program.
 
-# In[10]:
+# In[9]:
 
 
 class Doublet(object):
@@ -2788,7 +2788,7 @@ class Doublet(object):
         return Doublet([p1, n1])
 
 
-# In[11]:
+# In[10]:
 
 
 class TestDoublet(unittest.TestCase):
@@ -2863,7 +2863,7 @@ unittest.TextTestRunner().run(suite);
 
 # Repeat the exercise for arrays.
 
-# In[12]:
+# In[11]:
 
 
 class Doubleta(object):
@@ -2974,7 +2974,7 @@ class Doubleta(object):
         return Doubleta([p1, n1])
 
 
-# In[13]:
+# In[12]:
 
 
 class TestDoubleta(unittest.TestCase):
@@ -3044,7 +3044,7 @@ class TestDoubleta(unittest.TestCase):
         self.assertTrue(Z2p_red.d[1] == Z2p_2.d[1])
 
 
-# In[14]:
+# In[13]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestDoubleta())
@@ -3055,7 +3055,7 @@ unittest.TextTestRunner().run(suite);
 
 # Write a class to handle quaternions given 8 numbers.
 
-# In[15]:
+# In[14]:
 
 
 class Q8(object):
@@ -4030,7 +4030,7 @@ class Q8(object):
         return self
 
 
-# In[16]:
+# In[15]:
 
 
 class TestQ8(unittest.TestCase):
@@ -4466,7 +4466,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8())
 unittest.TextTestRunner().run(suite);
 
 
-# In[17]:
+# In[16]:
 
 
 class TestQ8Rep(unittest.TestCase):
@@ -4518,7 +4518,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Class Q8a as nparrays
 
-# In[18]:
+# In[17]:
 
 
 class Q8a(Doubleta):
@@ -5632,7 +5632,7 @@ class Q8a(Doubleta):
         return self
 
 
-# In[19]:
+# In[18]:
 
 
 class TestQ8a(unittest.TestCase):
@@ -5998,7 +5998,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8a())
 unittest.TextTestRunner().run(suite);
 
 
-# In[20]:
+# In[19]:
 
 
 class TestQ8aRep(unittest.TestCase):
@@ -6059,7 +6059,7 @@ unittest.TextTestRunner().run(suite);
 # Such an exact relation is not of much interest to physicists since Einstein showed that holds for only one set of observers. If one is moving relative to the reference observer, the two events would look like they occured at different times in the future, presuming perfectly accurate measuring devices.
 # 
 
-# In[21]:
+# In[20]:
 
 
 def round_sig_figs(num, sig_figs):
@@ -6073,7 +6073,7 @@ def round_sig_figs(num, sig_figs):
         return 0  # Can't take the log of 0
 
 
-# In[22]:
+# In[21]:
 
 
 class EQ(object):
@@ -6397,7 +6397,7 @@ class EQ(object):
     
 
 
-# In[23]:
+# In[22]:
 
 
 class TestEQ(unittest.TestCase):
@@ -6507,7 +6507,7 @@ class TestEQ(unittest.TestCase):
         self.assertTrue(eq_small_tiny.norm_squared_of_unity() == 'less_than_unity')
 
 
-# In[24]:
+# In[23]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestEQ())
@@ -6518,7 +6518,7 @@ unittest.TextTestRunner().run(suite);
 
 # Create a class that can make many, many quaternions.
 
-# In[25]:
+# In[24]:
 
 
 class QHArray(QH):
@@ -6591,7 +6591,7 @@ class QHArray(QH):
         return QH([new_t, new_x, new_y, new_z])
 
 
-# In[26]:
+# In[25]:
 
 
 class TestQHArray(unittest.TestCase):
@@ -6619,7 +6619,7 @@ class TestQHArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.z > 13.9)
 
 
-# In[27]:
+# In[26]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHArray())
@@ -6628,7 +6628,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Array of nparrays
 
-# In[28]:
+# In[27]:
 
 
 class QHaArray(QHa):
@@ -6691,7 +6691,7 @@ class QHaArray(QHa):
                 self.q_max.a[3] = q1.a[3]
 
 
-# In[29]:
+# In[28]:
 
 
 class TestQHaArray(unittest.TestCase):
@@ -6719,7 +6719,7 @@ class TestQHaArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.a[3] > 13.9)
 
 
-# In[30]:
+# In[29]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaArray())
@@ -6730,7 +6730,7 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[31]:
+# In[30]:
 
 
 class QHStates(QH):
@@ -7057,6 +7057,7 @@ class QHStates(QH):
                 return True
         
         new_states = []
+        dot_product_flag = False
         
         if bra is None and ket is None:
             return None
@@ -7070,16 +7071,10 @@ class QHStates(QH):
         # <A|B>                                                     
         elif operator is None:
             if _check_dimensions(state_1_dim=bra.dim, state_2_dim=ket.dim, equals=True):
+                dot_product_flat = True
+                
                 for b, k in zip(bra.qs, ket.qs):
                     new_states.append(b.product(k, kind, reverse))
-
-                dot_product = new_states.pop(0)
-                
-                for new_state in new_states:
-                    dot_product = dot_product.add(new_state)
-                
-                return dot_product
-
             
         # Op|B>
         elif bra is None:
@@ -7129,6 +7124,7 @@ class QHStates(QH):
         # <A|Op|B>
         else:
             if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim, state_2_dim=ket.dim):
+                dot_product_flag = True
                 new_ket = []
                 
                 if operator.dim == 1:
@@ -7288,7 +7284,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[33]:
+# In[31]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -7558,7 +7554,7 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[34]:
+# In[40]:
 
 
 class QHaStates(QHa):
@@ -7662,9 +7658,9 @@ class QHaStates(QHa):
         zero_norm_count = 0
         
         for bra in self.qs:
-            if bra.norm_squared().t == 0:
+            if bra.norm_squared().a[0] == 0:
                 zero_norm_count += 1
-                new_states.append(QH().q_0())
+                new_states.append(QHa().q_0())
             else:
                 new_states.append(bra.normalize(n))
         
@@ -7673,7 +7669,7 @@ class QHaStates(QHa):
         non_zero_states = self.dim - zero_norm_count
         
         for new_state in new_states:
-            new_states_normalized.append(new_state.product(QH([math.sqrt(1/non_zero_states), 0, 0, 0])))
+            new_states_normalized.append(new_state.product(QHa([math.sqrt(1/non_zero_states), 0, 0, 0])))
             
         return QHaStates(new_states_normalized)
     
@@ -8053,7 +8049,7 @@ class QHaStates(QHa):
         return signma[kind].normalize()
 
 
-# In[35]:
+# In[41]:
 
 
 class TestQHaStates(unittest.TestCase):
@@ -8292,7 +8288,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[36]:
+# In[42]:
 
 
 class Q8States(Q8):
@@ -8383,9 +8379,9 @@ class Q8States(Q8):
         zero_norm_count = 0
         
         for bra in self.qs:
-            if bra.norm_squared().t == 0:
+            if bra.norm_squared().dt.p == 0:
                 zero_norm_count += 1
-                new_states.append(QH().q_0())
+                new_states.append(Q8().q_0())
             else:
                 new_states.append(bra.normalize(n))
         
@@ -8394,9 +8390,9 @@ class Q8States(Q8):
         non_zero_states = self.dim - zero_norm_count
         
         for new_state in new_states:
-            new_states_normalized.append(new_state.product(QH([math.sqrt(1/non_zero_states), 0, 0, 0])))
+            new_states_normalized.append(new_state.product(Q8([math.sqrt(1/non_zero_states), 0, 0, 0])))
             
-        return QHStates(new_states_normalized)
+        return Q8States(new_states_normalized)
 
     def orthonormalize(self):
         """Given a quaternion series, resturn a normalized orthoganl basis."""
@@ -8763,7 +8759,7 @@ class Q8States(Q8):
         return signma[kind].normalize()
 
 
-# In[37]:
+# In[43]:
 
 
 class TestQ8States(unittest.TestCase):
@@ -8973,7 +8969,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[38]:
+# In[44]:
 
 
 class Q8aStates(Q8a):
@@ -9065,20 +9061,18 @@ class Q8aStates(Q8a):
         
         new_states = []
         
-        if states is None:
-            states = self.dim
-        
         zero_norm_count = 0
         
         for bra in self.qs:
-            if bra.norm_squared().reduce().a[0] == 0:
+            if bra.norm_squared().a[0] == 0:
                 zero_norm_count += 1
-            
-            new_states.append(bra.normalize(n))
+                new_states.append(Q8a().q_0())
+            else:
+                new_states.append(bra.normalize(n))
         
         new_states_normalized = []
         
-        non_zero_states = states - zero_norm_count
+        non_zero_states = self.dim - zero_norm_count
         
         for new_state in new_states:
             new_states_normalized.append(new_state.product(Q8a([math.sqrt(1/non_zero_states), 0, 0, 0])))
@@ -9452,7 +9446,7 @@ class Q8aStates(Q8a):
         return signma[kind].normalize()
 
 
-# In[39]:
+# In[45]:
 
 
 class TestQ8aStates(unittest.TestCase):
