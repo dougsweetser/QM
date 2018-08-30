@@ -515,7 +515,7 @@ class QH(object):
         
         end_qtype = "{}{}".format(self.qtype, qtype)
         
-        abs_q_inv = self.abs_of_q().invert()
+        abs_q_inv = self.abs_of_q().inverse()
         n_q = self.product(abs_q_inv).product(QH([n, 0, 0, 0]))
         n_q.qtype = end_qtype
         n_q.representation = self.representation
@@ -633,21 +633,27 @@ class QH(object):
             
         return pq
     
-    def invert(self, qtype="^-1"):
-        """The inverse of a quaternion."""
+    def inverse(self, qtype="^-1", additive=False):
+        """The additive or multiplicative inverse of a quaternion."""
 
-        end_qtype = "{}{}".format(self.qtype, qtype)
+        if additive:
+            end_qtype = "-{}".format(self.qtype, qtype)           
+            q_inv = self.flip_signs()
+            q_inv.qtype = end_qtype
+            
+        else:
+            end_qtype = "{}{}".format(self.qtype, qtype)
         
-        q_conj = self.conj()
-        q_norm_squared = self.norm_squared()
+            q_conj = self.conj()
+            q_norm_squared = self.norm_squared()
 
-        if (not self.is_symbolic()) and (q_norm_squared.t == 0):
-            return self.q_0()
+            if (not self.is_symbolic()) and (q_norm_squared.t == 0):
+                return self.q_0()
 
-        q_norm_squared_inv = QH([1.0 / q_norm_squared.t, 0, 0, 0])
-        q_inv = q_conj.product(q_norm_squared_inv)
-        q_inv.qtype = end_qtype
-        q_inv.representation = self.representation
+            q_norm_squared_inv = QH([1.0 / q_norm_squared.t, 0, 0, 0])
+            q_inv = q_conj.product(q_norm_squared_inv)
+            q_inv.qtype = end_qtype
+            q_inv.representation = self.representation
 
         return q_inv
 
@@ -658,8 +664,8 @@ class QH(object):
         
         end_qtype = "{f}/{s}".format(f=self.qtype, s=q1.qtype)
         
-        q1_inv = q1.invert()
-        q_div = self.product(q1.invert())
+        q1_inv = q1.inverse()
+        q_div = self.product(q1.inverse())
         q_div.qtype = end_qtype
         q_div.representation = self.representation
         
@@ -1192,9 +1198,9 @@ class TestQH(unittest.TestCase):
         self.assertTrue(q_z.y == 13)
         self.assertTrue(q_z.z == -18)
         
-    def test_invert(self):
-        q_z = self.P.invert()
-        print("invert: ", q_z)
+    def test_inverse(self):
+        q_z = self.P.inverse()
+        print("inverse: ", q_z)
         self.assertTrue(q_z.t == 0)
         self.assertTrue(q_z.x == -0.16)
         self.assertTrue(q_z.y == 0.12)
@@ -1840,7 +1846,7 @@ class QHa(object):
         
         end_qtype = "{}{}".format(self.qtype, qtype)
         
-        abs_q_inv = self.abs_of_q().invert()
+        abs_q_inv = self.abs_of_q().inverse()
         n_q = self.product(abs_q_inv).product(QHa([n, 0, 0, 0]))
 
         n_q.qtype = end_qtype
@@ -1947,10 +1953,16 @@ class QHa(object):
             
         return pq
     
-    def invert(self, qtype="^-1"):
+    def inverse(self, qtype="^-1", additive=False):
         """The inverse of a quaternion."""
 
-        end_qtype = "{}{}".format(self.qtype, qtype)
+        if additive:
+            end_qtype = "-{}".format(self.qtype)
+            q_inv = self.flip_signs()
+            q_inv.qtype = end_qtype
+            
+        else:    
+            end_qtype = "{}{}".format(self.qtype, qtype)
         
         q_conj = self.conj()
         q_norm_squared = self.norm_squared()
@@ -1971,8 +1983,8 @@ class QHa(object):
         
         self.check_representations(q1)
         
-        q1_inv = q1.invert()
-        q_div = self.product(q1.invert())
+        q1_inv = q1.inverse()
+        q_div = self.product(q1.inverse())
         
         q_div.qtype = "{f}/{s}".format(f=self.qtype, s=q1.qtype)
         q_div.representation = self.representation
@@ -2491,9 +2503,9 @@ class TestQHa(unittest.TestCase):
         self.assertTrue(q_z.a[2] == 13)
         self.assertTrue(q_z.a[3] == -18)
 
-    def test_invert(self):
-        q_z = self.P.invert()
-        print("invert: ", q_z)
+    def test_inverse(self):
+        q_z = self.P.inverse()
+        print("inverse: ", q_z)
         self.assertTrue(q_z.a[0] == 0)
         self.assertTrue(q_z.a[1] == -0.16)
         self.assertTrue(q_z.a[2] == 0.12)
@@ -3538,7 +3550,7 @@ class Q8(object):
         
         end_qtype = "{st}U".format(st=self.qtype)
         
-        abs_q_inv = self.abs_of_q().invert()
+        abs_q_inv = self.abs_of_q().inverse()
         n_q = self.product(abs_q_inv).product(Q8([n, 0, 0, 0]))
         
         n_q.qtype = end_qtype
@@ -3638,20 +3650,27 @@ class Q8(object):
             
         return pq
     
-    def invert(self, qtype="^-1"):
-        """Invert a quaternion."""
+    def inverse(self, qtype="^-1", additive=False):
+        """Inverse a quaternion."""
         
-        end_qtype = "{st}{qt}".format(st=self.qtype, qt=qtype)
+        if additive:
+            end_qtype = "-{st}".format(st=self.qtype)
+            q_inv = self.flip_signs()
+            q_inv.qtype = end_qtype
+            
+        else:
+            end_qtype = "{st}{qt}".format(st=self.qtype, qt=qtype)
         
-        q_conj = self.conj()
-        q_norm_squared = self.norm_squared().reduce()
+            q_conj = self.conj()
+            q_norm_squared = self.norm_squared().reduce()
         
-        if q_norm_squared.dt.p == 0:
-            return self.q_0()
+            if q_norm_squared.dt.p == 0:
+                return self.q_0()
         
-        q_norm_squared_inv = Q8([1.0 / q_norm_squared.dt.p, 0, 0, 0, 0, 0, 0, 0])
+            q_norm_squared_inv = Q8([1.0 / q_norm_squared.dt.p, 0, 0, 0, 0, 0, 0, 0])
 
-        q_inv = q_conj.product(q_norm_squared_inv, qtype=self.qtype)
+            q_inv = q_conj.product(q_norm_squared_inv, qtype=self.qtype)
+        
         q_inv.qtype = end_qtype
         q_inv.representation = self.representation
         
@@ -3664,7 +3683,7 @@ class Q8(object):
         
         end_qtype = "{f}/{s}".format(f=self.qtype, s=q1.qtype)
             
-        q_inv = q1.invert()
+        q_inv = q1.inverse()
         q_div = self.product(q_inv) 
         q_div.qtype = end_qtype
         q_div.representation = self.representation
@@ -4331,8 +4350,8 @@ class TestQ8(unittest.TestCase):
         self.assertTrue(q_z.dz.p == 0)
         self.assertTrue(q_z.dz.n == 18)
         
-    def test_invert(self):
-        q_z = self.P.invert().reduce()
+    def test_inverse(self):
+        q_z = self.P.inverse().reduce()
         print("inverse: {}", q_z)
         self.assertTrue(q_z.dt.p == 0)
         self.assertTrue(q_z.dt.n == 0)
@@ -5129,7 +5148,7 @@ class Q8a(Doubleta):
         
         end_qtype = "{}U".format(self.qtype)
         
-        abs_q_inv = self.abs_of_q().invert()
+        abs_q_inv = self.abs_of_q().inverse()
         n_q = self.product(abs_q_inv).product(Q8a([n, 0, 0, 0]))
         n_q.qtype = end_qtype
         n_q.representation=self.representation
@@ -5237,20 +5256,27 @@ class Q8a(Doubleta):
         
         return pq
 
-    def invert(self, qtype="^-1"):
-        """Invert a quaternion."""
+    def inverse(self, qtype="^-1", additive=False):
+        """Inverse a quaternion."""
         
-        end_qtype = "{}{}".format(self.qtype, qtype)
+        if additive:
+            end_qtype = "-{}".format(self.qtype)
+            q_inv = self.flip_signs()
+            q_inv.qtype = end_qtype
+            
+        else:
+            end_qtype = "{}{}".format(self.qtype, qtype)
         
-        q_conj = self.conj()
-        q_norm_squared = self.norm_squared().reduce()
+            q_conj = self.conj()
+            q_norm_squared = self.norm_squared().reduce()
         
-        if q_norm_squared.a[0] == 0:
-            return self.q_0()
+            if q_norm_squared.a[0] == 0:
+                return self.q_0()
         
-        q_norm_squared_inv = Q8a([1.0 / q_norm_squared.a[0], 0, 0, 0, 0, 0, 0, 0])
+            q_norm_squared_inv = Q8a([1.0 / q_norm_squared.a[0], 0, 0, 0, 0, 0, 0, 0])
 
-        q_inv = q_conj.product(q_norm_squared_inv)
+            q_inv = q_conj.product(q_norm_squared_inv)
+        
         q_inv.qtype = end_qtype
         q_inv.representation = self.representation
         
@@ -5261,7 +5287,7 @@ class Q8a(Doubleta):
 
         self.check_representations(q1)
         
-        q_inv = q1.invert()
+        q_inv = q1.inverse()
         q_div = self.product(q_inv) 
         q_div.qtype = "{f}/{s}".format(f=self.qtype, s=q1.qtype)
         q_div.representation = self.representation    
@@ -5922,8 +5948,8 @@ class TestQ8a(unittest.TestCase):
         self.assertTrue(q_z.a[7] == 18)
     
         
-    def test_invert(self):
-        q_z = self.q2.invert().reduce()
+    def test_inverse(self):
+        q_z = self.q2.inverse().reduce()
         print("inverse: {}".format(q_z))
         self.assertTrue(q_z.a[0] == 0)
         self.assertTrue(q_z.a[1] == 0)
@@ -6730,7 +6756,7 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[38]:
+# In[30]:
 
 
 class QHStates(QH):
@@ -6817,52 +6843,58 @@ class QHStates(QH):
             
         return QHStates(new_states)
     
-    def invert(self, operator=False):
-        """Inverting bras and kets calls invert() once for each.
-        Inverting operators is more tricky as one needs a diagonal identity matrix."""
+    def inverse(self, operator=False, additive=False):
+        """Inverseing bras and kets calls inverse() once for each.
+        Inverseing operators is more tricky as one needs a diagonal identity matrix."""
     
         if operator:
-            if self.dim == 1:
-                q_inv = QHStates(self.qs[0].invert())
         
-            elif self.dim == 4:
-                det = self.determinant()
-                detinv = det.invert()
-
-                q0 = self.qs[3].product(detinv)
-                q1 = self.qs[1].flip_signs().product(detinv)
-                q2 = self.qs[2].flip_signs().product(detinv)
-                q3 = self.qs[0].product(detinv)
-
-                q_inv = QHStates([q0, q1, q2, q3])
-    
-            elif self.dim == 9:
-                det = self.determinant()
-                detinv = det.invert()
-        
-                q0 = self.qs[4].product(self.qs[8]).dif(self.qs[5].product(self.qs[7])).product(detinv)
-                q1 = self.qs[7].product(self.qs[2]).dif(self.qs[8].product(self.qs[1])).product(detinv)
-                q2 = self.qs[1].product(self.qs[5]).dif(self.qs[2].product(self.qs[4])).product(detinv)
-                q3 = self.qs[6].product(self.qs[5]).dif(self.qs[8].product(self.qs[3])).product(detinv)
-                q4 = self.qs[0].product(self.qs[8]).dif(self.qs[2].product(self.qs[6])).product(detinv)
-                q5 = self.qs[3].product(self.qs[2]).dif(self.qs[5].product(self.qs[0])).product(detinv)
-                q6 = self.qs[3].product(self.qs[7]).dif(self.qs[4].product(self.qs[6])).product(detinv)
-                q7 = self.qs[6].product(self.qs[1]).dif(self.qs[7].product(self.qs[0])).product(detinv)
-                q8 = self.qs[0].product(self.qs[4]).dif(self.qs[1].product(self.qs[3])).product(detinv)
-        
-                q_inv = QHStates([q0, q1, q2, q3, q4, q5, q6, q7, q8])
-        
+            if additive:
+                q_flip = self.inverse(additive=True)
+                q_inv = q_flip.diagonal(self.dim)
+                
             else:
-                print("Oops, don't know how to invert.")
-                q_inv = QHStates([QH().q_0()])
+                if self.dim == 1:
+                    q_inv = QHStates(self.qs[0].inverse())
         
-        else:
+                elif self.dim == 4:
+                    det = self.determinant()
+                    detinv = det.inverse()
+
+                    q0 = self.qs[3].product(detinv)
+                    q1 = self.qs[1].flip_signs().product(detinv)
+                    q2 = self.qs[2].flip_signs().product(detinv)
+                    q3 = self.qs[0].product(detinv)
+
+                    q_inv = QHStates([q0, q1, q2, q3])
+    
+                elif self.dim == 9:
+                    det = self.determinant()
+                    detinv = det.inverse()
+        
+                    q0 = self.qs[4].product(self.qs[8]).dif(self.qs[5].product(self.qs[7])).product(detinv)
+                    q1 = self.qs[7].product(self.qs[2]).dif(self.qs[8].product(self.qs[1])).product(detinv)
+                    q2 = self.qs[1].product(self.qs[5]).dif(self.qs[2].product(self.qs[4])).product(detinv)
+                    q3 = self.qs[6].product(self.qs[5]).dif(self.qs[8].product(self.qs[3])).product(detinv)
+                    q4 = self.qs[0].product(self.qs[8]).dif(self.qs[2].product(self.qs[6])).product(detinv)
+                    q5 = self.qs[3].product(self.qs[2]).dif(self.qs[5].product(self.qs[0])).product(detinv)
+                    q6 = self.qs[3].product(self.qs[7]).dif(self.qs[4].product(self.qs[6])).product(detinv)
+                    q7 = self.qs[6].product(self.qs[1]).dif(self.qs[7].product(self.qs[0])).product(detinv)
+                    q8 = self.qs[0].product(self.qs[4]).dif(self.qs[1].product(self.qs[3])).product(detinv)
+        
+                    q_inv = QHStates([q0, q1, q2, q3, q4, q5, q6, q7, q8])
+        
+                else:
+                    print("Oops, don't know how to inverse.")
+                    q_inv = QHStates([QH().q_0()])
+        
+        else:                
             new_states = []
         
             for bra in self.qs:
-                new_states.append(bra.invert())
+                new_states.append(bra.inverse(additive=additive))
         
-            q_inv = QHStates(new_states).normalize()
+            q_inv = QHStates(new_states)
     
         return q_inv
     
@@ -7003,15 +7035,20 @@ class QHStates(QH):
         return QHStates(diagonal)
         
     @staticmethod    
-    def identity(dim, operator=False):
+    def identity(dim, operator=False, additive=False):
         """Identity operator for states or operators which are diagonal."""
     
+        if additive:
+            id_q = QH().q_0()
+        else:
+            id_q = QH().q_1()
+            
         if operator:
-            q_1 = QHStates([QH().q_1() ])
+            q_1 = QHStates([id_q])
             ident = QHStates.diagonal(q_1, dim)    
     
         else:
-            i_list = [QH().q_1() for i in range(dim)]
+            i_list = [id_q for i in range(dim)]
             ident = QHStates(i_list)
             
         return ident
@@ -7287,7 +7324,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[39]:
+# In[31]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -7352,12 +7389,12 @@ class TestQHStates(unittest.TestCase):
         print("-q_1_q_i: ", qf)
         self.assertTrue(qf.qs[1].x == -1)
         
-    def test_invert(self):
-        inv_v1123 = self.v1123.invert(operator=True)
+    def test_inverse(self):
+        inv_v1123 = self.v1123.inverse(operator=True)
         print("inv_v1123 operator", inv_v1123)
         self.assertTrue(inv_v1123.equals(self.v3n1n21))
 
-        inv_v33 = self.v33.invert(operator=True)
+        inv_v33 = self.v33.inverse(operator=True)
         print("inv_v33 operator", inv_v33)
         self.assertTrue(inv_v33.equals(self.v33inv))
         
@@ -7763,15 +7800,20 @@ class QHaStates(QHa):
         return QHaStates(diagonal)
     
     @staticmethod
-    def identity(dim, operator=False):
+    def identity(dim, operator=False, additive=False):
         """Identity operator for states or operators which are diagonal."""
     
+        if additive:
+            id_q = QHa().q_0()
+        else:
+            id_q = QHa().q_1()
+            
         if operator:
-            q_1 = QHaStates([QHa().q_1() ])
+            q_1 = QHaStates([id_q])
             ident = QHaStates.diagonal(q_1, dim)    
     
         else:
-            i_list = [QHa().q_1() for i in range(dim)]
+            i_list = [id_q for i in range(dim)]
             ident = QHaStates(i_list)
             
         return ident
@@ -8497,15 +8539,20 @@ class Q8States(Q8):
         return Q8States(diagonal)
 
     @staticmethod
-    def identity(dim, operator=False):
+    def identity(dim, operator=False, additive=False):
         """Identity operator for states or operators which are diagonal."""
     
+        if additive:
+            id_q = Q8().q_0()
+        else:
+            id_q = Q8().q_1()
+            
         if operator:
-            q_1 = Q8States([Q8().q_1() ])
+            q_1 = Q8States([id_q])
             ident = Q8States.diagonal(q_1, dim)    
     
         else:
-            i_list = [Q8().q_1() for i in range(dim)]
+            i_list = [id_q for i in range(dim)]
             ident = Q8States(i_list)
             
         return ident
@@ -9185,15 +9232,20 @@ class Q8aStates(Q8a):
         return Q8aStates(diagonal)
     
     @staticmethod
-    def identity(dim, operator=False):
+    def identity(dim, operator=False, additive=False):
         """Identity operator for states or operators which are diagonal."""
     
+        if additive:
+            id_q = Q8a().q_0()
+        else:
+            id_q = Q8a().q_1()
+            
         if operator:
-            q_1 = Q8aStates([Q8a().q_1() ])
+            q_1 = Q8aStates([id_q])
             ident = Q8aStates.diagonal(q_1, dim)    
     
         else:
-            i_list = [Q8a().q_1() for i in range(dim)]
+            i_list = [id_q for i in range(dim)]
             ident = Q8aStates(i_list)
             
         return ident
@@ -9657,4 +9709,10 @@ class TestQ8aStates(unittest.TestCase):
         
 suite = unittest.TestLoader().loadTestsFromModule(TestQ8aStates())
 unittest.TextTestRunner().run(suite);
+
+
+# In[38]:
+
+
+1+1
 
