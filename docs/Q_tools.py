@@ -29,6 +29,7 @@ import random
 import sympy as sp
 import os
 import unittest
+from copy import deepcopy
 
 from IPython.display import display
 from os.path import basename
@@ -6762,17 +6763,75 @@ unittest.TextTestRunner().run(suite);
 class QHStates(QH):
     """A class made up of many quaternions."""
     
-    def __init__(self, qs=None, qtype="", representation=""):
+    QS_TYPES = ["scalar", "bra", "ket", "op", "operator"]
+    
+    def __init__(self, qs=None, qs_type="ket", rows=0, columns=0):
         
         self.qs = qs
+        self.qs_type = qs_type
+        self.rows = rows
+        self.columns = columns
+        
+        if qs_type not in self.QS_TYPES:
+            print("Oops, only know of these quaternion series types: {}".format(self.QS_TYPES))
+            return None
         
         if qs is None:
             self.d, self.dim, self.dimensions = 0, 0, 0
         else:
-            self.d, self.dim, self.dimensions = len(qs), len(qs), len(qs)
+            self.d, self.dim, self.dimensions = int(len(qs)), int(len(qs)), int(len(qs))
     
-        self.qtype = qtype
-        self.representation = representation
+        self.set_qs_type(qs_type, rows, columns, copy=False)
+    
+    def set_qs_type(self, qs_type="", rows=0, columns=0, copy=True):
+        """Set the qs_type to something sensible."""
+    
+        new_q = self
+        
+        if copy:
+            new_q = deepcopy(self)
+        
+        # Assign values if need be.
+        if new_q.qs_type != qs_type:
+            new_q.rows = 0
+        
+        if qs_type == "ket" and not new_q.rows:
+            new_q.rows = new_q.dim
+            new_q.columns = 1
+            
+        elif qs_type == "bra" and not new_q.rows:
+            new_q.rows = 1
+            new_q.columns = new_q.dim
+
+        elif qs_type in ["op", "operator"] and not new_q.rows:
+            # Square series
+            root_dim = math.sqrt(new_q.dim)
+            
+            if root_dim.is_integer():
+                new_q.rows = int(root_dim)
+                new_q.columns = int(root_dim)
+                qs_type = "op"
+        
+        elif rows * columns == new_q.dim and not new_q.qs_type:
+            if new_q.dim == 1:
+                qs_type = "scalar"
+            elif new_q.rows == 1:
+                qs_type = "bra"
+            elif new_q.columns == 1:
+                qs_type = "ket"
+            else:
+                qs_type = "op"
+            
+        if not qs_type or not new_q.rows:
+            print("Oops, please set rows and columns for this quaternion series operator. Thanks.")
+            return None
+        
+        if new_q.dim == 1:
+            qs_type = "scalar"
+            
+        new_q.qs_type = qs_type
+        
+        return new_q
         
     def __str__(self, quiet=False):
         """Print out all the states."""
@@ -6784,7 +6843,7 @@ class QHStates(QH):
         
         return states.rstrip()
     
-    def print_state(self, label, spacer=False, quiet=False):
+    def print_state(self, label, spacer=True, quiet=True):
         """Utility for printing states as a quaternion series."""
 
         print(label)
@@ -6792,6 +6851,9 @@ class QHStates(QH):
         for n, q in enumerate(self.qs):
             ##### print("n={}: {}".format(n + 1, q.__str__(quiet)))
             print("n={}: {}".format(n + 1, q.__str__()))
+        
+        print("{t}: {r}/{c}".format(
+            t=self.qs_type, r=self.rows, c=self.columns))
         
         if not quiet:
             print("sum= {ss}".format(ss=self.summation()))
@@ -6821,7 +6883,7 @@ class QHStates(QH):
         for bra in self.qs:
             new_states.append(bra.conj(conj_type))
             
-        return QHStates(new_states)
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def simple_q(self):
         """Simplify the states."""
@@ -6831,7 +6893,7 @@ class QHStates(QH):
         for bra in self.qs:
             new_states.append(bra.simple_q())
             
-        return QHStates(new_states)
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def flip_signs(self):
         """Flip signs of all states."""
@@ -6841,7 +6903,7 @@ class QHStates(QH):
         for bra in self.qs:
             new_states.append(bra.flip_signs())
             
-        return QHStates(new_states)
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def inverse(self, operator=False, additive=False):
         """Inverseing bras and kets calls inverse() once for each.
@@ -6855,7 +6917,7 @@ class QHStates(QH):
                 
             else:
                 if self.dim == 1:
-                    q_inv = QHStates(self.qs[0].inverse())
+                    q_inv =QHStates(self.qs[0].inverse())
         
                 elif self.dim == 4:
                     det = self.determinant()
@@ -6866,7 +6928,7 @@ class QHStates(QH):
                     q2 = self.qs[2].flip_signs().product(detinv)
                     q3 = self.qs[0].product(detinv)
 
-                    q_inv = QHStates([q0, q1, q2, q3])
+                    q_inv =QHStates([q0, q1, q2, q3], qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
                 elif self.dim == 9:
                     det = self.determinant()
@@ -6882,11 +6944,11 @@ class QHStates(QH):
                     q7 = self.qs[6].product(self.qs[1]).dif(self.qs[7].product(self.qs[0])).product(detinv)
                     q8 = self.qs[0].product(self.qs[4]).dif(self.qs[1].product(self.qs[3])).product(detinv)
         
-                    q_inv = QHStates([q0, q1, q2, q3, q4, q5, q6, q7, q8])
+                    q_inv =QHStates([q0, q1, q2, q3, q4, q5, q6, q7, q8], qs_type=self.qs_type, rows=self.rows, columns=self.columns)
         
                 else:
                     print("Oops, don't know how to inverse.")
-                    q_inv = QHStates([QH().q_0()])
+                    q_inv =QHStates([QH().q_0()])
         
         else:                
             new_states = []
@@ -6894,7 +6956,7 @@ class QHStates(QH):
             for bra in self.qs:
                 new_states.append(bra.inverse(additive=additive))
         
-            q_inv = QHStates(new_states)
+            q_inv =QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
         return q_inv
     
@@ -6906,7 +6968,7 @@ class QHStates(QH):
         for bra in self.qs:
             new_states.append(bra.norm())
             
-        return QHStates(new_states)
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def normalize(self, n=1, states=None):
         """Normalize all states."""
@@ -6929,7 +6991,7 @@ class QHStates(QH):
         for new_state in new_states:
             new_states_normalized.append(new_state.product(QH([math.sqrt(1/non_zero_states), 0, 0, 0])))
             
-        return QHStates(new_states_normalized)
+        return QHStates(new_states_normalized, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
 
     def orthonormalize(self):
         """Given a quaternion series, resturn a normalized orthoganl basis."""
@@ -6943,7 +7005,7 @@ class QHStates(QH):
             orthonormal_qs.append(orthonormal_q)
             last_q = orthonormal_q
         
-        return QHStates(orthonormal_qs)
+        return QHStates(orthonormal_qs, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def determinant(self):
         """Calculate the determinant of a 'square' quaternion series."""
@@ -6971,7 +7033,7 @@ class QHStates(QH):
         
         else:
             print("Oops, don't know how to calculate the determinant of this one.")
-            q_det = QHStates([QH().q_0()])
+            return None
         
         return q_det
     
@@ -6988,7 +7050,7 @@ class QHStates(QH):
         for bra, ket in zip(self.qs, ket.qs):
             new_states.append(bra.add(ket))
             
-        return QHStates(new_states)
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
 
     def summation(self):
         """Add them all up, return one quaternion."""
@@ -7011,10 +7073,10 @@ class QHStates(QH):
         for bra, ket in zip(self.qs, ket.qs):
             new_states.append(bra.dif(ket))
             
-        return(QHStates(new_states))  
+        return(QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns))  
         
     def diagonal(self, dim):
-        """Make a state dim*dim with q or qs along the 'diagonal'."""
+        """Make a state dim*dim with q or qs along the 'diagonal'. Always returns an operator."""
         
         diagonal = []
         
@@ -7022,8 +7084,12 @@ class QHStates(QH):
             q_values = [self.qs[0]] * dim
         elif len(self.qs) == dim:
             q_values = self.qs
+        elif self.qs is None:
+            print("Oops, the qs here is None.")
+            return None
         else:
             print("Oops, need the length to be equal to the dimensions.")
+            return None
         
         for i in range(dim):
             for j in range(dim):
@@ -7032,16 +7098,16 @@ class QHStates(QH):
                 else:
                     diagonal.append(QH().q_0())
         
-        return QHStates(diagonal)
+        return QHStates(diagonal, qs_type="op", rows=dim, columns=dim)
         
     @staticmethod    
     def identity(dim, operator=False, additive=False):
         """Identity operator for states or operators which are diagonal."""
     
         if additive:
-            id_q = QH().q_0()
+            id_q =QH().q_0()
         else:
-            id_q = QH().q_1()
+            id_q =QH().q_1()
             
         if operator:
             q_1 = QHStates([id_q])
@@ -7049,166 +7115,81 @@ class QHStates(QH):
     
         else:
             i_list = [id_q for i in range(dim)]
-            ident = QHStates(i_list)
+            ident = QHStates(i_list, qs_type="ket")
             
         return ident
     
-    def product(self, product_type, bra=None, ket=None, operator=None, kind="", reverse=False):
+    def product(self, q1, kind="", reverse=False):
         """Forms the quaternion product for each state."""
         
-        if product_type == 'bra':
-            bra = self
-        elif product_type == 'ket':
-            ket = self
-        elif product_type == 'operator':
-            operator = self
-        else:
-            print("Oops, need to set product_type to bra, ket, or operator.")
-            return None
+        # Diagonalize to allow more products to be formed.
+        self_copy = deepcopy(self)
+        q1_copy = deepcopy(q1)
         
-        def _check_dimensions(op_dim=0, state_1_dim=0, state_2_dim=0, equals=False):
-            """Make sure the states and operators are the right sizes. The operator dimension is either
-               equal to 1 or the product of the bra and ket dimensions."""
+        oops = "Oops, cannot multiply series with row/column dimensions of {}/{} to {}/{}".format(
+            self.rows, self.columns, q1.rows, q1.columns)
+        
+        if self.columns == q1.rows:
+            qs_left = self_copy
+            qs_right = q1_copy
+        
+        elif ((self.rows == q1.rows) and (self.columns == q1.columns)) or             ("scalar" in [self.qs_type, q1.qs_type]):
+                
+            if self.columns == 1:
+                qs_right = q1_copy
+                qs_left = self_copy.diagonal(qs_right.rows)
+      
+            elif q1.rows == 1:
+                qs_left = self_copy
+                qs_right = q1_copy.diagonal(qs_left.columns)
 
-            oops = ''
-            
-            if equals:
-                if state_1_dim != state_2_dim:
-                    oops = "states have different dimensions: {} != {}".format(state_1_dim, state_2_dim)
-                    
-            elif state_2_dim == 0:
-                if (op_dim % state_1_dim != 0) and (op_dim != 1):
-                    oops = "Operator dimensions don't divide nicely by the state vector: {} % {}".format(
-                        op_dim, state_1_dim)
-                    
             else:
-                if (op_dim != state_1_dim * state_2_dim) and (op_dim == 1 and (state_1_dim != state_2_dim)):
-                    oops = "Operator dimensions do not equal the product of the states: {} != {} * {}".format(
-                        op_dim, state_1_dim, state_2_dim)
-                    
-            if oops:
                 print(oops)
-                return False
+                return None
             
-            else:
-                return True
-        
-        new_states = []
-        dot_product_flag = False
-        
-        if bra is None and ket is None:
-            return None
-        
-        elif bra is None and operator is None:
-            return ket
-        
-        elif ket is None and operator is None:
-            return bra
-        
-        # <A|B>                                                     
-        elif operator is None:
-            if _check_dimensions(state_1_dim=bra.dim, state_2_dim=ket.dim, equals=True):
-                dot_product_flag = True
-                
-                for b, k in zip(bra.qs, ket.qs):
-                    new_states.append(b.product(k, kind, reverse))
-            
-        # Op|B>
-        elif bra is None:
-            if _check_dimensions(op_dim=operator.dim, state_1_dim=ket.dim):
-                if operator.dim == 1:
-                    one_diagonal = operator.diagonal(ket.dim)                    
-                    opb = one_diagonal.qs
-
-                else:
-                    opb = operator.qs
-                        
-                for ops in zip(*[iter(opb)] * ket.dim):
-                    ok = None
-                    
-                    for op, k in zip(ops, ket.qs): 
-                        if ok is None:
-                            ok = op.product(k, kind, reverse)
-                        else:
-                            ok = ok.add(op.product(k, kind, reverse))
-                            
-                    new_states.append(ok)
-
-        # <A|Op
-        elif ket is None:
-            if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim):
-                # Operator needs to be transposed.
-                opt = operator.transpose(bra.dim)
-                
-                if operator.dim == 1:
-                    one_diagonal = operator.diagonal(bra.dim)                    
-                    aop = one_diagonal.qs
-
-                else:
-                    aop = opt.qs
-                        
-                for ops in zip(*[iter(aop)]*bra.dim):
-                    bop = None
-                    
-                    for b, op in zip(bra.qs, ops):
-                        if bop is None:
-                            bop = b.product(op, kind, reverse)
-                        else:
-                            bop = bop.add(b.product(op, kind, reverse))
-                            
-                    new_states.append(bop)
-
-        # <A|Op|B>
         else:
-            if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim, state_2_dim=ket.dim):
-                dot_product_flag = True
-                new_ket = []
-                
-                if operator.dim == 1:
-                    one_diagonal = operator.diagonal(ket.dim)                    
-                    opb = one_diagonal.qs
+            print(oops)            
+            return None    
+        
+        outer_row_max = qs_left.rows
+        outer_column_max = qs_right.columns
+        shared_inner_max = qs_left.columns
+        projector_flag = (shared_inner_max == 1) and (outer_row_max > 1) and (outer_column_max > 1)
+        
+        result = [[QH().q_0(qtype='') for i in range(outer_column_max)] for j in range(outer_row_max)]
+        
+        for outer_row in range(outer_row_max):
+            for outer_column in range(outer_column_max):
+                for shared_inner in range(shared_inner_max):
+                    
+                    # For projection operators.
+                    left_index = outer_row
+                    right_index = outer_column
+                    
+                    if outer_row_max >= 1 and shared_inner_max > 1:
+                        left_index = outer_row + shared_inner * outer_row_max
+                        
+                    if outer_column_max >= 1 and shared_inner_max > 1:
+                        right_index = shared_inner + outer_column * shared_inner_max
+                            
+                    result[outer_row][outer_column] = result[outer_row][outer_column].add(
+                        qs_left.qs[left_index].product(
+                            qs_right.qs[right_index], kind=kind, reverse=reverse))
+        
+        # Flatten the list.
+        new_qs = [item for sublist in result for item in sublist]
+        new_states = QHStates(new_qs, rows=outer_row_max, columns=outer_column_max)
 
-                else:
-                    opb = operator.qs                                             
-                                                             
-                for ops in zip(*[iter(opb)]*ket.dim):
-                    ok = None
-                    
-                    for op, k in zip(ops, ket.qs): 
-                        if ok is None:
-                            ok = op.product(k, kind, reverse)
-                        else:
-                            ok = ok.add(op.product(k, kind, reverse))
-                    
-                    new_ket.append(ok)   
-                
-                new_ket_state = QHStates(new_ket)
-                    
-                for b, k in zip(bra.qs, new_ket_state.qs):
-                    new_states.append(b.product(k, kind, reverse))
-              
-        # Return either the dot product or a new quaternion series.
-        if dot_product_flag:
-            dot_product = new_states.pop(0)
-                
-            for new_state in new_states:
-                dot_product = dot_product.add(new_state)
-                
-            return dot_product
+        if projector_flag:
+            return new_states.transpose()
         
         else:
-            return QHStates(new_states)
-
-    def Euclidean_product(self, product_type, bra=None, ket=None, operator=None, kind="", reverse=False):
+            return new_states
+    
+    def Euclidean_product(self, q1, kind="", reverse=False):
         """Forms the Euclidean product, what is used in QM all the time."""
-        
-        if bra is not None:
-            bra = bra.conj()
-            
-        if product_type == 'bra':
-            self = self.conj()
                     
-        return self.product(product_type, bra, ket, operator, kind, reverse)
+        return self.conj().product(q1, kind, reverse)
     
     def op_n(self, n, first=True, kind="", reverse=False):
         """Mulitply an operator times a number, in that order. Set first=false for n * Op"""
@@ -7223,7 +7204,7 @@ class QHStates(QH):
             else:
                 new_states.append(n.product(op, kind, reverse))
     
-        return QHStates(new_states)
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def norm_squared(self):
         """Take the Euclidean product of each state and add it up, returning one quaternion."""
@@ -7258,7 +7239,8 @@ class QHStates(QH):
             for q in t:
                 qs_t.append(q)
                 
-        return QHStates(qs_t)
+        # Switch rows and columns.
+        return QHStates(qs_t, rows=self.columns, columns=self.rows)
         
     def Hermitian_conj(self, m=None, n=None, conj_type=0):
         """Returns the Hermitian conjugate."""
@@ -7286,7 +7268,7 @@ class QHStates(QH):
     def sigma(kind, theta=None, phi=None):
         """Returns a sigma when given a type like, x, y, z, xy, xz, yz, xyz, with optional angles theta and phi."""
         
-        q0, q1, qi = QH().q_0(), QH().q_1(), QH().q_i()
+        q0, q1, qi =QH().q_0(),QH().q_1(),QH().q_i()
         
         # Should work if given angles or not.
         if theta is None:
@@ -7308,9 +7290,9 @@ class QHStates(QH):
         z_factor = q1.product(QH([cos_theta, 0, 0, 0]))
 
         sigmas = {}
-        sigma['x'] = QHStates([q0, x_factor, x_factor, q0])
-        sigma['y'] = QHStates([q0, y_factor, y_factor.flip_signs(), q0]) 
-        sigma['z'] = QHStates([z_factor, q0, q0, z_factor.flip_signs()])
+        sigma['x'] =QHStates([q0, x_factor, x_factor, q0])
+        sigma['y'] =QHStates([q0, y_factor, y_factor.flip_signs(), q0]) 
+        sigma['z'] =QHStates([z_factor, q0, q0, z_factor.flip_signs()])
   
         sigmas['xy'] = sigma['x'].add(sigma['y'])
         sigmas['xz'] = sigma['x'].add(sigma['z'])
@@ -7339,6 +7321,9 @@ class TestQHStates(unittest.TestCase):
     q_3 = QH([3,0,0,0])
     q_n3 = QH([-3,0,0,0])
     q_4 = QH([4,0,0,0])
+    q_5 = QH([5,0,0,0])
+    q_6 = QH([6,0,0,0])
+    q_10 = QH([10,0,0,0])
     q_n5 = QH([-5,0,0,0])
     q_7 = QH([7,0,0,0])
     q_8 = QH([8,0,0,0])
@@ -7357,26 +7342,51 @@ class TestQHStates(unittest.TestCase):
     v33inv = QHStates([q_n2, q_3, q_9, q_8, q_n11, q_n34, q_n5, q_7, q_21])
     q_i3 = QHStates([q_1, q_1, q_1])
     q_i2d = QHStates([q_1, q_0, q_0, q_1])
+    q_i3_bra = QHStates([q_1, q_1, q_1], "bra")
+    q_6_op = QHStates([q_1, q_0, q_0, q_1, q_i, q_i], "op")    
+    q_6_op_32 = QHStates([q_1, q_0, q_0, q_1, q_i, q_i], "op", rows=3, columns=2)
+    q_i2d_op = QHStates([q_1, q_0, q_0, q_1], "op")
     q_i4 = QH([0,4,0,0])
     q_0_q_1 = QHStates([q_0, q_1])
     q_1_q_0 = QHStates([q_1, q_0])
     q_1_q_i = QHStates([q_1, q_i])
-    A = QHStates([QH([4,0,0,0]),QH([0,1,0,0])])
-    B = QHStates([QH([0,0,1,0]),QH([0,0,0,2]),QH([0,3,0,0])])
-    Op = QHStates([QH([3,0,0,0]),QH([0,1,0,0]),QH([0,0,2,0]),QH([0,0,0,3]),QH([2,0,0,0]),QH([0,4,0,0])])
-    Op4i = QHStates([q_i4])
+    A = QHStates([QH([4,0,0,0]), QH([0,1,0,0])], "bra")
+    B = QHStates([QH([0,0,1,0]), QH([0,0,0,2]), QH([0,3,0,0])])
+    Op = QHStates([QH([3,0,0,0]), QH([0,1,0,0]), QH([0,0,2,0]), QH([0,0,0,3]), QH([2,0,0,0]), QH([0,4,0,0])], "op", rows=2, columns=3)
+    Op4i = QHStates([q_i4, q_0, q_0, q_i4, q_2, q_3], "op", rows=2, columns=3) 
+    Op_scalar = QHStates([q_i4], "scalar")
     q_1234 = QHStates([QH([1, 1, 0, 0]), QH([2, 1, 0, 0]), QH([3, 1, 0, 0]), QH([4, 1, 0, 0])])
     sigma_y = QHStates([QH([1, 0, 0, 0]), QH([0, -1, 0, 0]), QH([0, 1, 0, 0]), QH([-1, 0, 0, 0])])
     qn = QHStates([QH([3,0,0,4])])
     
-    def test_init(self):
-        self.assertTrue(self.q_0_q_1.dim == 2)
+    b = QHStates([q_1, q_2, q_3], qs_type="bra")
+    k = QHStates([q_4, q_5, q_6], qs_type="ket")
+    o = QHStates([q_10], qs_type="op")
         
-    def test_equals(self):
+    def test_1000_init(self):
+        self.assertTrue(self.q_0_q_1.dim == 2)
+    
+    def test_1010_set_qs_type(self):
+        bk = self.b.set_qs_type("ket")
+        self.assertTrue(bk.rows == 3)
+        self.assertTrue(bk.columns == 1)
+        self.assertTrue(bk.qs_type == "ket")
+        
+    def test_1020_set_rows_and_columns(self):
+        self.assertTrue(self.q_i3.rows == 3)
+        self.assertTrue(self.q_i3.columns == 1)
+        self.assertTrue(self.q_i3_bra.rows == 1)
+        self.assertTrue(self.q_i3_bra.columns == 3)
+        self.assertTrue(self.q_i2d_op.rows == 2)
+        self.assertTrue(self.q_i2d_op.columns == 2)
+        self.assertTrue(self.q_6_op_32.rows == 3)
+        self.assertTrue(self.q_6_op_32.columns == 2)
+        
+    def test_1030_equals(self):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
         
-    def test_conj(self):
+    def test_1040_conj(self):
         qc = self.q_1_q_i.conj()
         qc1 = self.q_1_q_i.conj(1)
         print("q_1_q_i*: ", qc)
@@ -7384,12 +7394,12 @@ class TestQHStates(unittest.TestCase):
         self.assertTrue(qc.qs[1].x == -1)
         self.assertTrue(qc1.qs[1].x == 1)
     
-    def test_flip_signs(self):
+    def test_1050_flip_signs(self):
         qf = self.q_1_q_i.flip_signs()
         print("-q_1_q_i: ", qf)
         self.assertTrue(qf.qs[1].x == -1)
         
-    def test_inverse(self):
+    def test_1060_inverse(self):
         inv_v1123 = self.v1123.inverse(operator=True)
         print("inv_v1123 operator", inv_v1123)
         self.assertTrue(inv_v1123.equals(self.v3n1n21))
@@ -7398,13 +7408,13 @@ class TestQHStates(unittest.TestCase):
         print("inv_v33 operator", inv_v33)
         self.assertTrue(inv_v33.equals(self.v33inv))
         
-    def test_normalize(self):
+    def test_1070_normalize(self):
         qn = self.qn.normalize()
         print("Op normalized: ", qn)
         self.assertAlmostEqual(qn.qs[0].t, 0.6)
         self.assertTrue(qn.qs[0].z == 0.8)
     
-    def test_determinant(self):
+    def test_1080_determinant(self):
         det_v3 = self.v3.determinant()
         print("det v3:", det_v3)
         self.assertTrue(det_v3.equals(self.q_3))
@@ -7418,31 +7428,31 @@ class TestQHStates(unittest.TestCase):
         print("det_vv9", det_vv9)
         self.assertTrue(det_vv9.equals(self.qn627))
         
-    def test_summation(self):
+    def test_1090_summation(self):
         q_01_sum = self.q_0_q_1.summation()
         print("sum: ", q_01_sum)
         self.assertTrue(type(q_01_sum) is QH)
         self.assertTrue(q_01_sum.t == 1)
         
-    def test_add(self):
+    def test_1100_add(self):
         q_0110_add = self.q_0_q_1.add(self.q_1_q_0)
         print("add 01 10: ", q_0110_add)
         self.assertTrue(q_0110_add.qs[0].t == 1)
         self.assertTrue(q_0110_add.qs[1].t == 1)
         
-    def test_dif(self):
+    def test_1110_dif(self):
         q_0110_dif = self.q_0_q_1.dif(self.q_1_q_0)
         print("dif 01 10: ", q_0110_dif)
         self.assertTrue(q_0110_dif.qs[0].t == -1)
         self.assertTrue(q_0110_dif.qs[1].t == 1)
         
-    def test_diagonal(self):
-        Op4iDiag2 = self.Op4i.diagonal(2)
+    def test_1120_diagonal(self):
+        Op4iDiag2 = self.Op_scalar.diagonal(2)
         print("Op4i on a diagonal 2x2", Op4iDiag2)
         self.assertTrue(Op4iDiag2.qs[0].equals(self.q_i4))
         self.assertTrue(Op4iDiag2.qs[1].equals(QH().q_0()))
         
-    def test_identity(self):
+    def test_1130_identity(self):
         I2 = QHStates().identity(2, operator=True)
         print("Operator Idenity, diagonal 2x2", I2)    
         self.assertTrue(I2.qs[0].equals(QH().q_1()))
@@ -7452,106 +7462,116 @@ class TestQHStates(unittest.TestCase):
         self.assertTrue(I2.qs[0].equals(QH().q_1()))
         self.assertTrue(I2.qs[1].equals(QH().q_1()))        
 
-    def test_product_AA(self):
-        AA = self.A.product('bra', ket=self.A)
+    def test_1140_product(self):
+        self.assertTrue(self.b.product(self.o).equals(QHStates([QH([10,0,0,0]),QH([20,0,0,0]),QH([30,0,0,0])])))
+        self.assertTrue(self.b.product(self.k).equals(QHStates([QH([32,0,0,0])])))
+        self.assertTrue(self.b.product(self.o).product(self.k).equals(QHStates([QH([320,0,0,0])])))
+        self.assertTrue(self.b.product(self.b).equals(QHStates([QH([1,0,0,0]),QH([4,0,0,0]),QH([9,0,0,0])])))
+        self.assertTrue(self.o.product(self.k).equals(QHStates([QH([40,0,0,0]),QH([50,0,0,0]),QH([60,0,0,0])])))
+        self.assertTrue(self.o.product(self.o).equals(QHStates([QH([100,0,0,0])])))
+        self.assertTrue(self.k.product(self.k).equals(QHStates([QH([16,0,0,0]),QH([25,0,0,0]),QH([36,0,0,0])])))
+        self.assertTrue(self.k.product(self.b).equals(QHStates([QH([4,0,0,0]),QH([5,0,0,0]),QH([6,0,0,0]),
+                                                                      QH([8,0,0,0]),QH([10,0,0,0]),QH([12,0,0,0]),
+                                                                      QH([12,0,0,0]),QH([15,0,0,0]),QH([18,0,0,0])])))
+    
+    def test_1150_product_AA(self):
+        AA = self.A.product(self.A.set_qs_type("ket"))
         print("AA: ", AA)
-        self.assertTrue(AA.equals(QH([15, 0, 0, 0])))
+        self.assertTrue(AA.equals(QHStates([QH([15, 0, 0, 0])])))
                   
-    def test_Euclidean_product_AA(self):
-        AA = self.A.Euclidean_product('bra', ket=self.A)
+    def test_1160_Euclidean_product_AA(self):
+        AA = self.A.Euclidean_product(self.A.set_qs_type("ket"))
         print("A* A", AA)
-        self.assertTrue(AA.equals(QH([17, 0, 0, 0])))
+        self.assertTrue(AA.equals(QHStates([QH([17, 0, 0, 0])])))
 
-    def test_product_AOp(self):
-        AOp = self.A.product('bra', operator=self.Op)
+    def test_1170_product_AOp(self):
+        AOp = self.A.product(self.Op)
         print("A Op: ", AOp)
-        self.assertTrue(AOp.qs[0].equals(QH([12, 0, -3, 0])))
-        self.assertTrue(AOp.qs[1].equals(QH([0, 6, 0, 0])))
-        self.assertTrue(AOp.qs[2].equals(QH([-4, 0, 8, 0])))
+        self.assertTrue(AOp.qs[0].equals(QH([11, 0, 0, 0])))
+        self.assertTrue(AOp.qs[1].equals(QH([0, 0, 5, 0])))
+        self.assertTrue(AOp.qs[2].equals(QH([4, 0, 0, 0])))
                       
-    def test_Euclidean_product_AOp(self):
-        AOp = self.A.Euclidean_product('bra', operator=self.Op)
+    def test_1180_Euclidean_product_AOp(self):
+        AOp = self.A.Euclidean_product(self.Op)
         print("A* Op: ", AOp)
-        self.assertTrue(AOp.qs[0].equals(QH([12, 0, 3, 0])))
-        self.assertTrue(AOp.qs[1].equals(QH([0, 2, 0, 0])))
-        self.assertTrue(AOp.qs[2].equals(QH([4, 0, 8, 0])))
+        self.assertTrue(AOp.qs[0].equals(QH([13, 0, 0, 0])))
+        self.assertTrue(AOp.qs[1].equals(QH([0, 0, 11, 0])))
+        self.assertTrue(AOp.qs[2].equals(QH([12, 0, 0, 0])))
         
-    def test_product_AOp4i(self):
-        AOp4i = self.A.product('bra', operator=self.Op4i)
+    def test_1190_product_AOp4i(self):
+        AOp4i = self.A.product(self.Op4i)
         print("A Op4i: ", AOp4i)
         self.assertTrue(AOp4i.qs[0].equals(QH([0, 16, 0, 0])))
         self.assertTrue(AOp4i.qs[1].equals(QH([-4, 0, 0, 0])))
                         
-    def test_Euclidean_product_AOp4i(self):
-        AOp4i = self.A.Euclidean_product('bra', operator=self.Op4i)
+    def test_1200_Euclidean_product_AOp4i(self):
+        AOp4i = self.A.Euclidean_product(self.Op4i)
         print("A* Op4i: ", AOp4i)
         self.assertTrue(AOp4i.qs[0].equals(QH([0, 16, 0, 0])))
         self.assertTrue(AOp4i.qs[1].equals(QH([4, 0, 0, 0])))
 
-    def test_product_OpB(self):
-        OpB = self.B.product('ket', operator=self.Op)
+    def test_1210_product_OpB(self):
+        OpB = self.Op.product(self.B)
         print("Op B: ", OpB)
-        self.assertTrue(OpB.qs[0].equals(QH([0, 0, 1, -6])))
-        self.assertTrue(OpB.qs[1].equals(QH([-12, -3, 0, 4])))
+        self.assertTrue(OpB.qs[0].equals(QH([0, 10, 3, 0])))
+        self.assertTrue(OpB.qs[1].equals(QH([-18, 0, 0, 1])))
                         
-    def test_Euclidean_product_OpB(self):
-        OpB = self.B.Euclidean_product('ket', operator=self.Op)
+    def test_1220_Euclidean_product_OpB(self):
+        OpB = self.Op.Euclidean_product(self.B)
         print("Op B: ", OpB)
-        self.assertTrue(OpB.qs[0].equals(QH([0, 0, 1, -6])))
-        self.assertTrue(OpB.qs[1].equals(QH([-12, -3, 0, 4])))
+        self.assertTrue(OpB.qs[0].equals(QH([0, 2, 3, 0])))
+        self.assertTrue(OpB.qs[1].equals(QH([18, 0, 0, -1])))
 
-    def test_product_AOpB(self):
-        AOpB = self.A.product('bra', operator=self.Op, ket=self.B)
+    def test_1230_product_AOpB(self):
+        AOpB = self.A.product(self.Op).product(self.B)
         print("A Op B: ", AOpB)
-        self.assertTrue(AOpB.equals(QH([3, -12, 0, -24])))
+        self.assertTrue(AOpB.equals(QHStates([QH([0, 22, 11, 0])])))
                         
-    def test_Euclidean_product_AOpB(self):
-        AOpB = self.A.Euclidean_product('bra', operator=self.Op, ket=self.B)
+    def test_1240_Euclidean_product_AOpB(self):
+        AOpB = self.A.Euclidean_product(self.Op).product(self.B)
         print("A* Op B: ", AOpB)
-        self.assertTrue(AOpB.equals(QH([-3, 12, 8, -24])))
+        self.assertTrue(AOpB.equals(QHStates([QH([0, 58, 13, 0])])))
         
-    def test_product_AOp4i(self):
-        AOp4i = self.A.product('bra', operator=self.Op4i)
+    def test_1250_product_AOp4i(self):
+        AOp4i = self.A.product(self.Op4i)
         print("A Op4i: ", AOp4i)
         self.assertTrue(AOp4i.qs[0].equals(QH([0, 16, 0, 0])))
         self.assertTrue(AOp4i.qs[1].equals(QH([-4, 0, 0, 0])))
                         
-    def test_Euclidean_product_AOp4i(self):
-        AOp4i = self.A.Euclidean_product('bra', operator=self.Op4i)
+    def test_1260_Euclidean_product_AOp4i(self):
+        AOp4i = self.A.Euclidean_product(self.Op4i)
         print("A* Op4i: ", AOp4i)
         self.assertTrue(AOp4i.qs[0].equals(QH([0, 16, 0, 0])))
         self.assertTrue(AOp4i.qs[1].equals(QH([4, 0, 0, 0])))
 
-    def test_product_Op4iB(self):
-        Op4iB = self.B.product('ket', operator=self.Op4i)
+    def test_1270_product_Op4iB(self):
+        Op4iB = self.Op4i.product(self.B)
         print("Op4i B: ", Op4iB)
-        self.assertTrue(Op4iB.qs[0].equals(QH([0, 0, 0, 4])))
-        self.assertTrue(Op4iB.qs[1].equals(QH([0, 0, -8, 0])))
-        self.assertTrue(Op4iB.qs[2].equals(QH([-12, 0, 0, 0])))
+        self.assertTrue(Op4iB.qs[0].equals(QH([0, 6, 0, 4])))
+        self.assertTrue(Op4iB.qs[1].equals(QH([0, 9, -8, 0])))
                         
-    def test_Euclidean_product_Op4iB(self):
-        Op4iB = self.B.Euclidean_product('ket', operator=self.Op4i)
+    def test_1280_Euclidean_product_Op4iB(self):
+        Op4iB = self.Op4i.Euclidean_product(self.B)
         print("Op4i B: ", Op4iB)
-        self.assertTrue(Op4iB.qs[0].equals(QH([0, 0, 0, 4])))
-        self.assertTrue(Op4iB.qs[1].equals(QH([0, 0, -8, 0])))
-        self.assertTrue(Op4iB.qs[2].equals(QH([-12, 0, 0, 0])))
+        self.assertTrue(Op4iB.qs[0].equals(QH([0, 6, 0, -4])))
+        self.assertTrue(Op4iB.qs[1].equals(QH([0, 9, 8, 0])))
 
-    def test_product_AOp4iB(self):
-        AOp4iB = self.A.product('bra', operator=self.Op4i, ket=self.B)
+    def test_1290_product_AOp4iB(self):
+        AOp4iB = self.A.product(self.Op4i).product(self.B)
         print("A* Op4i B: ", AOp4iB)
-        self.assertTrue(AOp4iB.dim == 0)
+        self.assertTrue(AOp4iB.equals(QHStates([QH([-9, 24, 0, 8])])))
                         
-    def test_Euclidean_product_AOp4iB(self):
-        AOp4iB = self.A.Euclidean_product('bra', operator=self.Op4i, ket=self.B)
+    def test_1300_Euclidean_product_AOp4iB(self):
+        AOp4iB = self.A.Euclidean_product(self.Op4i).product(self.B)
         print("A* Op4i B: ", AOp4iB)
-        self.assertTrue(AOp4iB.dim == 0)
+        self.assertTrue(AOp4iB.equals(QHStates([QH([9, 24, 0, 24])])))
 
-    def test_op_n(self):
+    def test_1310_op_n(self):
         opn = self.Op.op_n(n=self.q_i)
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].x == 3)
         
-    def test_transpose(self):
+    def test_1320_transpose(self):
         opt = self.q_1234.transpose()
         print("op1234 transposed: ", opt)
         self.assertTrue(opt.qs[0].t == 1)
@@ -7561,9 +7581,9 @@ class TestQHStates(unittest.TestCase):
         optt = self.q_1234.transpose().transpose()
         self.assertTrue(optt.equals(self.q_1234))
         
-    def test_Hermitian_conj(self):
+    def test_1330_Hermitian_conj(self):
         q_hc = self.q_1234.Hermitian_conj()
-        print("op1234 Hermitian_conj: ", q_hc)
+        print("op1234 Hermtian_conj: ", q_hc)
         self.assertTrue(q_hc.qs[0].t == 1)
         self.assertTrue(q_hc.qs[1].t == 3)
         self.assertTrue(q_hc.qs[2].t == 2)
@@ -7573,13 +7593,13 @@ class TestQHStates(unittest.TestCase):
         self.assertTrue(q_hc.qs[2].x == -1)
         self.assertTrue(q_hc.qs[3].x == -1)
         
-    def test_is_Hermitian(self):
+    def test_1340_is_Hermitian(self):
         self.assertTrue(self.sigma_y.is_Hermitian())
         self.assertFalse(self.q_1234.is_Hermitian())
         
-    def test_is_square(self):
+    def test_1350_is_square(self):
         self.assertFalse(self.Op.is_square())
-        self.assertTrue(self.Op4i.is_square())    
+        self.assertTrue(self.Op_scalar.is_square())    
         
 suite = unittest.TestLoader().loadTestsFromModule(TestQHStates())
 unittest.TextTestRunner().run(suite);
@@ -7600,14 +7620,75 @@ unittest.TextTestRunner().run(suite);
 class QHaStates(QHa):
     """A class made up of many quaternions."""
     
-    def __init__(self, qs=None, qtype="", representation=""):
+    QS_TYPES = ["scalar", "bra", "ket", "op", "operator"]
+    
+    def __init__(self, qs=None, qs_type="ket", rows=0, columns=0):
         
         self.qs = qs
+        self.qs_type = qs_type
+        self.rows = rows
+        self.columns = columns
+        
+        if qs_type not in self.QS_TYPES:
+            print("Oops, only know of these quaternion series types: {}".format(self.QS_TYPES))
+            return None
         
         if qs is None:
             self.d, self.dim, self.dimensions = 0, 0, 0
         else:
-            self.d, self.dim, self.dimensions = len(qs), len(qs), len(qs)
+            self.d, self.dim, self.dimensions = int(len(qs)), int(len(qs)), int(len(qs))
+    
+        self.set_qs_type(qs_type, rows, columns, copy=False)
+    
+    def set_qs_type(self, qs_type="", rows=0, columns=0, copy=True):
+        """Set the qs_type to something sensible."""
+    
+        new_q = self
+        
+        if copy:
+            new_q = deepcopy(self)
+        
+        # Assign values if need be.
+        if new_q.qs_type != qs_type:
+            new_q.rows = 0
+        
+        if qs_type == "ket" and not new_q.rows:
+            new_q.rows = new_q.dim
+            new_q.columns = 1
+            
+        elif qs_type == "bra" and not new_q.rows:
+            new_q.rows = 1
+            new_q.columns = new_q.dim
+
+        elif qs_type in ["op", "operator"] and not new_q.rows:
+            # Square series
+            root_dim = math.sqrt(new_q.dim)
+            
+            if root_dim.is_integer():
+                new_q.rows = int(root_dim)
+                new_q.columns = int(root_dim)
+                qs_type = "op"
+        
+        elif rows * columns == new_q.dim and not new_q.qs_type:
+            if new_q.dim == 1:
+                qs_type = "scalar"
+            elif new_q.rows == 1:
+                qs_type = "bra"
+            elif new_q.columns == 1:
+                qs_type = "ket"
+            else:
+                qs_type = "op"
+            
+        if not qs_type or not new_q.rows:
+            print("Oops, please set rows and columns for this quaternion series operator. Thanks.")
+            return None
+        
+        if new_q.dim == 1:
+            qs_type = "scalar"
+            
+        new_q.qs_type = qs_type
+        
+        return new_q
         
     def __str__(self, quiet=False):
         """Print out all the states."""
@@ -7619,13 +7700,17 @@ class QHaStates(QHa):
         
         return states.rstrip()
     
-    def print_state(self, label, spacer=False, quiet=False):
+    def print_state(self, label, spacer=True, quiet=True):
         """Utility for printing states as a quaternion series."""
 
         print(label)
         
-        for n, q in enumerate(self.qs, start=1):
-            print("n={}: {}".format(n, q.__str__(quiet)))
+        for n, q in enumerate(self.qs):
+            ##### print("n={}: {}".format(n + 1, q.__str__(quiet)))
+            print("n={}: {}".format(n + 1, q.__str__()))
+        
+        print("{t}: {r}/{c}".format(
+            t=self.qs_type, r=self.rows, c=self.columns))
         
         if not quiet:
             print("sum= {ss}".format(ss=self.summation()))
@@ -7633,19 +7718,6 @@ class QHaStates(QHa):
         if spacer:
             print("")
 
-    def summation(self):
-        """Add them all up, return one quaternion."""
-        
-        result = None
-    
-        for q in self.qs:
-            if result == None:
-                result = q
-            else:
-                result = result.add(q)
-        
-        return result
-    
     def equals(self, q1):
         """Test if two states are equal."""
    
@@ -7659,7 +7731,7 @@ class QHaStates(QHa):
                 result = False
                 
         return result
-    
+
     def conj(self, conj_type=0):
         """Take the conjgates of states, default is zero, but also can do 1 or 2."""
         
@@ -7668,7 +7740,17 @@ class QHaStates(QHa):
         for bra in self.qs:
             new_states.append(bra.conj(conj_type))
             
-        return(QHaStates(new_states))
+        return QHaStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def simple_q(self):
+        """Simplify the states."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.simple_q())
+            
+        return QHaStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def flip_signs(self):
         """Flip signs of all states."""
@@ -7678,7 +7760,62 @@ class QHaStates(QHa):
         for bra in self.qs:
             new_states.append(bra.flip_signs())
             
-        return QHaStates(new_states)
+        return QHaStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def inverse(self, operator=False, additive=False):
+        """Inverseing bras and kets calls inverse() once for each.
+        Inverseing operators is more tricky as one needs a diagonal identity matrix."""
+    
+        if operator:
+        
+            if additive:
+                q_flip = self.inverse(additive=True)
+                q_inv = q_flip.diagonal(self.dim)
+                
+            else:
+                if self.dim == 1:
+                    q_inv =QHaStates(self.qs[0].inverse())
+        
+                elif self.dim == 4:
+                    det = self.determinant()
+                    detinv = det.inverse()
+
+                    q0 = self.qs[3].product(detinv)
+                    q1 = self.qs[1].flip_signs().product(detinv)
+                    q2 = self.qs[2].flip_signs().product(detinv)
+                    q3 = self.qs[0].product(detinv)
+
+                    q_inv =QHaStates([q0, q1, q2, q3], qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+                elif self.dim == 9:
+                    det = self.determinant()
+                    detinv = det.inverse()
+        
+                    q0 = self.qs[4].product(self.qs[8]).dif(self.qs[5].product(self.qs[7])).product(detinv)
+                    q1 = self.qs[7].product(self.qs[2]).dif(self.qs[8].product(self.qs[1])).product(detinv)
+                    q2 = self.qs[1].product(self.qs[5]).dif(self.qs[2].product(self.qs[4])).product(detinv)
+                    q3 = self.qs[6].product(self.qs[5]).dif(self.qs[8].product(self.qs[3])).product(detinv)
+                    q4 = self.qs[0].product(self.qs[8]).dif(self.qs[2].product(self.qs[6])).product(detinv)
+                    q5 = self.qs[3].product(self.qs[2]).dif(self.qs[5].product(self.qs[0])).product(detinv)
+                    q6 = self.qs[3].product(self.qs[7]).dif(self.qs[4].product(self.qs[6])).product(detinv)
+                    q7 = self.qs[6].product(self.qs[1]).dif(self.qs[7].product(self.qs[0])).product(detinv)
+                    q8 = self.qs[0].product(self.qs[4]).dif(self.qs[1].product(self.qs[3])).product(detinv)
+        
+                    q_inv =QHaStates([q0, q1, q2, q3, q4, q5, q6, q7, q8], qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+        
+                else:
+                    print("Oops, don't know how to inverse.")
+                    q_inv =QHaStates([QHa().q_0()])
+        
+        else:                
+            new_states = []
+        
+            for bra in self.qs:
+                new_states.append(bra.inverse(additive=additive))
+        
+            q_inv =QHaStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+        return q_inv
     
     def norm(self):
         """Norm of states."""
@@ -7688,7 +7825,7 @@ class QHaStates(QHa):
         for bra in self.qs:
             new_states.append(bra.norm())
             
-        return QHaStates(new_states)
+        return QHaStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def normalize(self, n=1, states=None):
         """Normalize all states."""
@@ -7711,8 +7848,8 @@ class QHaStates(QHa):
         for new_state in new_states:
             new_states_normalized.append(new_state.product(QHa([math.sqrt(1/non_zero_states), 0, 0, 0])))
             
-        return QHaStates(new_states_normalized)
-    
+        return QHaStates(new_states_normalized, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+
     def orthonormalize(self):
         """Given a quaternion series, resturn a normalized orthoganl basis."""
     
@@ -7725,7 +7862,7 @@ class QHaStates(QHa):
             orthonormal_qs.append(orthonormal_q)
             last_q = orthonormal_q
         
-        return QHaStates(orthonormal_qs)
+        return QHaStates(orthonormal_qs, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def determinant(self):
         """Calculate the determinant of a 'square' quaternion series."""
@@ -7753,19 +7890,37 @@ class QHaStates(QHa):
         
         else:
             print("Oops, don't know how to calculate the determinant of this one.")
-            q_det = QHaStates([QHa().q_0()])
+            return None
         
         return q_det
     
     def add(self, ket):
         """Add two states."""
         
+        if self.dim != ket.dim:
+            oops = "The dimensions are not the same: {} != {}".format(self.dim, ket.dim)
+            print(oops)
+            return None
+        
         new_states = []
         
         for bra, ket in zip(self.qs, ket.qs):
             new_states.append(bra.add(ket))
             
-        return(QHaStates(new_states))
+        return QHaStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+
+    def summation(self):
+        """Add them all up, return one quaternion."""
+        
+        result = None
+    
+        for q in self.qs:
+            if result == None:
+                result = q
+            else:
+                result = result.add(q)
+            
+        return result    
     
     def dif(self, ket):
         """Take the difference of two states."""
@@ -7775,10 +7930,10 @@ class QHaStates(QHa):
         for bra, ket in zip(self.qs, ket.qs):
             new_states.append(bra.dif(ket))
             
-        return(QHaStates(new_states))  
-    
+        return(QHaStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns))  
+        
     def diagonal(self, dim):
-        """Make a state dim*dim with q along the 'diagonal'."""
+        """Make a state dim*dim with q or qs along the 'diagonal'. Always returns an operator."""
         
         diagonal = []
         
@@ -7786,27 +7941,30 @@ class QHaStates(QHa):
             q_values = [self.qs[0]] * dim
         elif len(self.qs) == dim:
             q_values = self.qs
+        elif self.qs is None:
+            print("Oops, the qs here is None.")
+            return None
         else:
             print("Oops, need the length to be equal to the dimensions.")
+            return None
         
         for i in range(dim):
             for j in range(dim):
                 if i == j:
                     diagonal.append(q_values.pop(0))
-
                 else:
                     diagonal.append(QHa().q_0())
         
-        return QHaStates(diagonal)
-    
-    @staticmethod
+        return QHaStates(diagonal, qs_type="op", rows=dim, columns=dim)
+        
+    @staticmethod    
     def identity(dim, operator=False, additive=False):
         """Identity operator for states or operators which are diagonal."""
     
         if additive:
-            id_q = QHa().q_0()
+            id_q =QHa().q_0()
         else:
-            id_q = QHa().q_1()
+            id_q =QHa().q_1()
             
         if operator:
             q_1 = QHaStates([id_q])
@@ -7814,168 +7972,81 @@ class QHaStates(QHa):
     
         else:
             i_list = [id_q for i in range(dim)]
-            ident = QHaStates(i_list)
+            ident = QHaStates(i_list, qs_type="ket")
             
         return ident
+    
+    def product(self, q1, kind="", reverse=False):
+        """Forms the quaternion product for each state."""
         
-    def product(self, product_type, bra=None, ket=None, operator=None, kind=""):
-        """Forms the quaternion product for each state.
-        If given both the bra and ket, returns 1 quaternion.
-        If not, returns a quaternion series."""
+        # Diagonalize to allow more products to be formed.
+        self_copy = deepcopy(self)
+        q1_copy = deepcopy(q1)
         
-        if product_type == 'bra':
-            bra = self
-        elif product_type == 'ket':
-            ket = self
-        elif product_type == 'operator':
-            operator = self
-        else:
-            print("Oops, need to set product_type to bra, ket, or operator.")
-            return None
+        oops = "Oops, cannot multiply series with row/column dimensions of {}/{} to {}/{}".format(
+            self.rows, self.columns, q1.rows, q1.columns)
         
-        def _check_dimensions(op_dim=0, state_1_dim=0, state_2_dim=0, equals=False):
-            """Make sure the states and operators are the right sizes. The operator dimension is either
-               equal to 1 or the product of the bra and ket dimensions."""
+        if self.columns == q1.rows:
+            qs_left = self_copy
+            qs_right = q1_copy
+        
+        elif ((self.rows == q1.rows) and (self.columns == q1.columns)) or             ("scalar" in [self.qs_type, q1.qs_type]) :
+                
+            if self.columns == 1:
+                qs_right = q1_copy
+                qs_left = self_copy.diagonal(qs_right.rows)
+      
+            elif q1.rows == 1:
+                qs_left = self_copy
+                qs_right = q1_copy.diagonal(qs_left.columns)
 
-            oops = ''
-            
-            if equals:
-                if state_1_dim != state_2_dim:
-                    oops = "states have different dimensions: {} != {}".format(state_1_dim, state_2_dim)
-                    
-            elif state_2_dim == 0:
-                if (op_dim % state_1_dim != 0) and (op_dim != 1):
-                    oops = "Operator dimensions don't divide nicely by the state vector: {} % {}".format(
-                        op_dim, state_1_dim)
-                    
             else:
-                if (op_dim != state_1_dim * state_2_dim) and (op_dim == 1 and (state_1_dim != state_2_dim)):
-                    oops = "Operator dimensions do not equal the product of the states: {} != {} * {}".format(
-                        op_dim, state_1_dim, state_2_dim)
-                    
-            if oops:
                 print(oops)
-                return False
+                return None
             
-            else:
-                return True
-        
-        dot_product_flag = False
-        new_states = []
-        
-        if bra is None and ket is None:
+        else:
+            print(oops)            
             return None
         
-        elif bra is None and operator is None:
-            return ket
+        outer_row_max = qs_left.rows
+        outer_column_max = qs_right.columns
+        shared_inner_max = qs_left.columns
+        projector_flag = (shared_inner_max == 1) and (outer_row_max > 1) and (outer_column_max > 1)
         
-        elif ket is None and operator is None:
-            return bra
+        result = [[QHa().q_0(qtype='') for i in range(outer_column_max)] for j in range(outer_row_max)]
         
-        # <A|B>                                                     
-        elif operator is None:
-            if _check_dimensions(state_1_dim=bra.dim, state_2_dim=ket.dim, equals=True):
-                dot_product_flag = True
-                
-                for b, k in zip(bra.qs, ket.qs):
-                    new_states.append(b.product(k, kind))
-            
-        # Op|B>
-        elif bra is None:
-            if _check_dimensions(op_dim=operator.dim, state_1_dim=ket.dim):
-                if operator.dim == 1:
-                    one_diagonal = operator.diagonal(ket.dim)                    
-                    opb = one_diagonal.qs
-
-                else:
-                    opb = operator.qs
+        for outer_row in range(outer_row_max):
+            for outer_column in range(outer_column_max):
+                for shared_inner in range(shared_inner_max):
+                    
+                    # For projection operators.
+                    left_index = outer_row
+                    right_index = outer_column
+                    
+                    if outer_row_max >= 1 and shared_inner_max > 1:
+                        left_index = outer_row + shared_inner * outer_row_max
                         
-                for ops in zip(*[iter(opb)] * ket.dim):
-                    ok = None
-                    
-                    for op, k in zip(ops, ket.qs): 
-                        if ok is None:
-                            ok = op.product(k, kind)
-                        else:
-                            ok = ok.add(op.product(k, kind))
+                    if outer_column_max >= 1 and shared_inner_max > 1:
+                        right_index = shared_inner + outer_column * shared_inner_max
                             
-                    new_states.append(ok)
+                    result[outer_row][outer_column] = result[outer_row][outer_column].add(
+                        qs_left.qs[left_index].product(
+                            qs_right.qs[right_index], kind=kind, reverse=reverse))
+        
+        # Flatten the list.
+        new_qs = [item for sublist in result for item in sublist]
+        new_states = QHaStates(new_qs, rows=outer_row_max, columns=outer_column_max)
 
-        # <A|Op
-        elif ket is None:
-            if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim):
-                # Operator needs to be transposed.
-                opt = operator.transpose(bra.dim)
-                
-                if operator.dim == 1:
-                    one_diagonal = operator.diagonal(bra.dim)                    
-                    aop = one_diagonal.qs
-
-                else:
-                    aop = opt.qs
-                                                             
-                for ops in zip(*[iter(aop)]*bra.dim):
-                    bop = None
-                    
-                    for b, op in zip(bra.qs, ops):
-                        if bop is None:
-                            bop = b.product(op, kind)
-                        else:
-                            bop = bop.add(b.product(op, kind))
-                            
-                    new_states.append(bop)
-
-        # <A|Op|B>
-        else:
-            if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim, state_2_dim=ket.dim):
-                dot_product_flag = True
-                new_ket = []
-                
-                if operator.dim == 1:
-                    one_diagonal = operator.diagonal(ket.dim)                    
-                    opb = one_diagonal.qs
-
-                else:
-                    opb = operator.qs                                             
-                                                             
-                for ops in zip(*[iter(opb)]*ket.dim):
-                    ok = None
-                    
-                    for op, k in zip(ops, ket.qs): 
-                        if ok is None:
-                            ok = op.product(k, kind)
-                        else:
-                            ok = ok.add(op.product(k, kind))
-                    
-                    new_ket.append(ok)
-                
-                new_ket_state = QHaStates(new_ket)
-                    
-                for b, k in zip(bra.qs, new_ket_state.qs):
-                    new_states.append(b.product(k, kind))
-                
-        # Return either the dot product or a new quaternion series.
-        if dot_product_flag:
-            dot_product = new_states.pop(0)
-                
-            for new_state in new_states:
-                dot_product = dot_product.add(new_state)
-                
-            return dot_product
+        if projector_flag:
+            return new_states.transpose()
         
         else:
-            return QHaStates(new_states)
-        
-    def Euclidean_product(self, product_type, bra=None, ket=None, operator=None, kind=""):
+            return new_states
+    
+    def Euclidean_product(self, q1, kind="", reverse=False):
         """Forms the Euclidean product, what is used in QM all the time."""
-        
-        if bra is not None:
-            bra = bra.conj()
-            
-        if product_type == 'bra':
-            self = self.conj()
                     
-        return self.product(product_type, bra, ket, operator, kind)
+        return self.conj().product(q1, kind, reverse)
     
     def op_n(self, n, first=True, kind="", reverse=False):
         """Mulitply an operator times a number, in that order. Set first=false for n * Op"""
@@ -7990,13 +8061,12 @@ class QHaStates(QHa):
             else:
                 new_states.append(n.product(op, kind, reverse))
     
-        return QHaStates(new_states)
-
+        return QHaStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
     def norm_squared(self):
         """Take the Euclidean product of each state and add it up, returning one quaternion."""
         
-        norm = self.Euclidean_product(self).summation()
-        return norm
+        return self.Euclidean_product('bra', ket=self)
     
     def transpose(self, m=None, n=None):
         """Transposes a series."""
@@ -8014,13 +8084,11 @@ class QHaStates(QHa):
             return None
         
         matrix = [[0 for x in range(m)] for y in range(n)] 
-        
-        qs = self.qs
         qs_t = []
         
         for mi in range(m):
             for ni in range(n):
-                matrix[ni][mi] = qs[mi * n + ni]
+                matrix[ni][mi] = self.qs[mi * n + ni]
         
         qs_t = []
         
@@ -8028,8 +8096,9 @@ class QHaStates(QHa):
             for q in t:
                 qs_t.append(q)
                 
-        return QHaStates(qs_t)
-    
+        # Switch rows and columns.
+        return QHaStates(qs_t, rows=self.columns, columns=self.rows)
+        
     def Hermitian_conj(self, m=None, n=None, conj_type=0):
         """Returns the Hermitian conjugate."""
         
@@ -8056,7 +8125,7 @@ class QHaStates(QHa):
     def sigma(kind, theta=None, phi=None):
         """Returns a sigma when given a type like, x, y, z, xy, xz, yz, xyz, with optional angles theta and phi."""
         
-        q0, q1, qi = QHa().q_0(), QHa().q_1(), QHa().q_i()
+        q0, q1, qi =QHa().q_0(),QHa().q_1(),QHa().q_i()
         
         # Should work if given angles or not.
         if theta is None:
@@ -8078,9 +8147,9 @@ class QHaStates(QHa):
         z_factor = q1.product(QHa([cos_theta, 0, 0, 0]))
 
         sigmas = {}
-        sigma['x'] = QHaStates([q0, x_factor, x_factor, q0])
-        sigma['y'] = QHaStates([q0, y_factor, y_factor.flip_signs(), q0]) 
-        sigma['z'] = QHaStates([z_factor, q0, q0, z_factor.flip_signs()])
+        sigma['x'] =QHaStates([q0, x_factor, x_factor, q0])
+        sigma['y'] =QHaStates([q0, y_factor, y_factor.flip_signs(), q0]) 
+        sigma['z'] =QHaStates([z_factor, q0, q0, z_factor.flip_signs()])
   
         sigmas['xy'] = sigma['x'].add(sigma['y'])
         sigmas['xz'] = sigma['x'].add(sigma['z'])
@@ -8109,6 +8178,9 @@ class TestQHaStates(unittest.TestCase):
     q_3 = QHa([3,0,0,0])
     q_n3 = QHa([-3,0,0,0])
     q_4 = QHa([4,0,0,0])
+    q_5 = QHa([5,0,0,0])
+    q_6 = QHa([6,0,0,0])
+    q_10 = QHa([10,0,0,0])
     q_n5 = QHa([-5,0,0,0])
     q_7 = QHa([7,0,0,0])
     q_8 = QHa([8,0,0,0])
@@ -8127,25 +8199,51 @@ class TestQHaStates(unittest.TestCase):
     v33inv = QHaStates([q_n2, q_3, q_9, q_8, q_n11, q_n34, q_n5, q_7, q_21])
     q_i3 = QHaStates([q_1, q_1, q_1])
     q_i2d = QHaStates([q_1, q_0, q_0, q_1])
+    q_i3_bra = QHaStates([q_1, q_1, q_1], "bra")
+    q_6_op = QHaStates([q_1, q_0, q_0, q_1, q_i, q_i], "op")    
+    q_6_op_32 = QHaStates([q_1, q_0, q_0, q_1, q_i, q_i], "op", rows=3, columns=2)
+    q_i2d_op = QHaStates([q_1, q_0, q_0, q_1], "op")
     q_i4 = QHa([0,4,0,0])
     q_0_q_1 = QHaStates([q_0, q_1])
     q_1_q_0 = QHaStates([q_1, q_0])
     q_1_q_i = QHaStates([q_1, q_i])
-    A = QHaStates([QHa([4,0,0,0]),QHa([0,1,0,0])])
-    B = QHaStates([QHa([0,0,1,0]),QHa([0,0,0,2]),QHa([0,3,0,0])])
-    Op = QHaStates([QHa([3,0,0,0]),QHa([0,1,0,0]),QHa([0,0,2,0]),QHa([0,0,0,3]),QHa([2,0,0,0]),QHa([0,4,0,0])])
-    Op4i = QHaStates([q_i4])
+    A = QHaStates([QHa([4,0,0,0]), QHa([0,1,0,0])], "bra")
+    B = QHaStates([QHa([0,0,1,0]), QHa([0,0,0,2]), QHa([0,3,0,0])])
+    Op = QHaStates([QHa([3,0,0,0]), QHa([0,1,0,0]), QHa([0,0,2,0]), QHa([0,0,0,3]), QHa([2,0,0,0]), QHa([0,4,0,0])], "op", rows=2, columns=3)
+    Op4i = QHaStates([q_i4, q_0, q_0, q_i4, q_2, q_3], "op", rows=2, columns=3) 
+    Op_scalar = QHaStates([q_i4], "scalar")
     q_1234 = QHaStates([QHa([1, 1, 0, 0]), QHa([2, 1, 0, 0]), QHa([3, 1, 0, 0]), QHa([4, 1, 0, 0])])
     sigma_y = QHaStates([QHa([1, 0, 0, 0]), QHa([0, -1, 0, 0]), QHa([0, 1, 0, 0]), QHa([-1, 0, 0, 0])])
     qn = QHaStates([QHa([3,0,0,4])])
-    def test_init(self):
-        self.assertTrue(self.q_0_q_1.dim == 2)
+    
+    b = QHaStates([q_1, q_2, q_3], qs_type="bra")
+    k = QHaStates([q_4, q_5, q_6], qs_type="ket")
+    o = QHaStates([q_10], qs_type="op")
         
-    def test_equals(self):
+    def test_1000_init(self):
+        self.assertTrue(self.q_0_q_1.dim == 2)
+    
+    def test_1010_set_qs_type(self):
+        bk = self.b.set_qs_type("ket")
+        self.assertTrue(bk.rows == 3)
+        self.assertTrue(bk.columns == 1)
+        self.assertTrue(bk.qs_type == "ket")
+        
+    def test_1020_set_rows_and_columns(self):
+        self.assertTrue(self.q_i3.rows == 3)
+        self.assertTrue(self.q_i3.columns == 1)
+        self.assertTrue(self.q_i3_bra.rows == 1)
+        self.assertTrue(self.q_i3_bra.columns == 3)
+        self.assertTrue(self.q_i2d_op.rows == 2)
+        self.assertTrue(self.q_i2d_op.columns == 2)
+        self.assertTrue(self.q_6_op_32.rows == 3)
+        self.assertTrue(self.q_6_op_32.columns == 2)
+        
+    def test_1030_equals(self):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
         
-    def test_conj(self):
+    def test_1040_conj(self):
         qc = self.q_1_q_i.conj()
         qc1 = self.q_1_q_i.conj(1)
         print("q_1_q_i*: ", qc)
@@ -8153,24 +8251,27 @@ class TestQHaStates(unittest.TestCase):
         self.assertTrue(qc.qs[1].a[1] == -1)
         self.assertTrue(qc1.qs[1].a[1] == 1)
     
-    def test_flip_signs(self):
+    def test_1050_flip_signs(self):
         qf = self.q_1_q_i.flip_signs()
         print("-q_1_q_i: ", qf)
-        self.assertTrue(qf.qs[1].a[1] == -1)  
+        self.assertTrue(qf.qs[1].a[1] == -1)
         
-    def test_summation(self):
-        q_01_sum = self.q_0_q_1.summation()
-        print("sum: ", q_01_sum)
-        self.assertTrue(type(q_01_sum) is QHa)
-        self.assertTrue(q_01_sum.a[0] == 1)
+    def test_1060_inverse(self):
+        inv_v1123 = self.v1123.inverse(operator=True)
+        print("inv_v1123 operator", inv_v1123)
+        self.assertTrue(inv_v1123.equals(self.v3n1n21))
+
+        inv_v33 = self.v33.inverse(operator=True)
+        print("inv_v33 operator", inv_v33)
+        self.assertTrue(inv_v33.equals(self.v33inv))
         
-    def test_normalize(self):
+    def test_1070_normalize(self):
         qn = self.qn.normalize()
         print("Op normalized: ", qn)
         self.assertAlmostEqual(qn.qs[0].a[0], 0.6)
-        self.assertTrue(qn.qs[0].a[3] == 0.8)    
-        
-    def test_determinant(self):
+        self.assertTrue(qn.qs[0].a[3] == 0.8)
+    
+    def test_1080_determinant(self):
         det_v3 = self.v3.determinant()
         print("det v3:", det_v3)
         self.assertTrue(det_v3.equals(self.q_3))
@@ -8182,152 +8283,180 @@ class TestQHaStates(unittest.TestCase):
         self.assertTrue(det_v9.equals(self.q_9))
         det_vv9 = self.vv9.determinant()
         print("det_vv9", det_vv9)
-        self.assertTrue(det_vv9.equals(self.qn627))    
+        self.assertTrue(det_vv9.equals(self.qn627))
         
-    def test_add(self):
+    def test_1090_summation(self):
+        q_01_sum = self.q_0_q_1.summation()
+        print("sum: ", q_01_sum)
+        self.assertTrue(type(q_01_sum) is QHa)
+        self.assertTrue(q_01_sum.a[0]== 1)
+        
+    def test_1100_add(self):
         q_0110_add = self.q_0_q_1.add(self.q_1_q_0)
         print("add 01 10: ", q_0110_add)
-        self.assertTrue(q_0110_add.qs[0].a[0] == 1)
-        self.assertTrue(q_0110_add.qs[1].a[0] == 1)
+        self.assertTrue(q_0110_add.qs[0].a[0]== 1)
+        self.assertTrue(q_0110_add.qs[1].a[0]== 1)
         
-    def test_dif(self):
+    def test_1110_dif(self):
         q_0110_dif = self.q_0_q_1.dif(self.q_1_q_0)
         print("dif 01 10: ", q_0110_dif)
-        self.assertTrue(q_0110_dif.qs[0].a[0] == -1)
-        self.assertTrue(q_0110_dif.qs[1].a[0] == 1)
+        self.assertTrue(q_0110_dif.qs[0].a[0]== -1)
+        self.assertTrue(q_0110_dif.qs[1].a[0]== 1)
         
-    def test_diagonal(self):
-        Op4iDiag2 = self.Op4i.diagonal(2)
+    def test_1120_diagonal(self):
+        Op4iDiag2 = self.Op_scalar.diagonal(2)
         print("Op4i on a diagonal 2x2", Op4iDiag2)
         self.assertTrue(Op4iDiag2.qs[0].equals(self.q_i4))
         self.assertTrue(Op4iDiag2.qs[1].equals(QHa().q_0()))
         
-    def test_identity(self):
+    def test_1130_identity(self):
         I2 = QHaStates().identity(2, operator=True)
-        print("Operator Idenity, diagonal 2x2", I2)
+        print("Operator Idenity, diagonal 2x2", I2)    
         self.assertTrue(I2.qs[0].equals(QHa().q_1()))
-        self.assertTrue(I2.qs[1].equals(QHa().q_0())) 
+        self.assertTrue(I2.qs[1].equals(QHa().q_0()))
         I2 = QHaStates().identity(2)
-        print("Idenity on a 2 state ket", I2)
+        print("Idenity on 2 state ket", I2)
         self.assertTrue(I2.qs[0].equals(QHa().q_1()))
-        self.assertTrue(I2.qs[1].equals(QHa().q_1()))    
-        
-    def test_product_AA(self):
-        AA = self.A.product('bra', ket=self.A)
+        self.assertTrue(I2.qs[1].equals(QHa().q_1()))        
+
+    def test_1140_product(self):
+        self.assertTrue(self.b.product(self.o).equals(QHaStates([QHa([10,0,0,0]),QHa([20,0,0,0]),QHa([30,0,0,0])])))
+        self.assertTrue(self.b.product(self.k).equals(QHaStates([QHa([32,0,0,0])])))
+        self.assertTrue(self.b.product(self.o).product(self.k).equals(QHaStates([QHa([320,0,0,0])])))
+        self.assertTrue(self.b.product(self.b).equals(QHaStates([QHa([1,0,0,0]),QHa([4,0,0,0]),QHa([9,0,0,0])])))
+        self.assertTrue(self.o.product(self.k).equals(QHaStates([QHa([40,0,0,0]),QHa([50,0,0,0]),QHa([60,0,0,0])])))
+        self.assertTrue(self.o.product(self.o).equals(QHaStates([QHa([100,0,0,0])])))
+        self.assertTrue(self.k.product(self.k).equals(QHaStates([QHa([16,0,0,0]),QHa([25,0,0,0]),QHa([36,0,0,0])])))
+        self.assertTrue(self.k.product(self.b).equals(QHaStates([QHa([4,0,0,0]),QHa([5,0,0,0]),QHa([6,0,0,0]),
+                                                                      QHa([8,0,0,0]),QHa([10,0,0,0]),QHa([12,0,0,0]),
+                                                                      QHa([12,0,0,0]),QHa([15,0,0,0]),QHa([18,0,0,0])])))
+    
+    def test_1150_product_AA(self):
+        AA = self.A.product(self.A.set_qs_type("ket"))
         print("AA: ", AA)
-        self.assertTrue(AA.equals(QHa([15, 0, 0, 0])))
-                        
-    def test_Euclidean_product_AA(self):
-        AA = self.A.Euclidean_product('bra', ket=self.A)
+        self.assertTrue(AA.equals(QHaStates([QHa([15, 0, 0, 0])])))
+                  
+    def test_1160_Euclidean_product_AA(self):
+        AA = self.A.Euclidean_product(self.A.set_qs_type("ket"))
         print("A* A", AA)
-        self.assertTrue(AA.equals(QHa([17, 0, 0, 0])))
+        self.assertTrue(AA.equals(QHaStates([QHa([17, 0, 0, 0])])))
 
-    def test_product_AOp(self):
-        AOp = self.A.product('bra', operator=self.Op)
+    def test_1170_product_AOp(self):
+        AOp = self.A.product(self.Op)
         print("A Op: ", AOp)
-        self.assertTrue(AOp.qs[0].equals(QHa([12, 0, -3, 0])))
-        self.assertTrue(AOp.qs[1].equals(QHa([0, 6, 0, 0])))
-        self.assertTrue(AOp.qs[2].equals(QHa([-4, 0, 8, 0])))
-                        
-    def test_Euclidean_product_AOp(self):
-        AOp = self.A.Euclidean_product('bra', operator=self.Op)
+        self.assertTrue(AOp.qs[0].equals(QHa([11, 0, 0, 0])))
+        self.assertTrue(AOp.qs[1].equals(QHa([0, 0, 5, 0])))
+        self.assertTrue(AOp.qs[2].equals(QHa([4, 0, 0, 0])))
+                      
+    def test_1180_Euclidean_product_AOp(self):
+        AOp = self.A.Euclidean_product(self.Op)
         print("A* Op: ", AOp)
-        self.assertTrue(AOp.qs[0].equals(QHa([12, 0, 3, 0])))
-        self.assertTrue(AOp.qs[1].equals(QHa([0, 2, 0, 0])))
-        self.assertTrue(AOp.qs[2].equals(QHa([4, 0, 8, 0])))
-
-    def test_product_OpB(self):
-        OpB = self.B.product('ket', operator=self.Op)
-        print("Op B: ", OpB)
-        self.assertTrue(OpB.qs[0].equals(QHa([0, 0, 1, -6])))
-        self.assertTrue(OpB.qs[1].equals(QHa([-12, -3, 0, 4])))
-                        
-    def test_Euclidean_product_OpB(self):
-        OpB = self.B.Euclidean_product('ket', operator=self.Op)
-        print("Op B: ", OpB)
-        self.assertTrue(OpB.qs[0].equals(QHa([0, 0, 1, -6])))
-        self.assertTrue(OpB.qs[1].equals(QHa([-12, -3, 0, 4])))
-
-    def test_product_AOpB(self):
-        AOpB = self.A.product('bra', operator=self.Op, ket=self.B)
-        print("A Op B: ", AOpB)
-        self.assertTrue(AOpB.equals(QHa([3, -12, 0, -24])))
-                        
-    def test_Euclidean_product_AOpB(self):
-        AOpB = self.A.Euclidean_product('bra', operator=self.Op, ket=self.B)
-        print("A* Op B: ", AOpB)
-        self.assertTrue(AOpB.equals(QHa([-3, 12, 8, -24])))
+        self.assertTrue(AOp.qs[0].equals(QHa([13, 0, 0, 0])))
+        self.assertTrue(AOp.qs[1].equals(QHa([0, 0, 11, 0])))
+        self.assertTrue(AOp.qs[2].equals(QHa([12, 0, 0, 0])))
         
-    def test_product_AOp4i(self):
-        AOp4i = self.A.product('bra', operator=self.Op4i)
+    def test_1190_product_AOp4i(self):
+        AOp4i = self.A.product(self.Op4i)
         print("A Op4i: ", AOp4i)
         self.assertTrue(AOp4i.qs[0].equals(QHa([0, 16, 0, 0])))
         self.assertTrue(AOp4i.qs[1].equals(QHa([-4, 0, 0, 0])))
                         
-    def test_Euclidean_product_AOp4i(self):
-        AOp4i = self.A.Euclidean_product('bra', operator=self.Op4i)
+    def test_1200_Euclidean_product_AOp4i(self):
+        AOp4i = self.A.Euclidean_product(self.Op4i)
         print("A* Op4i: ", AOp4i)
         self.assertTrue(AOp4i.qs[0].equals(QHa([0, 16, 0, 0])))
         self.assertTrue(AOp4i.qs[1].equals(QHa([4, 0, 0, 0])))
 
-    def test_product_Op4iB(self):
-        Op4iB = self.B.product('ket', operator=self.Op4i)
-        print("Op4i B: ", Op4iB)
-        self.assertTrue(Op4iB.qs[0].equals(QHa([0, 0, 0, 4])))
-        self.assertTrue(Op4iB.qs[1].equals(QHa([0, 0, -8, 0])))
-        self.assertTrue(Op4iB.qs[2].equals(QHa([-12, 0, 0, 0])))
+    def test_1210_product_OpB(self):
+        OpB = self.Op.product(self.B)
+        print("Op B: ", OpB)
+        self.assertTrue(OpB.qs[0].equals(QHa([0, 10, 3, 0])))
+        self.assertTrue(OpB.qs[1].equals(QHa([-18, 0, 0, 1])))
                         
-    def test_Euclidean_product_Op4iB(self):
-        Op4iB = self.B.Euclidean_product('ket', operator=self.Op4i)
-        print("Op4i B: ", Op4iB)
-        self.assertTrue(Op4iB.qs[0].equals(QHa([0, 0, 0, 4])))
-        self.assertTrue(Op4iB.qs[1].equals(QHa([0, 0, -8, 0])))
-        self.assertTrue(Op4iB.qs[2].equals(QHa([-12, 0, 0, 0])))
+    def test_1220_Euclidean_product_OpB(self):
+        OpB = self.Op.Euclidean_product(self.B)
+        print("Op B: ", OpB)
+        self.assertTrue(OpB.qs[0].equals(QHa([0, 2, 3, 0])))
+        self.assertTrue(OpB.qs[1].equals(QHa([18, 0, 0, -1])))
 
-    def test_product_AOp4iB(self):
-        AOp4iB = self.A.product('bra', operator=self.Op4i, ket=self.B)
-        print("A* Op4i B: ", AOp4iB)
-        self.assertTrue(AOp4iB.dim == 0)
+    def test_1230_product_AOpB(self):
+        AOpB = self.A.product(self.Op).product(self.B)
+        print("A Op B: ", AOpB)
+        self.assertTrue(AOpB.equals(QHaStates([QHa([0, 22, 11, 0])])))
                         
-    def test_Euclidean_product_AOp4iB(self):
-        AOp4iB = self.A.Euclidean_product('bra', operator=self.Op4i, ket=self.B)
-        print("A* Op4i B: ", AOp4iB)
-        self.assertTrue(AOp4iB.dim == 0)
+    def test_1240_Euclidean_product_AOpB(self):
+        AOpB = self.A.Euclidean_product(self.Op).product(self.B)
+        print("A* Op B: ", AOpB)
+        self.assertTrue(AOpB.equals(QHaStates([QHa([0, 58, 13, 0])])))
         
-    def test_op_n(self):
+    def test_1250_product_AOp4i(self):
+        AOp4i = self.A.product(self.Op4i)
+        print("A Op4i: ", AOp4i)
+        self.assertTrue(AOp4i.qs[0].equals(QHa([0, 16, 0, 0])))
+        self.assertTrue(AOp4i.qs[1].equals(QHa([-4, 0, 0, 0])))
+                        
+    def test_1260_Euclidean_product_AOp4i(self):
+        AOp4i = self.A.Euclidean_product(self.Op4i)
+        print("A* Op4i: ", AOp4i)
+        self.assertTrue(AOp4i.qs[0].equals(QHa([0, 16, 0, 0])))
+        self.assertTrue(AOp4i.qs[1].equals(QHa([4, 0, 0, 0])))
+
+    def test_1270_product_Op4iB(self):
+        Op4iB = self.Op4i.product(self.B)
+        print("Op4i B: ", Op4iB)
+        self.assertTrue(Op4iB.qs[0].equals(QHa([0, 6, 0, 4])))
+        self.assertTrue(Op4iB.qs[1].equals(QHa([0, 9, -8, 0])))
+                        
+    def test_1280_Euclidean_product_Op4iB(self):
+        Op4iB = self.Op4i.Euclidean_product(self.B)
+        print("Op4i B: ", Op4iB)
+        self.assertTrue(Op4iB.qs[0].equals(QHa([0, 6, 0, -4])))
+        self.assertTrue(Op4iB.qs[1].equals(QHa([0, 9, 8, 0])))
+
+    def test_1290_product_AOp4iB(self):
+        AOp4iB = self.A.product(self.Op4i).product(self.B)
+        print("A* Op4i B: ", AOp4iB)
+        self.assertTrue(AOp4iB.equals(QHaStates([QHa([-9, 24, 0, 8])])))
+                        
+    def test_1300_Euclidean_product_AOp4iB(self):
+        AOp4iB = self.A.Euclidean_product(self.Op4i).product(self.B)
+        print("A* Op4i B: ", AOp4iB)
+        self.assertTrue(AOp4iB.equals(QHaStates([QHa([9, 24, 0, 24])])))
+
+    def test_1310_op_n(self):
         opn = self.Op.op_n(n=self.q_i)
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].a[1] == 3)
         
-    def test_transpose(self):
+    def test_1320_transpose(self):
         opt = self.q_1234.transpose()
         print("op1234 transposed: ", opt)
-        self.assertTrue(opt.qs[0].a[0] == 1)
-        self.assertTrue(opt.qs[1].a[0] == 3)
-        self.assertTrue(opt.qs[2].a[0] == 2)
-        self.assertTrue(opt.qs[3].a[0] == 4)
+        self.assertTrue(opt.qs[0].a[0]== 1)
+        self.assertTrue(opt.qs[1].a[0]== 3)
+        self.assertTrue(opt.qs[2].a[0]== 2)
+        self.assertTrue(opt.qs[3].a[0]== 4)
         optt = self.q_1234.transpose().transpose()
         self.assertTrue(optt.equals(self.q_1234))
         
-    def test_Hermitian_conj(self):
+    def test_1330_Hermitian_conj(self):
         q_hc = self.q_1234.Hermitian_conj()
-        print("op1234 Hermitian_conj: ", q_hc)
-        self.assertTrue(q_hc.qs[0].a[0] == 1)
-        self.assertTrue(q_hc.qs[1].a[0] == 3)
-        self.assertTrue(q_hc.qs[2].a[0] == 2)
-        self.assertTrue(q_hc.qs[3].a[0] == 4)
+        print("op1234 Hermtian_conj: ", q_hc)
+        self.assertTrue(q_hc.qs[0].a[0]== 1)
+        self.assertTrue(q_hc.qs[1].a[0]== 3)
+        self.assertTrue(q_hc.qs[2].a[0]== 2)
+        self.assertTrue(q_hc.qs[3].a[0]== 4)
         self.assertTrue(q_hc.qs[0].a[1] == -1)
         self.assertTrue(q_hc.qs[1].a[1] == -1)
         self.assertTrue(q_hc.qs[2].a[1] == -1)
         self.assertTrue(q_hc.qs[3].a[1] == -1)
         
-    def test_is_Hermitian(self):
+    def test_1340_is_Hermitian(self):
         self.assertTrue(self.sigma_y.is_Hermitian())
         self.assertFalse(self.q_1234.is_Hermitian())
         
-    def test_is_square(self):
+    def test_1350_is_square(self):
         self.assertFalse(self.Op.is_square())
-        self.assertTrue(self.Op4i.is_square()) 
+        self.assertTrue(self.Op_scalar.is_square())    
         
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
@@ -8339,14 +8468,75 @@ unittest.TextTestRunner().run(suite);
 class Q8States(Q8):
     """A class made up of many quaternions."""
     
-    def __init__(self, qs=None, qtype="", representation=""):
+    QS_TYPES = ["scalar", "bra", "ket", "op", "operator"]
+    
+    def __init__(self, qs=None, qs_type="ket", rows=0, columns=0):
         
         self.qs = qs
+        self.qs_type = qs_type
+        self.rows = rows
+        self.columns = columns
+        
+        if qs_type not in self.QS_TYPES:
+            print("Oops, only know of these quaternion series types: {}".format(self.QS_TYPES))
+            return None
         
         if qs is None:
             self.d, self.dim, self.dimensions = 0, 0, 0
         else:
-            self.d, self.dim, self.dimensions = len(qs), len(qs), len(qs)
+            self.d, self.dim, self.dimensions = int(len(qs)), int(len(qs)), int(len(qs))
+    
+        self.set_qs_type(qs_type, rows, columns, copy=False)
+    
+    def set_qs_type(self, qs_type="", rows=0, columns=0, copy=True):
+        """Set the qs_type to something sensible."""
+    
+        new_q = self
+        
+        if copy:
+            new_q = deepcopy(self)
+        
+        # Assign values if need be.
+        if new_q.qs_type != qs_type:
+            new_q.rows = 0
+        
+        if qs_type == "ket" and not new_q.rows:
+            new_q.rows = new_q.dim
+            new_q.columns = 1
+            
+        elif qs_type == "bra" and not new_q.rows:
+            new_q.rows = 1
+            new_q.columns = new_q.dim
+
+        elif qs_type in ["op", "operator"] and not new_q.rows:
+            # Square series
+            root_dim = math.sqrt(new_q.dim)
+            
+            if root_dim.is_integer():
+                new_q.rows = int(root_dim)
+                new_q.columns = int(root_dim)
+                qs_type = "op"
+        
+        elif rows * columns == new_q.dim and not new_q.qs_type:
+            if new_q.dim == 1:
+                qs_type = "scalar"
+            elif new_q.rows == 1:
+                qs_type = "bra"
+            elif new_q.columns == 1:
+                qs_type = "ket"
+            else:
+                qs_type = "op"
+            
+        if not qs_type or not new_q.rows:
+            print("Oops, please set rows and columns for this quaternion series operator. Thanks.")
+            return None
+        
+        if new_q.dim == 1:
+            qs_type = "scalar"
+            
+        new_q.qs_type = qs_type
+        
+        return new_q
         
     def __str__(self, quiet=False):
         """Print out all the states."""
@@ -8358,13 +8548,17 @@ class Q8States(Q8):
         
         return states.rstrip()
     
-    def print_state(self, label, spacer=False, quiet=False):
+    def print_state(self, label, spacer=True, quiet=True):
         """Utility for printing states as a quaternion series."""
 
         print(label)
         
-        for n, q in enumerate(self.qs, start=1):
-            print("n={}: {}".format(n, q.__str__(quiet)))
+        for n, q in enumerate(self.qs):
+            ##### print("n={}: {}".format(n + 1, q.__str__(quiet)))
+            print("n={}: {}".format(n + 1, q.__str__()))
+        
+        print("{t}: {r}/{c}".format(
+            t=self.qs_type, r=self.rows, c=self.columns))
         
         if not quiet:
             print("sum= {ss}".format(ss=self.summation()))
@@ -8384,8 +8578,8 @@ class Q8States(Q8):
             if not selfq.equals(q1q):
                 result = False
                 
-        return result        
-            
+        return result
+
     def conj(self, conj_type=0):
         """Take the conjgates of states, default is zero, but also can do 1 or 2."""
         
@@ -8394,7 +8588,17 @@ class Q8States(Q8):
         for bra in self.qs:
             new_states.append(bra.conj(conj_type))
             
-        return(Q8States(new_states))
+        return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def simple_q(self):
+        """Simplify the states."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.simple_q())
+            
+        return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def flip_signs(self):
         """Flip signs of all states."""
@@ -8404,7 +8608,62 @@ class Q8States(Q8):
         for bra in self.qs:
             new_states.append(bra.flip_signs())
             
-        return Q8States(new_states)
+        return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def inverse(self, operator=False, additive=False):
+        """Inverseing bras and kets calls inverse() once for each.
+        Inverseing operators is more tricky as one needs a diagonal identity matrix."""
+    
+        if operator:
+        
+            if additive:
+                q_flip = self.inverse(additive=True)
+                q_inv = q_flip.diagonal(self.dim)
+                
+            else:
+                if self.dim == 1:
+                    q_inv =Q8States(self.qs[0].inverse())
+        
+                elif self.dim == 4:
+                    det = self.determinant()
+                    detinv = det.inverse()
+
+                    q0 = self.qs[3].product(detinv)
+                    q1 = self.qs[1].flip_signs().product(detinv)
+                    q2 = self.qs[2].flip_signs().product(detinv)
+                    q3 = self.qs[0].product(detinv)
+
+                    q_inv =Q8States([q0, q1, q2, q3], qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+                elif self.dim == 9:
+                    det = self.determinant()
+                    detinv = det.inverse()
+        
+                    q0 = self.qs[4].product(self.qs[8]).dif(self.qs[5].product(self.qs[7])).product(detinv)
+                    q1 = self.qs[7].product(self.qs[2]).dif(self.qs[8].product(self.qs[1])).product(detinv)
+                    q2 = self.qs[1].product(self.qs[5]).dif(self.qs[2].product(self.qs[4])).product(detinv)
+                    q3 = self.qs[6].product(self.qs[5]).dif(self.qs[8].product(self.qs[3])).product(detinv)
+                    q4 = self.qs[0].product(self.qs[8]).dif(self.qs[2].product(self.qs[6])).product(detinv)
+                    q5 = self.qs[3].product(self.qs[2]).dif(self.qs[5].product(self.qs[0])).product(detinv)
+                    q6 = self.qs[3].product(self.qs[7]).dif(self.qs[4].product(self.qs[6])).product(detinv)
+                    q7 = self.qs[6].product(self.qs[1]).dif(self.qs[7].product(self.qs[0])).product(detinv)
+                    q8 = self.qs[0].product(self.qs[4]).dif(self.qs[1].product(self.qs[3])).product(detinv)
+        
+                    q_inv =Q8States([q0, q1, q2, q3, q4, q5, q6, q7, q8], qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+        
+                else:
+                    print("Oops, don't know how to inverse.")
+                    q_inv =Q8States([Q8().q_0()])
+        
+        else:                
+            new_states = []
+        
+            for bra in self.qs:
+                new_states.append(bra.inverse(additive=additive))
+        
+            q_inv =Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+        return q_inv
     
     def norm(self):
         """Norm of states."""
@@ -8414,7 +8673,7 @@ class Q8States(Q8):
         for bra in self.qs:
             new_states.append(bra.norm())
             
-        return Q8States(new_states)
+        return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def normalize(self, n=1, states=None):
         """Normalize all states."""
@@ -8437,7 +8696,7 @@ class Q8States(Q8):
         for new_state in new_states:
             new_states_normalized.append(new_state.product(Q8([math.sqrt(1/non_zero_states), 0, 0, 0])))
             
-        return Q8States(new_states_normalized)
+        return Q8States(new_states_normalized, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
 
     def orthonormalize(self):
         """Given a quaternion series, resturn a normalized orthoganl basis."""
@@ -8451,7 +8710,7 @@ class Q8States(Q8):
             orthonormal_qs.append(orthonormal_q)
             last_q = orthonormal_q
         
-        return Q8States(orthonormal_qs)
+        return Q8States(orthonormal_qs, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def determinant(self):
         """Calculate the determinant of a 'square' quaternion series."""
@@ -8479,10 +8738,25 @@ class Q8States(Q8):
         
         else:
             print("Oops, don't know how to calculate the determinant of this one.")
-            q_det = Q8States([Q8().q_0()])
+            return None
         
         return q_det
     
+    def add(self, ket):
+        """Add two states."""
+        
+        if self.dim != ket.dim:
+            oops = "The dimensions are not the same: {} != {}".format(self.dim, ket.dim)
+            print(oops)
+            return None
+        
+        new_states = []
+        
+        for bra, ket in zip(self.qs, ket.qs):
+            new_states.append(bra.add(ket))
+            
+        return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+
     def summation(self):
         """Add them all up, return one quaternion."""
         
@@ -8494,17 +8768,7 @@ class Q8States(Q8):
             else:
                 result = result.add(q)
             
-        return result
-    
-    def add(self, ket):
-        """Add two states."""
-        
-        new_states = []
-        
-        for bra, ket in zip(self.qs, ket.qs):
-            new_states.append(bra.add(ket))
-            
-        return(Q8States(new_states))
+        return result    
     
     def dif(self, ket):
         """Take the difference of two states."""
@@ -8514,10 +8778,20 @@ class Q8States(Q8):
         for bra, ket in zip(self.qs, ket.qs):
             new_states.append(bra.dif(ket))
             
-        return(Q8States(new_states))  
+        return(Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns))  
     
+    def reduce(self):
+        """Reduce the doublet values so either dx.p or dx.y is zero."""
+        
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.reduce())
+            
+        return(Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns))  
+        
     def diagonal(self, dim):
-        """Make a state dim*dim with q along the 'diagonal'."""
+        """Make a state dim*dim with q or qs along the 'diagonal'. Always returns an operator."""
         
         diagonal = []
         
@@ -8525,27 +8799,30 @@ class Q8States(Q8):
             q_values = [self.qs[0]] * dim
         elif len(self.qs) == dim:
             q_values = self.qs
+        elif self.qs is None:
+            print("Oops, the qs here is None.")
+            return None
         else:
             print("Oops, need the length to be equal to the dimensions.")
+            return None
         
         for i in range(dim):
             for j in range(dim):
                 if i == j:
                     diagonal.append(q_values.pop(0))
-
                 else:
                     diagonal.append(Q8().q_0())
         
-        return Q8States(diagonal)
-
-    @staticmethod
+        return Q8States(diagonal, qs_type="op", rows=dim, columns=dim)
+        
+    @staticmethod    
     def identity(dim, operator=False, additive=False):
         """Identity operator for states or operators which are diagonal."""
     
         if additive:
-            id_q = Q8().q_0()
+            id_q =Q8().q_0()
         else:
-            id_q = Q8().q_1()
+            id_q =Q8().q_1()
             
         if operator:
             q_1 = Q8States([id_q])
@@ -8553,166 +8830,81 @@ class Q8States(Q8):
     
         else:
             i_list = [id_q for i in range(dim)]
-            ident = Q8States(i_list)
+            ident = Q8States(i_list, qs_type="ket")
             
         return ident
-        
-    def product(self, product_type, bra=None, ket=None, operator=None, kind=""):
+    
+    def product(self, q1, kind="", reverse=False):
         """Forms the quaternion product for each state."""
         
-        if product_type == 'bra':
-            bra = self
-        elif product_type == 'ket':
-            ket = self
-        elif product_type == 'operator':
-            operator = self
-        else:
-            print("Oops, need to set product_type to bra, ket, or operator.")
-            return None
+        # Diagonalize to allow more products to be formed.
+        self_copy = deepcopy(self)
+        q1_copy = deepcopy(q1)
         
-        def _check_dimensions(op_dim=0, state_1_dim=0, state_2_dim=0, equals=False):
-            """Make sure the states and operators are the right sizes. The operator dimension is either
-               equal to 1 or the product of the bra and ket dimensions."""
+        oops = "Oops, cannot multiply series with row/column dimensions of {}/{} to {}/{}".format(
+            self.rows, self.columns, q1.rows, q1.columns)
+        
+        if self.columns == q1.rows:
+            qs_left = self_copy
+            qs_right = q1_copy
+        
+        elif ((self.rows == q1.rows) and (self.columns == q1.columns)) or             ("scalar" in [self.qs_type, q1.qs_type]) :
+                
+            if self.columns == 1:
+                qs_right = q1_copy
+                qs_left = self_copy.diagonal(qs_right.rows)
+      
+            elif q1.rows == 1:
+                qs_left = self_copy
+                qs_right = q1_copy.diagonal(qs_left.columns)
 
-            oops = ''
-            
-            if equals:
-                if state_1_dim != state_2_dim:
-                    oops = "states have different dimensions: {} != {}".format(state_1_dim, state_2_dim)
-                    
-            elif state_2_dim == 0:
-                if (op_dim % state_1_dim != 0) and (op_dim != 1):
-                    oops = "Operator dimensions don't divide nicely by the state vector: {} % {}".format(
-                        op_dim, state_1_dim)
-                    
             else:
-                if (op_dim != state_1_dim * state_2_dim) and (op_dim == 1 and (state_1_dim != state_2_dim)):
-                    oops = "Operator dimensions do not equal the product of the states: {} != {} * {}".format(
-                        op_dim, state_1_dim, state_2_dim)
-                    
-            if oops:
                 print(oops)
-                return False
+                return None
             
-            else:
-                return True
-        
-        dot_product_flag = False
-        new_states = []
-        
-        if bra is None and ket is None:
+        else:
+            print(oops)            
             return None
         
-        elif bra is None and operator is None:
-            return ket
+        outer_row_max = qs_left.rows
+        outer_column_max = qs_right.columns
+        shared_inner_max = qs_left.columns
+        projector_flag = (shared_inner_max == 1) and (outer_row_max > 1) and (outer_column_max > 1)
         
-        elif ket is None and operator is None:
-            return bra
+        result = [[Q8().q_0(qtype='') for i in range(outer_column_max)] for j in range(outer_row_max)]
         
-        # <A|B>                                                     
-        elif operator is None:
-            if _check_dimensions(state_1_dim=bra.dim, state_2_dim=ket.dim, equals=True):
-                dot_product_flag = True
-                
-                for b, k in zip(bra.qs, ket.qs):
-                    new_states.append(b.product(k, kind))
-            
-        # Op|B>
-        elif bra is None:
-            if _check_dimensions(op_dim=operator.dim, state_1_dim=ket.dim):
-                if operator.dim == 1:
-                    one_diagonal = operator.diagonal(ket.dim)                    
-                    opb = one_diagonal.qs
-
-                else:
-                    opb = operator.qs
+        for outer_row in range(outer_row_max):
+            for outer_column in range(outer_column_max):
+                for shared_inner in range(shared_inner_max):
+                    
+                    # For projection operators.
+                    left_index = outer_row
+                    right_index = outer_column
+                    
+                    if outer_row_max >= 1 and shared_inner_max > 1:
+                        left_index = outer_row + shared_inner * outer_row_max
                         
-                for ops in zip(*[iter(opb)] * ket.dim):
-                    ok = None
-                    
-                    for op, k in zip(ops, ket.qs): 
-                        if ok is None:
-                            ok = op.product(k, kind)
-                        else:
-                            ok = ok.add(op.product(k, kind))
+                    if outer_column_max >= 1 and shared_inner_max > 1:
+                        right_index = shared_inner + outer_column * shared_inner_max
                             
-                    new_states.append(ok)
+                    result[outer_row][outer_column] = result[outer_row][outer_column].add(
+                        qs_left.qs[left_index].product(
+                            qs_right.qs[right_index], kind=kind, reverse=reverse))
+        
+        # Flatten the list.
+        new_qs = [item for sublist in result for item in sublist]
+        new_states = Q8States(new_qs, rows=outer_row_max, columns=outer_column_max)
 
-        # <A|Op
-        elif ket is None:
-            if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim):
-                # Operator needs to be transposed.
-                opt = operator.transpose(bra.dim)
-                
-                if operator.dim == 1:
-                    one_diagonal = operator.diagonal(bra.dim)                    
-                    aop = one_diagonal.qs
-
-                else:
-                    aop = operator.qs
-                                                             
-                for ops in zip(*[iter(aop)]*bra.dim):
-                    bop = None
-                    
-                    for b, op in zip(bra.qs, ops):
-                        if bop is None:
-                            bop = b.product(op, kind)
-                        else:
-                            bop = bop.add(b.product(op, kind))
-                            
-                    new_states.append(bop)
-
-        # <A|Op|B>
-        else:
-            if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim, state_2_dim=ket.dim):
-                dot_product_flag = True
-                new_ket = []
-                
-                if operator.dim == 1:
-                    one_diagonal = operator.diagonal(ket.dim)                    
-                    opb = one_diagonal.qs
-
-                else:
-                    opb = operator.qs                                             
-                                                             
-                for ops in zip(*[iter(opb)]*ket.dim):
-                    ok = None
-                    
-                    for op, k in zip(ops, ket.qs): 
-                        if ok is None:
-                            ok = op.product(k, kind)
-                        else:
-                            ok = ok.add(op.product(k, kind))
-                    
-                    new_ket.append(ok)
-                
-                new_ket_state = Q8States(new_ket)
-                    
-                for b, k in zip(bra.qs, new_ket_state.qs):
-                    new_states.append(b.product(k, kind))
-                    
-        # Return either the dot product or a new quaternion series.
-        if dot_product_flag:
-            dot_product = new_states.pop(0)
-                
-            for new_state in new_states:
-                dot_product = dot_product.add(new_state)
-                
-            return dot_product
+        if projector_flag:
+            return new_states.transpose()
         
         else:
-            return Q8States(new_states)
-
-    def Euclidean_product(self, product_type, bra=None, ket=None, operator=None, kind=""):
+            return new_states
+    
+    def Euclidean_product(self, q1, kind="", reverse=False):
         """Forms the Euclidean product, what is used in QM all the time."""
-        
-        if bra is not None:
-            bra = bra.conj()
-            
-        if product_type == 'bra':
-            self = self.conj()
                     
-        return self.product(product_type, bra, ket, operator, kind)
+        return self.conj().product(q1, kind, reverse)
     
     def op_n(self, n, first=True, kind="", reverse=False):
         """Mulitply an operator times a number, in that order. Set first=false for n * Op"""
@@ -8727,13 +8919,12 @@ class Q8States(Q8):
             else:
                 new_states.append(n.product(op, kind, reverse))
     
-        return Q8States(new_states)
-
+        return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
     def norm_squared(self):
         """Take the Euclidean product of each state and add it up, returning one quaternion."""
         
-        norm = self.Euclidean_product(self).summation()
-        return norm
+        return self.Euclidean_product('bra', ket=self)
     
     def transpose(self, m=None, n=None):
         """Transposes a series."""
@@ -8751,13 +8942,11 @@ class Q8States(Q8):
             return None
         
         matrix = [[0 for x in range(m)] for y in range(n)] 
-        
-        qs = self.qs
         qs_t = []
         
         for mi in range(m):
             for ni in range(n):
-                matrix[ni][mi] = qs[mi * n + ni]
+                matrix[ni][mi] = self.qs[mi * n + ni]
         
         qs_t = []
         
@@ -8765,13 +8954,36 @@ class Q8States(Q8):
             for q in t:
                 qs_t.append(q)
                 
-        return Q8States(qs_t)
+        # Switch rows and columns.
+        return Q8States(qs_t, rows=self.columns, columns=self.rows)
+        
+    def Hermitian_conj(self, m=None, n=None, conj_type=0):
+        """Returns the Hermitian conjugate."""
+        
+        return self.transpose(m, n).conj(conj_type)
+    
+    def dagger(self, m=None, n=None, conj_type=0):
+        """Just calls Hermitian_conj()"""
+        
+        return self.Hermitian_conj(m, n, conj_type)
+        
+    def is_square(self):
+        """Tests if a quaternion series is square, meaning the dimenion is n^2."""
+                
+        return math.sqrt(self.dim).is_integer()
+
+    def is_Hermitian(self):
+        """Tests if a series is Hermitian."""
+        
+        hc = self.Hermitian_conj()
+        
+        return self.equals(hc)
     
     @staticmethod
     def sigma(kind, theta=None, phi=None):
         """Returns a sigma when given a type like, x, y, z, xy, xz, yz, xyz, with optional angles theta and phi."""
         
-        q0, q1, qi = Q8().q_0(), Q8().q_1(), Q8().q_i()
+        q0, q1, qi =Q8().q_0(),Q8().q_1(),Q8().q_i()
         
         # Should work if given angles or not.
         if theta is None:
@@ -8793,9 +9005,9 @@ class Q8States(Q8):
         z_factor = q1.product(Q8([cos_theta, 0, 0, 0]))
 
         sigmas = {}
-        sigma['x'] = Q8States([q0, x_factor, x_factor, q0])
-        sigma['y'] = Q8States([q0, y_factor, y_factor.flip_signs(), q0]) 
-        sigma['z'] = Q8States([z_factor, q0, q0, z_factor.flip_signs()])
+        sigma['x'] =Q8States([q0, x_factor, x_factor, q0])
+        sigma['y'] =Q8States([q0, y_factor, y_factor.flip_signs(), q0]) 
+        sigma['z'] =Q8States([z_factor, q0, q0, z_factor.flip_signs()])
   
         sigmas['xy'] = sigma['x'].add(sigma['y'])
         sigmas['xz'] = sigma['x'].add(sigma['z'])
@@ -8824,6 +9036,9 @@ class TestQ8States(unittest.TestCase):
     q_3 = Q8([3,0,0,0])
     q_n3 = Q8([-3,0,0,0])
     q_4 = Q8([4,0,0,0])
+    q_5 = Q8([5,0,0,0])
+    q_6 = Q8([6,0,0,0])
+    q_10 = Q8([10,0,0,0])
     q_n5 = Q8([-5,0,0,0])
     q_7 = Q8([7,0,0,0])
     q_8 = Q8([8,0,0,0])
@@ -8842,45 +9057,79 @@ class TestQ8States(unittest.TestCase):
     v33inv = Q8States([q_n2, q_3, q_9, q_8, q_n11, q_n34, q_n5, q_7, q_21])
     q_i3 = Q8States([q_1, q_1, q_1])
     q_i2d = Q8States([q_1, q_0, q_0, q_1])
+    q_i3_bra = Q8States([q_1, q_1, q_1], "bra")
+    q_6_op = Q8States([q_1, q_0, q_0, q_1, q_i, q_i], "op")    
+    q_6_op_32 = Q8States([q_1, q_0, q_0, q_1, q_i, q_i], "op", rows=3, columns=2)
+    q_i2d_op = Q8States([q_1, q_0, q_0, q_1], "op")
     q_i4 = Q8([0,4,0,0])
     q_0_q_1 = Q8States([q_0, q_1])
     q_1_q_0 = Q8States([q_1, q_0])
     q_1_q_i = Q8States([q_1, q_i])
-    A = Q8States([Q8([4,0,0,0]),Q8([0,1,0,0])])
-    B = Q8States([Q8([0,0,1,0]),Q8([0,0,0,2]),Q8([0,3,0,0])])
-    Op = Q8States([Q8([3,0,0,0]),Q8([0,1,0,0]),Q8([0,0,2,0]),Q8([0,0,0,3]),Q8([2,0,0,0]),Q8([0,4,0,0])])
-    Op4i = Q8States([q_i4])
+    A = Q8States([Q8([4,0,0,0]), Q8([0,1,0,0])], "bra")
+    B = Q8States([Q8([0,0,1,0]), Q8([0,0,0,2]), Q8([0,3,0,0])])
+    Op = Q8States([Q8([3,0,0,0]), Q8([0,1,0,0]), Q8([0,0,2,0]), Q8([0,0,0,3]), Q8([2,0,0,0]), Q8([0,4,0,0])], "op", rows=2, columns=3)
+    Op4i = Q8States([q_i4, q_0, q_0, q_i4, q_2, q_3], "op", rows=2, columns=3) 
+    Op_scalar = Q8States([q_i4], "scalar")
     q_1234 = Q8States([Q8([1, 1, 0, 0]), Q8([2, 1, 0, 0]), Q8([3, 1, 0, 0]), Q8([4, 1, 0, 0])])
     sigma_y = Q8States([Q8([1, 0, 0, 0]), Q8([0, -1, 0, 0]), Q8([0, 1, 0, 0]), Q8([-1, 0, 0, 0])])
-    qn = Q8States([Q8([3,0,0,4])])    
-    def test_init(self):
-        self.assertTrue(self.q_0_q_1.dim == 2)
+    qn = Q8States([Q8([3,0,0,4])])
+    
+    b = Q8States([q_1, q_2, q_3], qs_type="bra")
+    k = Q8States([q_4, q_5, q_6], qs_type="ket")
+    o = Q8States([q_10], qs_type="op")
         
-    def test_equals(self):
+    def test_1000_init(self):
+        self.assertTrue(self.q_0_q_1.dim == 2)
+    
+    def test_1010_set_qs_type(self):
+        bk = self.b.set_qs_type("ket")
+        self.assertTrue(bk.rows == 3)
+        self.assertTrue(bk.columns == 1)
+        self.assertTrue(bk.qs_type == "ket")
+        
+    def test_1020_set_rows_and_columns(self):
+        self.assertTrue(self.q_i3.rows == 3)
+        self.assertTrue(self.q_i3.columns == 1)
+        self.assertTrue(self.q_i3_bra.rows == 1)
+        self.assertTrue(self.q_i3_bra.columns == 3)
+        self.assertTrue(self.q_i2d_op.rows == 2)
+        self.assertTrue(self.q_i2d_op.columns == 2)
+        self.assertTrue(self.q_6_op_32.rows == 3)
+        self.assertTrue(self.q_6_op_32.columns == 2)
+        
+    def test_1030_equals(self):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
-         
-    def test_conj(self):
+        
+    def test_1040_conj(self):
         qc = self.q_1_q_i.conj()
         qc1 = self.q_1_q_i.conj(1)
         print("q_1_q_i*: ", qc)
         print("q_1_qc*1: ", qc1)
-        print("qc.qs[1]: ", qc.qs[1])
         self.assertTrue(qc.qs[1].dx.n == 1)
-        self.assertTrue(qc1.qs[1].dx.p == 1)   
-
-    def test_flip_signs(self):
+        self.assertTrue(qc1.qs[1].dx.p == 1)
+    
+    def test_1050_flip_signs(self):
         qf = self.q_1_q_i.flip_signs()
         print("-q_1_q_i: ", qf)
         self.assertTrue(qf.qs[1].dx.n == 1)
-    
-    def test_normalize(self):
+        
+    def test_1060_inverse(self):
+        inv_v1123 = self.v1123.inverse(operator=True)
+        print("inv_v1123 operator", inv_v1123)
+        self.assertTrue(inv_v1123.equals(self.v3n1n21))
+
+        inv_v33 = self.v33.inverse(operator=True)
+        print("inv_v33 operator", inv_v33)
+        self.assertTrue(inv_v33.equals(self.v33inv))
+        
+    def test_1070_normalize(self):
         qn = self.qn.normalize()
         print("Op normalized: ", qn)
         self.assertAlmostEqual(qn.qs[0].dt.p, 0.6)
         self.assertTrue(qn.qs[0].dz.p == 0.8)
-        
-    def test_determinant(self):
+    
+    def test_1080_determinant(self):
         det_v3 = self.v3.determinant()
         print("det v3:", det_v3)
         self.assertTrue(det_v3.equals(self.q_3))
@@ -8894,126 +9143,178 @@ class TestQ8States(unittest.TestCase):
         print("det_vv9", det_vv9)
         self.assertTrue(det_vv9.equals(self.qn627))
         
-    def test_summation(self):
+    def test_1090_summation(self):
         q_01_sum = self.q_0_q_1.summation()
         print("sum: ", q_01_sum)
         self.assertTrue(type(q_01_sum) is Q8)
-        self.assertTrue(q_01_sum.dt.p== 1)
+        self.assertTrue(q_01_sum.dt.p == 1)
         
-    def test_add(self):
+    def test_1100_add(self):
         q_0110_add = self.q_0_q_1.add(self.q_1_q_0)
         print("add 01 10: ", q_0110_add)
-        self.assertTrue(q_0110_add.qs[0].dt.p== 1)
-        self.assertTrue(q_0110_add.qs[1].dt.p== 1)
+        self.assertTrue(q_0110_add.qs[0].dt.p == 1)
+        self.assertTrue(q_0110_add.qs[1].dt.p == 1)
         
-    def test_dif(self):
+    def test_1110_dif(self):
         q_0110_dif = self.q_0_q_1.dif(self.q_1_q_0)
         print("dif 01 10: ", q_0110_dif)
-        self.assertTrue(q_0110_dif.qs[0].dt.n== 1)
-        self.assertTrue(q_0110_dif.qs[1].dt.p== 1)
-    
-    def test_diagonal(self):
-        Op4iDiag2 = self.Op4i.diagonal(2)
+        self.assertTrue(q_0110_dif.qs[0].dt.n == 1)
+        self.assertTrue(q_0110_dif.qs[1].dt.p == 1)
+        
+    def test_1120_diagonal(self):
+        Op4iDiag2 = self.Op_scalar.diagonal(2)
         print("Op4i on a diagonal 2x2", Op4iDiag2)
         self.assertTrue(Op4iDiag2.qs[0].equals(self.q_i4))
         self.assertTrue(Op4iDiag2.qs[1].equals(Q8().q_0()))
         
-    def test_identity(self):
+    def test_1130_identity(self):
         I2 = Q8States().identity(2, operator=True)
-        print("Operator Identity, diagonal 2x2", I2)
+        print("Operator Idenity, diagonal 2x2", I2)    
         self.assertTrue(I2.qs[0].equals(Q8().q_1()))
         self.assertTrue(I2.qs[1].equals(Q8().q_0()))
         I2 = Q8States().identity(2)
-        print("Identity for a 2 state ket", I2)
+        print("Idenity on 2 state ket", I2)
         self.assertTrue(I2.qs[0].equals(Q8().q_1()))
-        self.assertTrue(I2.qs[1].equals(Q8().q_1()))
-        
-    def test_product_AA(self):
-        AA = self.A.product('bra', ket=self.A)
-        print("AA: ", AA)
-        self.assertTrue(AA.equals(Q8([15, 0, 0, 0])))
-                        
-    def test_Euclidean_product_AA(self):
-        AA = self.A.Euclidean_product('bra', ket=self.A)
-        print("A* A", AA)
-        self.assertTrue(AA.equals(Q8([17, 0, 0, 0])))
+        self.assertTrue(I2.qs[1].equals(Q8().q_1()))        
 
-    def test_product_AOp(self):
-        AOp = self.A.product('bra', operator=self.Op)
+    def test_1140_product(self):
+        self.assertTrue(self.b.product(self.o).equals(Q8States([Q8([10,0,0,0]),Q8([20,0,0,0]),Q8([30,0,0,0])])))
+        self.assertTrue(self.b.product(self.k).equals(Q8States([Q8([32,0,0,0])])))
+        self.assertTrue(self.b.product(self.o).product(self.k).equals(Q8States([Q8([320,0,0,0])])))
+        self.assertTrue(self.b.product(self.b).equals(Q8States([Q8([1,0,0,0]),Q8([4,0,0,0]),Q8([9,0,0,0])])))
+        self.assertTrue(self.o.product(self.k).equals(Q8States([Q8([40,0,0,0]),Q8([50,0,0,0]),Q8([60,0,0,0])])))
+        self.assertTrue(self.o.product(self.o).equals(Q8States([Q8([100,0,0,0])])))
+        self.assertTrue(self.k.product(self.k).equals(Q8States([Q8([16,0,0,0]),Q8([25,0,0,0]),Q8([36,0,0,0])])))
+        self.assertTrue(self.k.product(self.b).equals(Q8States([Q8([4,0,0,0]),Q8([5,0,0,0]),Q8([6,0,0,0]),
+                                                                      Q8([8,0,0,0]),Q8([10,0,0,0]),Q8([12,0,0,0]),
+                                                                      Q8([12,0,0,0]),Q8([15,0,0,0]),Q8([18,0,0,0])])))
+    
+    def test_1150_product_AA(self):
+        AA = self.A.product(self.A.set_qs_type("ket"))
+        print("AA: ", AA)
+        self.assertTrue(AA.equals(Q8States([Q8([15, 0, 0, 0])])))
+                  
+    def test_1160_Euclidean_product_AA(self):
+        AA = self.A.Euclidean_product(self.A.set_qs_type("ket"))
+        print("A* A", AA)
+        self.assertTrue(AA.equals(Q8States([Q8([17, 0, 0, 0])])))
+
+    def test_1170_product_AOp(self):
+        AOp = self.A.product(self.Op)
         print("A Op: ", AOp)
         self.assertTrue(AOp.qs[0].equals(Q8([11, 0, 0, 0])))
         self.assertTrue(AOp.qs[1].equals(Q8([0, 0, 5, 0])))
         self.assertTrue(AOp.qs[2].equals(Q8([4, 0, 0, 0])))
-                        
-    def test_Euclidean_product_AOp(self):
-        AOp = self.A.Euclidean_product('bra', operator=self.Op)
+                      
+    def test_1180_Euclidean_product_AOp(self):
+        AOp = self.A.Euclidean_product(self.Op)
         print("A* Op: ", AOp)
         self.assertTrue(AOp.qs[0].equals(Q8([13, 0, 0, 0])))
         self.assertTrue(AOp.qs[1].equals(Q8([0, 0, 11, 0])))
         self.assertTrue(AOp.qs[2].equals(Q8([12, 0, 0, 0])))
-
-    def test_product_OpB(self):
-        OpB = self.B.product('ket', operator=self.Op)
-        print("Op B: ", OpB)
-        self.assertTrue(OpB.qs[0].equals(Q8([0, 0, 1, -6])))
-        self.assertTrue(OpB.qs[1].equals(Q8([-12, -3, 0, 4])))
-                        
-    def test_Euclidean_product_OpB(self):
-        OpB = self.B.Euclidean_product('ket', operator=self.Op)
-        print("Op B: ", OpB)
-        self.assertTrue(OpB.qs[0].equals(Q8([0, 0, 1, -6])))
-        self.assertTrue(OpB.qs[1].equals(Q8([-12, -3, 0, 4])))
-
-    def test_product_AOpB(self):
-        AOpB = self.A.product('bra', operator=self.Op, ket=self.B)
-        print("A Op B: ", AOpB)
-        self.assertTrue(AOpB.equals(Q8([3, -12, 0, -24])))
-                        
-    def test_Euclidean_product_AOpB(self):
-        AOpB = self.A.Euclidean_product('bra', operator=self.Op, ket=self.B)
-        print("A* Op B: ", AOpB)
-        self.assertTrue(AOpB.equals(Q8([-3, 12, 8, -24])))
         
-    def test_product_AOp4i(self):
-        AOp4i = self.A.product('bra', operator=self.Op4i)
+    def test_1190_product_AOp4i(self):
+        AOp4i = self.A.product(self.Op4i)
         print("A Op4i: ", AOp4i)
         self.assertTrue(AOp4i.qs[0].equals(Q8([0, 16, 0, 0])))
         self.assertTrue(AOp4i.qs[1].equals(Q8([-4, 0, 0, 0])))
                         
-    def test_Euclidean_product_AOp4i(self):
-        AOp4i = self.A.Euclidean_product('bra', operator=self.Op4i)
+    def test_1200_Euclidean_product_AOp4i(self):
+        AOp4i = self.A.Euclidean_product(self.Op4i)
         print("A* Op4i: ", AOp4i)
         self.assertTrue(AOp4i.qs[0].equals(Q8([0, 16, 0, 0])))
         self.assertTrue(AOp4i.qs[1].equals(Q8([4, 0, 0, 0])))
 
-    def test_product_Op4iB(self):
-        Op4iB = self.B.product('ket', operator=self.Op4i)
-        print("Op4i B: ", Op4iB)
-        self.assertTrue(Op4iB.qs[0].equals(Q8([0, 0, 0, 4])))
-        self.assertTrue(Op4iB.qs[1].equals(Q8([0, 0, -8, 0])))
-        self.assertTrue(Op4iB.qs[2].equals(Q8([-12, 0, 0, 0])))
+    def test_1210_product_OpB(self):
+        OpB = self.Op.product(self.B)
+        print("Op B: ", OpB)
+        self.assertTrue(OpB.qs[0].equals(Q8([0, 10, 3, 0])))
+        self.assertTrue(OpB.qs[1].equals(Q8([-18, 0, 0, 1])))
                         
-    def test_Euclidean_product_Op4iB(self):
-        Op4iB = self.B.Euclidean_product('ket', operator=self.Op4i)
-        print("Op4i B: ", Op4iB)
-        self.assertTrue(Op4iB.qs[0].equals(Q8([0, 0, 0, 4])))
-        self.assertTrue(Op4iB.qs[1].equals(Q8([0, 0, -8, 0])))
-        self.assertTrue(Op4iB.qs[2].equals(Q8([-12, 0, 0, 0])))
+    def test_1220_Euclidean_product_OpB(self):
+        OpB = self.Op.Euclidean_product(self.B)
+        print("Op B: ", OpB)
+        self.assertTrue(OpB.qs[0].equals(Q8([0, 2, 3, 0])))
+        self.assertTrue(OpB.qs[1].equals(Q8([18, 0, 0, -1])))
 
-    def test_product_AOp4iB(self):
-        AOp4iB = self.A.product('bra', operator=self.Op4i, ket=self.B)
-        print("A* Op4i B: ", AOp4iB)
-        self.assertTrue(AOp4iB.dim == 0)
+    def test_1230_product_AOpB(self):
+        AOpB = self.A.product(self.Op).product(self.B)
+        print("A Op B: ", AOpB)
+        self.assertTrue(AOpB.equals(Q8States([Q8([0, 22, 11, 0])])))
                         
-    def test_Euclidean_product_AOp4iB(self):
-        AOp4iB = self.A.Euclidean_product('bra', operator=self.Op4i, ket=self.B)
-        print("A* Op4i B: ", AOp4iB)
-        self.assertTrue(AOp4iB.dim == 0)
+    def test_1240_Euclidean_product_AOpB(self):
+        AOpB = self.A.Euclidean_product(self.Op).product(self.B)
+        print("A* Op B: ", AOpB)
+        self.assertTrue(AOpB.equals(Q8States([Q8([0, 58, 13, 0])])))
         
-    def test_op_n(self):
+    def test_1250_product_AOp4i(self):
+        AOp4i = self.A.product(self.Op4i)
+        print("A Op4i: ", AOp4i)
+        self.assertTrue(AOp4i.qs[0].equals(Q8([0, 16, 0, 0])))
+        self.assertTrue(AOp4i.qs[1].equals(Q8([-4, 0, 0, 0])))
+                        
+    def test_1260_Euclidean_product_AOp4i(self):
+        AOp4i = self.A.Euclidean_product(self.Op4i)
+        print("A* Op4i: ", AOp4i)
+        self.assertTrue(AOp4i.qs[0].equals(Q8([0, 16, 0, 0])))
+        self.assertTrue(AOp4i.qs[1].equals(Q8([4, 0, 0, 0])))
+
+    def test_1270_product_Op4iB(self):
+        Op4iB = self.Op4i.product(self.B)
+        print("Op4i B: ", Op4iB)
+        self.assertTrue(Op4iB.qs[0].equals(Q8([0, 6, 0, 4])))
+        self.assertTrue(Op4iB.qs[1].equals(Q8([0, 9, -8, 0])))
+                        
+    def test_1280_Euclidean_product_Op4iB(self):
+        Op4iB = self.Op4i.Euclidean_product(self.B)
+        print("Op4i B: ", Op4iB)
+        self.assertTrue(Op4iB.qs[0].equals(Q8([0, 6, 0, -4])))
+        self.assertTrue(Op4iB.qs[1].equals(Q8([0, 9, 8, 0])))
+
+    def test_1290_product_AOp4iB(self):
+        AOp4iB = self.A.product(self.Op4i).product(self.B)
+        print("A* Op4i B: ", AOp4iB)
+        self.assertTrue(AOp4iB.equals(Q8States([Q8([-9, 24, 0, 8])])))
+                        
+    def test_1300_Euclidean_product_AOp4iB(self):
+        AOp4iB = self.A.Euclidean_product(self.Op4i).product(self.B)
+        print("A* Op4i B: ", AOp4iB)
+        self.assertTrue(AOp4iB.equals(Q8States([Q8([9, 24, 0, 24])])))
+
+    def test_1310_op_n(self):
         opn = self.Op.op_n(n=self.q_i)
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].dx.p == 3)
+        
+    def test_1320_transpose(self):
+        opt = self.q_1234.transpose()
+        print("op1234 transposed: ", opt)
+        self.assertTrue(opt.qs[0].dt.p == 1)
+        self.assertTrue(opt.qs[1].dt.p == 3)
+        self.assertTrue(opt.qs[2].dt.p == 2)
+        self.assertTrue(opt.qs[3].dt.p == 4)
+        optt = self.q_1234.transpose().transpose()
+        self.assertTrue(optt.equals(self.q_1234))
+        
+    def test_1330_Hermitian_conj(self):
+        q_hc = self.q_1234.Hermitian_conj().reduce()
+        print("op1234 Hermtian_conj: ", q_hc)
+        self.assertTrue(q_hc.qs[0].dt.p == 1)
+        self.assertTrue(q_hc.qs[1].dt.p == 3)
+        self.assertTrue(q_hc.qs[2].dt.p == 2)
+        self.assertTrue(q_hc.qs[3].dt.p == 4)
+        self.assertTrue(q_hc.qs[0].dx.n == 1)
+        self.assertTrue(q_hc.qs[1].dx.n == 1)
+        self.assertTrue(q_hc.qs[2].dx.n == 1)
+        self.assertTrue(q_hc.qs[3].dx.n == 1)
+        
+    def test_1340_is_Hermitian(self):
+        self.assertTrue(self.sigma_y.is_Hermitian())
+        self.assertFalse(self.q_1234.is_Hermitian())
+        
+    def test_1350_is_square(self):
+        self.assertFalse(self.Op.is_square())
+        self.assertTrue(self.Op_scalar.is_square())    
         
 suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
@@ -9025,17 +9326,75 @@ unittest.TextTestRunner().run(suite);
 class Q8aStates(Q8a):
     """A class made up of many quaternions."""
     
-    def __init__(self, qs=None, qtype="Q", representation=""):
+    QS_TYPES = ["scalar", "bra", "ket", "op", "operator"]
+    
+    def __init__(self, qs=None, qs_type="ket", rows=0, columns=0):
         
         self.qs = qs
+        self.qs_type = qs_type
+        self.rows = rows
+        self.columns = columns
+        
+        if qs_type not in self.QS_TYPES:
+            print("Oops, only know of these quaternion series types: {}".format(self.QS_TYPES))
+            return None
         
         if qs is None:
             self.d, self.dim, self.dimensions = 0, 0, 0
         else:
-            self.d, self.dim, self.dimensions = len(qs), len(qs), len(qs)
+            self.d, self.dim, self.dimensions = int(len(qs)), int(len(qs)), int(len(qs))
+    
+        self.set_qs_type(qs_type, rows, columns, copy=False)
+    
+    def set_qs_type(self, qs_type="", rows=0, columns=0, copy=True):
+        """Set the qs_type to something sensible."""
+    
+        new_q = self
         
-        self.qtype = qtype
-        self.representation = representation
+        if copy:
+            new_q = deepcopy(self)
+        
+        # Assign values if need be.
+        if new_q.qs_type != qs_type:
+            new_q.rows = 0
+        
+        if qs_type == "ket" and not new_q.rows:
+            new_q.rows = new_q.dim
+            new_q.columns = 1
+            
+        elif qs_type == "bra" and not new_q.rows:
+            new_q.rows = 1
+            new_q.columns = new_q.dim
+
+        elif qs_type in ["op", "operator"] and not new_q.rows:
+            # Square series
+            root_dim = math.sqrt(new_q.dim)
+            
+            if root_dim.is_integer():
+                new_q.rows = int(root_dim)
+                new_q.columns = int(root_dim)
+                qs_type = "op"
+        
+        elif rows * columns == new_q.dim and not new_q.qs_type:
+            if new_q.dim == 1:
+                qs_type = "scalar"
+            elif new_q.rows == 1:
+                qs_type = "bra"
+            elif new_q.columns == 1:
+                qs_type = "ket"
+            else:
+                qs_type = "op"
+            
+        if not qs_type or not new_q.rows:
+            print("Oops, please set rows and columns for this quaternion series operator. Thanks.")
+            return None
+        
+        if new_q.dim == 1:
+            qs_type = "scalar"
+            
+        new_q.qs_type = qs_type
+        
+        return new_q
         
     def __str__(self, quiet=False):
         """Print out all the states."""
@@ -9047,14 +9406,17 @@ class Q8aStates(Q8a):
         
         return states.rstrip()
     
-    def print_state(self, label, spacer=False, quiet=False):
+    def print_state(self, label, spacer=True, quiet=True):
         """Utility for printing states as a quaternion series."""
 
         print(label)
         
-        for n, q in enumerate(self.qs, start=1):
-            #print("n={}: {}".format(n, q.__str__(quiet)))
-            print("n={}: {}".format(n, q.__str__()))
+        for n, q in enumerate(self.qs):
+            ##### print("n={}: {}".format(n + 1, q.__str__(quiet)))
+            print("n={}: {}".format(n + 1, q.__str__()))
+        
+        print("{t}: {r}/{c}".format(
+            t=self.qs_type, r=self.rows, c=self.columns))
         
         if not quiet:
             print("sum= {ss}".format(ss=self.summation()))
@@ -9075,7 +9437,7 @@ class Q8aStates(Q8a):
                 result = False
                 
         return result
-            
+
     def conj(self, conj_type=0):
         """Take the conjgates of states, default is zero, but also can do 1 or 2."""
         
@@ -9084,7 +9446,17 @@ class Q8aStates(Q8a):
         for bra in self.qs:
             new_states.append(bra.conj(conj_type))
             
-        return(Q8aStates(new_states))
+        return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def simple_q(self):
+        """Simplify the states."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.simple_q())
+            
+        return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def flip_signs(self):
         """Flip signs of all states."""
@@ -9094,7 +9466,62 @@ class Q8aStates(Q8a):
         for bra in self.qs:
             new_states.append(bra.flip_signs())
             
-        return Q8aStates(new_states)
+        return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def inverse(self, operator=False, additive=False):
+        """Inverseing bras and kets calls inverse() once for each.
+        Inverseing operators is more tricky as one needs a diagonal identity matrix."""
+    
+        if operator:
+        
+            if additive:
+                q_flip = self.inverse(additive=True)
+                q_inv = q_flip.diagonal(self.dim)
+                
+            else:
+                if self.dim == 1:
+                    q_inv =Q8aStates(self.qs[0].inverse())
+        
+                elif self.dim == 4:
+                    det = self.determinant()
+                    detinv = det.inverse()
+
+                    q0 = self.qs[3].product(detinv)
+                    q1 = self.qs[1].flip_signs().product(detinv)
+                    q2 = self.qs[2].flip_signs().product(detinv)
+                    q3 = self.qs[0].product(detinv)
+
+                    q_inv =Q8aStates([q0, q1, q2, q3], qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+                elif self.dim == 9:
+                    det = self.determinant()
+                    detinv = det.inverse()
+        
+                    q0 = self.qs[4].product(self.qs[8]).dif(self.qs[5].product(self.qs[7])).product(detinv)
+                    q1 = self.qs[7].product(self.qs[2]).dif(self.qs[8].product(self.qs[1])).product(detinv)
+                    q2 = self.qs[1].product(self.qs[5]).dif(self.qs[2].product(self.qs[4])).product(detinv)
+                    q3 = self.qs[6].product(self.qs[5]).dif(self.qs[8].product(self.qs[3])).product(detinv)
+                    q4 = self.qs[0].product(self.qs[8]).dif(self.qs[2].product(self.qs[6])).product(detinv)
+                    q5 = self.qs[3].product(self.qs[2]).dif(self.qs[5].product(self.qs[0])).product(detinv)
+                    q6 = self.qs[3].product(self.qs[7]).dif(self.qs[4].product(self.qs[6])).product(detinv)
+                    q7 = self.qs[6].product(self.qs[1]).dif(self.qs[7].product(self.qs[0])).product(detinv)
+                    q8 = self.qs[0].product(self.qs[4]).dif(self.qs[1].product(self.qs[3])).product(detinv)
+        
+                    q_inv =Q8aStates([q0, q1, q2, q3, q4, q5, q6, q7, q8], qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+        
+                else:
+                    print("Oops, don't know how to inverse.")
+                    q_inv =Q8aStates([Q8a().q_0()])
+        
+        else:                
+            new_states = []
+        
+            for bra in self.qs:
+                new_states.append(bra.inverse(additive=additive))
+        
+            q_inv =Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+        return q_inv
     
     def norm(self):
         """Norm of states."""
@@ -9104,7 +9531,7 @@ class Q8aStates(Q8a):
         for bra in self.qs:
             new_states.append(bra.norm())
             
-        return Q8aStates(new_states)
+        return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def normalize(self, n=1, states=None):
         """Normalize all states."""
@@ -9127,8 +9554,8 @@ class Q8aStates(Q8a):
         for new_state in new_states:
             new_states_normalized.append(new_state.product(Q8a([math.sqrt(1/non_zero_states), 0, 0, 0])))
             
-        return Q8aStates(new_states_normalized)
-    
+        return Q8aStates(new_states_normalized, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+
     def orthonormalize(self):
         """Given a quaternion series, resturn a normalized orthoganl basis."""
     
@@ -9141,7 +9568,7 @@ class Q8aStates(Q8a):
             orthonormal_qs.append(orthonormal_q)
             last_q = orthonormal_q
         
-        return Q8aStates(orthonormal_qs)
+        return Q8aStates(orthonormal_qs, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def determinant(self):
         """Calculate the determinant of a 'square' quaternion series."""
@@ -9169,10 +9596,25 @@ class Q8aStates(Q8a):
         
         else:
             print("Oops, don't know how to calculate the determinant of this one.")
-            q_det = Q8aStates([Q8a().q_0()])
+            return None
         
         return q_det
     
+    def add(self, ket):
+        """Add two states."""
+        
+        if self.dim != ket.dim:
+            oops = "The dimensions are not the same: {} != {}".format(self.dim, ket.dim)
+            print(oops)
+            return None
+        
+        new_states = []
+        
+        for bra, ket in zip(self.qs, ket.qs):
+            new_states.append(bra.add(ket))
+            
+        return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+
     def summation(self):
         """Add them all up, return one quaternion."""
         
@@ -9183,21 +9625,8 @@ class Q8aStates(Q8a):
                 result = q
             else:
                 result = result.add(q)
-    
-        for q in self.qs:
-            result = result.add(q)
             
-        return result
-    
-    def add(self, ket):
-        """Add two states."""
-        
-        new_states = []
-        
-        for bra, ket in zip(self.qs, ket.qs):
-            new_states.append(bra.add(ket))
-            
-        return(Q8aStates(new_states))
+        return result    
     
     def dif(self, ket):
         """Take the difference of two states."""
@@ -9207,10 +9636,20 @@ class Q8aStates(Q8a):
         for bra, ket in zip(self.qs, ket.qs):
             new_states.append(bra.dif(ket))
             
-        return(Q8aStates(new_states)) 
+        return(Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns))  
     
+    def reduce(self):
+        """Reduce the doublet values so one is zero."""
+        
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.reduce())
+            
+        return(Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns))  
+            
     def diagonal(self, dim):
-        """Make a state dim*dim with q along the 'diagonal'."""
+        """Make a state dim*dim with q or qs along the 'diagonal'. Always returns an operator."""
         
         diagonal = []
         
@@ -9218,27 +9657,30 @@ class Q8aStates(Q8a):
             q_values = [self.qs[0]] * dim
         elif len(self.qs) == dim:
             q_values = self.qs
+        elif self.qs is None:
+            print("Oops, the qs here is None.")
+            return None
         else:
             print("Oops, need the length to be equal to the dimensions.")
+            return None
         
         for i in range(dim):
             for j in range(dim):
                 if i == j:
                     diagonal.append(q_values.pop(0))
-
                 else:
                     diagonal.append(Q8a().q_0())
         
-        return Q8aStates(diagonal)
-    
-    @staticmethod
+        return Q8aStates(diagonal, qs_type="op", rows=dim, columns=dim)
+        
+    @staticmethod    
     def identity(dim, operator=False, additive=False):
         """Identity operator for states or operators which are diagonal."""
     
         if additive:
-            id_q = Q8a().q_0()
+            id_q =Q8a().q_0()
         else:
-            id_q = Q8a().q_1()
+            id_q =Q8a().q_1()
             
         if operator:
             q_1 = Q8aStates([id_q])
@@ -9246,166 +9688,81 @@ class Q8aStates(Q8a):
     
         else:
             i_list = [id_q for i in range(dim)]
-            ident = Q8aStates(i_list)
+            ident = Q8aStates(i_list, qs_type="ket")
             
         return ident
     
-    def product(self, product_type, bra=None, ket=None, operator=None, kind=""):
+    def product(self, q1, kind="", reverse=False):
         """Forms the quaternion product for each state."""
         
-        if product_type == 'bra':
-            bra = self
-        elif product_type == 'ket':
-            ket = self
-        elif product_type == 'operator':
-            operator = self
-        else:
-            print("Oops, need to set product_type to bra, ket, or operator.")
-            return None
+        # Diagonalize to allow more products to be formed.
+        self_copy = deepcopy(self)
+        q1_copy = deepcopy(q1)
         
-        def _check_dimensions(op_dim=0, state_1_dim=0, state_2_dim=0, equals=False):
-            """Make sure the states and operators are the right sizes. The operator dimension is either
-               equal to 1 or the product of the bra and ket dimensions."""
+        oops = "Oops, cannot multiply series with row/column dimensions of {}/{} to {}/{}".format(
+            self.rows, self.columns, q1.rows, q1.columns)
+        
+        if self.columns == q1.rows:
+            qs_left = self_copy
+            qs_right = q1_copy
+        
+        elif ((self.rows == q1.rows) and (self.columns == q1.columns)) or             ("scalar" in [self.qs_type, q1.qs_type]) :
+                
+            if self.columns == 1:
+                qs_right = q1_copy
+                qs_left = self_copy.diagonal(qs_right.rows)
+      
+            elif q1.rows == 1:
+                qs_left = self_copy
+                qs_right = q1_copy.diagonal(qs_left.columns)
 
-            oops = ''
-            
-            if equals:
-                if state_1_dim != state_2_dim:
-                    oops = "states have different dimensions: {} != {}".format(state_1_dim, state_2_dim)
-                    
-            elif state_2_dim == 0:
-                if (op_dim % state_1_dim != 0) and (op_dim != 1):
-                    oops = "Operator dimensions don't divide nicely by the state vector: {} % {}".format(
-                        op_dim, state_1_dim)
-                    
             else:
-                if (op_dim != state_1_dim * state_2_dim) and (op_dim == 1 and (state_1_dim != state_2_dim)):
-                    oops = "Operator dimensions do not equal the product of the states: {} != {} * {}".format(
-                        op_dim, state_1_dim, state_2_dim)
-                    
-            if oops:
                 print(oops)
-                return False
+                return None
             
-            else:
-                return True
-        
-        dot_product_flag = False
-        new_states = []
-        
-        if bra is None and ket is None:
+        else:
+            print(oops)            
             return None
         
-        elif bra is None and operator is None:
-            return ket
+        outer_row_max = qs_left.rows
+        outer_column_max = qs_right.columns
+        shared_inner_max = qs_left.columns
+        projector_flag = (shared_inner_max == 1) and (outer_row_max > 1) and (outer_column_max > 1)
         
-        elif ket is None and operator is None:
-            return bra
+        result = [[Q8a().q_0(qtype='') for i in range(outer_column_max)] for j in range(outer_row_max)]
         
-        # <A|B>                                                     
-        elif operator is None:
-            if _check_dimensions(state_1_dim=bra.dim, state_2_dim=ket.dim, equals=True):
-                dot_product_flag = True
-                
-                for b, k in zip(bra.qs, ket.qs):
-                    new_states.append(b.product(k, kind))
-                
-        # Op|B>
-        elif bra is None:
-            if _check_dimensions(op_dim=operator.dim, state_1_dim=ket.dim):
-                if operator.dim == 1:
-                    one_diagonal = operator.diagonal(ket.dim)                    
-                    opb = one_diagonal.qs
-
-                else:
-                    opb = operator.qs
+        for outer_row in range(outer_row_max):
+            for outer_column in range(outer_column_max):
+                for shared_inner in range(shared_inner_max):
+                    
+                    # For projection operators.
+                    left_index = outer_row
+                    right_index = outer_column
+                    
+                    if outer_row_max >= 1 and shared_inner_max > 1:
+                        left_index = outer_row + shared_inner * outer_row_max
                         
-                for ops in zip(*[iter(opb)] * ket.dim):
-                    ok = None
-                    
-                    for op, k in zip(ops, ket.qs): 
-                        if ok is None:
-                            ok = op.product(k, kind)
-                        else:
-                            ok = ok.add(op.product(k, kind))
+                    if outer_column_max >= 1 and shared_inner_max > 1:
+                        right_index = shared_inner + outer_column * shared_inner_max
                             
-                    new_states.append(ok)
+                    result[outer_row][outer_column] = result[outer_row][outer_column].add(
+                        qs_left.qs[left_index].product(
+                            qs_right.qs[right_index], kind=kind, reverse=reverse))
+        
+        # Flatten the list.
+        new_qs = [item for sublist in result for item in sublist]
+        new_states = Q8aStates(new_qs, rows=outer_row_max, columns=outer_column_max)
 
-        # <A|Op
-        elif ket is None:
-            if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim):
-                # Operator needs to be transposed.
-                opt = operator.transpose(bra.dim)
-                
-                if operator.dim == 1:
-                    one_diagonal = operator.diagonal(bra.dim)                    
-                    aop = one_diagonal.qs
-
-                else:
-                    aop = opt.qs
-                                                             
-                for ops in zip(*[iter(aop)]*bra.dim):
-                    bop = None
-                    
-                    for b, op in zip(bra.qs, ops):
-                        if bop is None:
-                            bop = b.product(op, kind)
-                        else:
-                            bop = bop.add(b.product(op, kind))
-                            
-                    new_states.append(bop)
-
-        # <A|Op|B>
-        else:
-            if _check_dimensions(op_dim=operator.dim, state_1_dim=bra.dim, state_2_dim=ket.dim):
-                dot_product_flag = True
-                new_ket = []
-                
-                if operator.dim == 1:
-                    one_diagonal = operator.diagonal(ket.dim)                    
-                    opb = one_diagonal.qs
-
-                else:
-                    opb = operator.qs                                             
-                                                             
-                for ops in zip(*[iter(opb)]*ket.dim):
-                    ok = None
-                    
-                    for op, k in zip(ops, ket.qs): 
-                        if ok is None:
-                            ok = op.product(k, kind)
-                        else:
-                            ok = ok.add(op.product(k, kind))
-                    
-                    new_ket.append(ok)
-                
-                new_ket_state = Q8aStates(new_ket)
-                    
-                for b, k in zip(bra.qs, new_ket_state.qs):
-                    new_states.append(b.product(k, kind))
-                
-        # Return either the dot product or a new quaternion series.
-        if dot_product_flag:
-            dot_product = new_states.pop(0)
-                
-            for new_state in new_states:
-                dot_product = dot_product.add(new_state)
-                
-            return dot_product
+        if projector_flag:
+            return new_states.transpose()
         
         else:
-            return Q8aStates(new_states)
-
-    def Euclidean_product(self, product_type, bra=None, ket=None, operator=None, kind=""):
+            return new_states
+    
+    def Euclidean_product(self, q1, kind="", reverse=False):
         """Forms the Euclidean product, what is used in QM all the time."""
-        
-        if bra is not None:
-            bra = bra.conj()
-            
-        if product_type == 'bra':
-            self = self.conj()
                     
-        return self.product(product_type, bra, ket, operator, kind)
+        return self.conj().product(q1, kind, reverse)
     
     def op_n(self, n, first=True, kind="", reverse=False):
         """Mulitply an operator times a number, in that order. Set first=false for n * Op"""
@@ -9420,13 +9777,12 @@ class Q8aStates(Q8a):
             else:
                 new_states.append(n.product(op, kind, reverse))
     
-        return Q8aStates(new_states)
-
+        return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
     def norm_squared(self):
         """Take the Euclidean product of each state and add it up, returning one quaternion."""
         
-        norm = self.Euclidean_product(self).summation()
-        return norm
+        return self.Euclidean_product('bra', ket=self)
     
     def transpose(self, m=None, n=None):
         """Transposes a series."""
@@ -9444,7 +9800,6 @@ class Q8aStates(Q8a):
             return None
         
         matrix = [[0 for x in range(m)] for y in range(n)] 
-        
         qs_t = []
         
         for mi in range(m):
@@ -9457,13 +9812,36 @@ class Q8aStates(Q8a):
             for q in t:
                 qs_t.append(q)
                 
-        return Q8aStates(qs_t)
+        # Switch rows and columns.
+        return Q8aStates(qs_t, rows=self.columns, columns=self.rows)
+        
+    def Hermitian_conj(self, m=None, n=None, conj_type=0):
+        """Returns the Hermitian conjugate."""
+        
+        return self.transpose(m, n).conj(conj_type)
+    
+    def dagger(self, m=None, n=None, conj_type=0):
+        """Just calls Hermitian_conj()"""
+        
+        return self.Hermitian_conj(m, n, conj_type)
+        
+    def is_square(self):
+        """Tests if a quaternion series is square, meaning the dimenion is n^2."""
+                
+        return math.sqrt(self.dim).is_integer()
+
+    def is_Hermitian(self):
+        """Tests if a series is Hermitian."""
+        
+        hc = self.Hermitian_conj()
+        
+        return self.equals(hc)
     
     @staticmethod
     def sigma(kind, theta=None, phi=None):
         """Returns a sigma when given a type like, x, y, z, xy, xz, yz, xyz, with optional angles theta and phi."""
         
-        q0, q1, qi = Q8a().q_0(), Q8a().q_1(), Q8a().q_i()
+        q0, q1, qi =Q8a().q_0(),Q8a().q_1(),Q8a().q_i()
         
         # Should work if given angles or not.
         if theta is None:
@@ -9485,9 +9863,9 @@ class Q8aStates(Q8a):
         z_factor = q1.product(Q8a([cos_theta, 0, 0, 0]))
 
         sigmas = {}
-        sigma['x'] = Q8aStates([q0, x_factor, x_factor, q0])
-        sigma['y'] = Q8aStates([q0, y_factor, y_factor.flip_signs(), q0]) 
-        sigma['z'] = Q8aStates([z_factor, q0, q0, z_factor.flip_signs()])
+        sigma['x'] =Q8aStates([q0, x_factor, x_factor, q0])
+        sigma['y'] =Q8aStates([q0, y_factor, y_factor.flip_signs(), q0]) 
+        sigma['z'] =Q8aStates([z_factor, q0, q0, z_factor.flip_signs()])
   
         sigmas['xy'] = sigma['x'].add(sigma['y'])
         sigmas['xz'] = sigma['x'].add(sigma['z'])
@@ -9516,6 +9894,9 @@ class TestQ8aStates(unittest.TestCase):
     q_3 = Q8a([3,0,0,0])
     q_n3 = Q8a([-3,0,0,0])
     q_4 = Q8a([4,0,0,0])
+    q_5 = Q8a([5,0,0,0])
+    q_6 = Q8a([6,0,0,0])
+    q_10 = Q8a([10,0,0,0])
     q_n5 = Q8a([-5,0,0,0])
     q_7 = Q8a([7,0,0,0])
     q_8 = Q8a([8,0,0,0])
@@ -9534,26 +9915,51 @@ class TestQ8aStates(unittest.TestCase):
     v33inv = Q8aStates([q_n2, q_3, q_9, q_8, q_n11, q_n34, q_n5, q_7, q_21])
     q_i3 = Q8aStates([q_1, q_1, q_1])
     q_i2d = Q8aStates([q_1, q_0, q_0, q_1])
+    q_i3_bra = Q8aStates([q_1, q_1, q_1], "bra")
+    q_6_op = Q8aStates([q_1, q_0, q_0, q_1, q_i, q_i], "op")    
+    q_6_op_32 = Q8aStates([q_1, q_0, q_0, q_1, q_i, q_i], "op", rows=3, columns=2)
+    q_i2d_op = Q8aStates([q_1, q_0, q_0, q_1], "op")
     q_i4 = Q8a([0,4,0,0])
     q_0_q_1 = Q8aStates([q_0, q_1])
     q_1_q_0 = Q8aStates([q_1, q_0])
     q_1_q_i = Q8aStates([q_1, q_i])
-    A = Q8aStates([Q8a([4,0,0,0]),Q8a([0,1,0,0])])
-    B = Q8aStates([Q8a([0,0,1,0]),Q8a([0,0,0,2]),Q8a([0,3,0,0])])
-    Op = Q8aStates([Q8a([3,0,0,0]),Q8a([0,1,0,0]),Q8a([0,0,2,0]),Q8a([0,0,0,3]),Q8a([2,0,0,0]),Q8a([0,4,0,0])])
-    Op4i = Q8aStates([q_i4])
+    A = Q8aStates([Q8a([4,0,0,0]), Q8a([0,1,0,0])], "bra")
+    B = Q8aStates([Q8a([0,0,1,0]), Q8a([0,0,0,2]), Q8a([0,3,0,0])])
+    Op = Q8aStates([Q8a([3,0,0,0]), Q8a([0,1,0,0]), Q8a([0,0,2,0]), Q8a([0,0,0,3]), Q8a([2,0,0,0]), Q8a([0,4,0,0])], "op", rows=2, columns=3)
+    Op4i = Q8aStates([q_i4, q_0, q_0, q_i4, q_2, q_3], "op", rows=2, columns=3) 
+    Op_scalar = Q8aStates([q_i4], "scalar")
     q_1234 = Q8aStates([Q8a([1, 1, 0, 0]), Q8a([2, 1, 0, 0]), Q8a([3, 1, 0, 0]), Q8a([4, 1, 0, 0])])
     sigma_y = Q8aStates([Q8a([1, 0, 0, 0]), Q8a([0, -1, 0, 0]), Q8a([0, 1, 0, 0]), Q8a([-1, 0, 0, 0])])
     qn = Q8aStates([Q8a([3,0,0,4])])
     
-    def test_init(self):
+    b = Q8aStates([q_1, q_2, q_3], qs_type="bra")
+    k = Q8aStates([q_4, q_5, q_6], qs_type="ket")
+    o = Q8aStates([q_10], qs_type="op")
+        
+    def test_1000_init(self):
         self.assertTrue(self.q_0_q_1.dim == 2)
-
-    def test_equals(self):
+    
+    def test_1010_set_qs_type(self):
+        bk = self.b.set_qs_type("ket")
+        self.assertTrue(bk.rows == 3)
+        self.assertTrue(bk.columns == 1)
+        self.assertTrue(bk.qs_type == "ket")
+        
+    def test_1020_set_rows_and_columns(self):
+        self.assertTrue(self.q_i3.rows == 3)
+        self.assertTrue(self.q_i3.columns == 1)
+        self.assertTrue(self.q_i3_bra.rows == 1)
+        self.assertTrue(self.q_i3_bra.columns == 3)
+        self.assertTrue(self.q_i2d_op.rows == 2)
+        self.assertTrue(self.q_i2d_op.columns == 2)
+        self.assertTrue(self.q_6_op_32.rows == 3)
+        self.assertTrue(self.q_6_op_32.columns == 2)
+        
+    def test_1030_equals(self):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
         
-    def test_conj(self):
+    def test_1040_conj(self):
         qc = self.q_1_q_i.conj()
         qc1 = self.q_1_q_i.conj(1)
         print("q_1_q_i*: ", qc)
@@ -9561,18 +9967,27 @@ class TestQ8aStates(unittest.TestCase):
         self.assertTrue(qc.qs[1].a[3] == 1)
         self.assertTrue(qc1.qs[1].a[2] == 1)
     
-    def test_flip_signs(self):
+    def test_1050_flip_signs(self):
         qf = self.q_1_q_i.flip_signs()
         print("-q_1_q_i: ", qf)
-        self.assertTrue(qf.qs[1].a[3] == 1)    
-    
-    def test_normalize(self):
+        self.assertTrue(qf.qs[1].a[3] == 1)
+        
+    def test_1060_inverse(self):
+        inv_v1123 = self.v1123.inverse(operator=True)
+        print("inv_v1123 operator", inv_v1123)
+        self.assertTrue(inv_v1123.equals(self.v3n1n21))
+
+        inv_v33 = self.v33.inverse(operator=True)
+        print("inv_v33 operator", inv_v33)
+        self.assertTrue(inv_v33.equals(self.v33inv))
+        
+    def test_1070_normalize(self):
         qn = self.qn.normalize()
         print("Op normalized: ", qn)
         self.assertAlmostEqual(qn.qs[0].a[0], 0.6)
         self.assertTrue(qn.qs[0].a[6] == 0.8)
     
-    def test_determinant(self):
+    def test_1080_determinant(self):
         det_v3 = self.v3.determinant()
         print("det v3:", det_v3)
         self.assertTrue(det_v3.equals(self.q_3))
@@ -9585,127 +10000,179 @@ class TestQ8aStates(unittest.TestCase):
         det_vv9 = self.vv9.determinant()
         print("det_vv9", det_vv9)
         self.assertTrue(det_vv9.equals(self.qn627))
-    
-    def test_summation(self):
+        
+    def test_1090_summation(self):
         q_01_sum = self.q_0_q_1.summation()
         print("sum: ", q_01_sum)
         self.assertTrue(type(q_01_sum) is Q8a)
-        self.assertTrue(q_01_sum.a[0]== 2)
+        self.assertTrue(q_01_sum.a[0]== 1)
         
-    def test_add(self):
+    def test_1100_add(self):
         q_0110_add = self.q_0_q_1.add(self.q_1_q_0)
         print("add 01 10: ", q_0110_add)
         self.assertTrue(q_0110_add.qs[0].a[0]== 1)
         self.assertTrue(q_0110_add.qs[1].a[0]== 1)
         
-    def test_dif(self):
+    def test_1110_dif(self):
         q_0110_dif = self.q_0_q_1.dif(self.q_1_q_0)
         print("dif 01 10: ", q_0110_dif)
         self.assertTrue(q_0110_dif.qs[0].a[1]== 1)
         self.assertTrue(q_0110_dif.qs[1].a[0]== 1)
         
-    def test_diagonal(self):
-        Op4iDiag2 = self.Op4i.diagonal(2)
+    def test_1120_diagonal(self):
+        Op4iDiag2 = self.Op_scalar.diagonal(2)
         print("Op4i on a diagonal 2x2", Op4iDiag2)
         self.assertTrue(Op4iDiag2.qs[0].equals(self.q_i4))
         self.assertTrue(Op4iDiag2.qs[1].equals(Q8a().q_0()))
         
-    def test_identity(self):
+    def test_1130_identity(self):
         I2 = Q8aStates().identity(2, operator=True)
-        print("Operator Idenity, diagonal 2x2", I2)
+        print("Operator Idenity, diagonal 2x2", I2)    
         self.assertTrue(I2.qs[0].equals(Q8a().q_1()))
         self.assertTrue(I2.qs[1].equals(Q8a().q_0()))
         I2 = Q8aStates().identity(2)
-        print("Idenity on a 2 state ket", I2)
+        print("Idenity on 2 state ket", I2)
         self.assertTrue(I2.qs[0].equals(Q8a().q_1()))
-        self.assertTrue(I2.qs[1].equals(Q8a().q_1()))
-        
-    def test_product_AA(self):
-        AA = self.A.product('bra', ket=self.A)
+        self.assertTrue(I2.qs[1].equals(Q8a().q_1()))        
+
+    def test_1140_product(self):
+        self.assertTrue(self.b.product(self.o).equals(Q8aStates([Q8a([10,0,0,0]),Q8a([20,0,0,0]),Q8a([30,0,0,0])])))
+        self.assertTrue(self.b.product(self.k).equals(Q8aStates([Q8a([32,0,0,0])])))
+        self.assertTrue(self.b.product(self.o).product(self.k).equals(Q8aStates([Q8a([320,0,0,0])])))
+        self.assertTrue(self.b.product(self.b).equals(Q8aStates([Q8a([1,0,0,0]),Q8a([4,0,0,0]),Q8a([9,0,0,0])])))
+        self.assertTrue(self.o.product(self.k).equals(Q8aStates([Q8a([40,0,0,0]),Q8a([50,0,0,0]),Q8a([60,0,0,0])])))
+        self.assertTrue(self.o.product(self.o).equals(Q8aStates([Q8a([100,0,0,0])])))
+        self.assertTrue(self.k.product(self.k).equals(Q8aStates([Q8a([16,0,0,0]),Q8a([25,0,0,0]),Q8a([36,0,0,0])])))
+        self.assertTrue(self.k.product(self.b).equals(Q8aStates([Q8a([4,0,0,0]),Q8a([5,0,0,0]),Q8a([6,0,0,0]),
+                                                                      Q8a([8,0,0,0]),Q8a([10,0,0,0]),Q8a([12,0,0,0]),
+                                                                      Q8a([12,0,0,0]),Q8a([15,0,0,0]),Q8a([18,0,0,0])])))
+    
+    def test_1150_product_AA(self):
+        AA = self.A.product(self.A.set_qs_type("ket"))
         print("AA: ", AA)
-        self.assertTrue(AA.equals(Q8a([15, 0, 0, 0])))
-                        
-    def test_Euclidean_product_AA(self):
-        AA = self.A.Euclidean_product('bra', ket=self.A)
+        self.assertTrue(AA.equals(Q8aStates([Q8a([15, 0, 0, 0])])))
+                  
+    def test_1160_Euclidean_product_AA(self):
+        AA = self.A.Euclidean_product(self.A.set_qs_type("ket"))
         print("A* A", AA)
-        self.assertTrue(AA.equals(Q8a([17, 0, 0, 0])))
+        self.assertTrue(AA.equals(Q8aStates([Q8a([17, 0, 0, 0])])))
 
-    def test_product_AOp(self):
-        AOp = self.A.product('bra', operator=self.Op)
-        print("(A|Op: ", AOp)
-        self.assertTrue(AOp.qs[0].equals(Q8a([12, 0, -3, 0])))
-        self.assertTrue(AOp.qs[1].equals(Q8a([0, 6, 0, 0])))
-        self.assertTrue(AOp.qs[2].equals(Q8a([-4, 0,8, 0])))
-                        
-    def test_Euclidean_product_AOp(self):
-        AOp = self.A.Euclidean_product('bra', operator=self.Op)
-        print("<A*|Op: ", AOp)
-        self.assertTrue(AOp.qs[0].equals(Q8a([12, 0, 3, 0])))
-        self.assertTrue(AOp.qs[1].equals(Q8a([0, 2, 0, 0])))
-        self.assertTrue(AOp.qs[2].equals(Q8a([4, 0, 8, 0])))
-
-    def test_product_OpB(self):
-        OpB = self.B.product('ket', operator=self.Op)
-        print("Op B: ", OpB)
-        self.assertTrue(OpB.qs[0].equals(Q8a([0, 0, 1, -6])))
-        self.assertTrue(OpB.qs[1].equals(Q8a([-12, -3, 0, 4])))
-                        
-    def test_Euclidean_product_OpB(self):
-        OpB = self.B.Euclidean_product('ket', operator=self.Op)
-        print("Op B: ", OpB)
-        self.assertTrue(OpB.qs[0].equals(Q8a([0, 0, 1, -6])))
-        self.assertTrue(OpB.qs[1].equals(Q8a([-12, -3, 0, 4])))
-
-    def test_product_AOpB(self):
-        AOpB = self.A.product('bra', operator=self.Op, ket=self.B)
-        print("A Op B: ", AOpB)
-        self.assertTrue(AOpB.equals(Q8a([3, -12, 0, -24])))
-                        
-    def test_Euclidean_product_AOpB(self):
-        AOpB = self.A.Euclidean_product('bra', operator=self.Op, ket=self.B)
-        print("A* Op B: ", AOpB)
-        self.assertTrue(AOpB.equals(Q8a([-3, 12, 8, -24])))
+    def test_1170_product_AOp(self):
+        AOp = self.A.product(self.Op)
+        print("A Op: ", AOp)
+        self.assertTrue(AOp.qs[0].equals(Q8a([11, 0, 0, 0])))
+        self.assertTrue(AOp.qs[1].equals(Q8a([0, 0, 5, 0])))
+        self.assertTrue(AOp.qs[2].equals(Q8a([4, 0, 0, 0])))
+                      
+    def test_1180_Euclidean_product_AOp(self):
+        AOp = self.A.Euclidean_product(self.Op)
+        print("A* Op: ", AOp)
+        self.assertTrue(AOp.qs[0].equals(Q8a([13, 0, 0, 0])))
+        self.assertTrue(AOp.qs[1].equals(Q8a([0, 0, 11, 0])))
+        self.assertTrue(AOp.qs[2].equals(Q8a([12, 0, 0, 0])))
         
-    def test_product_AOp4i(self):
-        AOp4i = self.A.product('bra', operator=self.Op4i)
+    def test_1190_product_AOp4i(self):
+        AOp4i = self.A.product(self.Op4i)
         print("A Op4i: ", AOp4i)
         self.assertTrue(AOp4i.qs[0].equals(Q8a([0, 16, 0, 0])))
         self.assertTrue(AOp4i.qs[1].equals(Q8a([-4, 0, 0, 0])))
                         
-    def test_Euclidean_product_AOp4i(self):
-        AOp4i = self.A.Euclidean_product('bra', operator=self.Op4i)
+    def test_1200_Euclidean_product_AOp4i(self):
+        AOp4i = self.A.Euclidean_product(self.Op4i)
         print("A* Op4i: ", AOp4i)
         self.assertTrue(AOp4i.qs[0].equals(Q8a([0, 16, 0, 0])))
         self.assertTrue(AOp4i.qs[1].equals(Q8a([4, 0, 0, 0])))
 
-    def test_product_Op4iB(self):
-        Op4iB = self.B.product('ket', operator=self.Op4i)
-        print("Op4i B: ", Op4iB)
-        self.assertTrue(Op4iB.qs[0].equals(Q8a([0, 0, 0, 4])))
-        self.assertTrue(Op4iB.qs[1].equals(Q8a([0, 0, -8, 0])))
-        self.assertTrue(Op4iB.qs[2].equals(Q8a([-12, 0, 0, 0])))
+    def test_1210_product_OpB(self):
+        OpB = self.Op.product(self.B)
+        print("Op B: ", OpB)
+        self.assertTrue(OpB.qs[0].equals(Q8a([0, 10, 3, 0])))
+        self.assertTrue(OpB.qs[1].equals(Q8a([-18, 0, 0, 1])))
                         
-    def test_Euclidean_product_Op4iB(self):
-        Op4iB = self.B.Euclidean_product('ket', operator=self.Op4i)
-        print("Op4i B: ", Op4iB)
-        self.assertTrue(Op4iB.qs[0].equals(Q8a([0, 0, 0, 4])))
-        self.assertTrue(Op4iB.qs[1].equals(Q8a([0, 0, -8, 0])))
-        self.assertTrue(Op4iB.qs[2].equals(Q8a([-12, 0, 0, 0])))
+    def test_1220_Euclidean_product_OpB(self):
+        OpB = self.Op.Euclidean_product(self.B)
+        print("Op B: ", OpB)
+        self.assertTrue(OpB.qs[0].equals(Q8a([0, 2, 3, 0])))
+        self.assertTrue(OpB.qs[1].equals(Q8a([18, 0, 0, -1])))
 
-    def test_product_AOp4iB(self):
-        AOp4iB = self.A.product('bra', operator=self.Op4i, ket=self.B)
-        print("A* Op4i B: ", AOp4iB)
-        self.assertTrue(AOp4iB.dim == 0)
+    def test_1230_product_AOpB(self):
+        AOpB = self.A.product(self.Op).product(self.B)
+        print("A Op B: ", AOpB)
+        self.assertTrue(AOpB.equals(Q8aStates([Q8a([0, 22, 11, 0])])))
                         
-    def test_Euclidean_product_AOp4iB(self):
-        AOp4iB = self.A.Euclidean_product('bra', operator=self.Op4i, ket=self.B)
-        print("A* Op4i B: ", AOp4iB)
-        self.assertTrue(AOp4iB.dim == 0)
+    def test_1240_Euclidean_product_AOpB(self):
+        AOpB = self.A.Euclidean_product(self.Op).product(self.B)
+        print("A* Op B: ", AOpB)
+        self.assertTrue(AOpB.equals(Q8aStates([Q8a([0, 58, 13, 0])])))
         
-    def test_op_n(self):
+    def test_1250_product_AOp4i(self):
+        AOp4i = self.A.product(self.Op4i)
+        print("A Op4i: ", AOp4i)
+        self.assertTrue(AOp4i.qs[0].equals(Q8a([0, 16, 0, 0])))
+        self.assertTrue(AOp4i.qs[1].equals(Q8a([-4, 0, 0, 0])))
+                        
+    def test_1260_Euclidean_product_AOp4i(self):
+        AOp4i = self.A.Euclidean_product(self.Op4i)
+        print("A* Op4i: ", AOp4i)
+        self.assertTrue(AOp4i.qs[0].equals(Q8a([0, 16, 0, 0])))
+        self.assertTrue(AOp4i.qs[1].equals(Q8a([4, 0, 0, 0])))
+
+    def test_1270_product_Op4iB(self):
+        Op4iB = self.Op4i.product(self.B)
+        print("Op4i B: ", Op4iB)
+        self.assertTrue(Op4iB.qs[0].equals(Q8a([0, 6, 0, 4])))
+        self.assertTrue(Op4iB.qs[1].equals(Q8a([0, 9, -8, 0])))
+                        
+    def test_1280_Euclidean_product_Op4iB(self):
+        Op4iB = self.Op4i.Euclidean_product(self.B)
+        print("Op4i B: ", Op4iB)
+        self.assertTrue(Op4iB.qs[0].equals(Q8a([0, 6, 0, -4])))
+        self.assertTrue(Op4iB.qs[1].equals(Q8a([0, 9, 8, 0])))
+
+    def test_1290_product_AOp4iB(self):
+        AOp4iB = self.A.product(self.Op4i).product(self.B)
+        print("A* Op4i B: ", AOp4iB)
+        self.assertTrue(AOp4iB.equals(Q8aStates([Q8a([-9, 24, 0, 8])])))
+                        
+    def test_1300_Euclidean_product_AOp4iB(self):
+        AOp4iB = self.A.Euclidean_product(self.Op4i).product(self.B)
+        print("A* Op4i B: ", AOp4iB)
+        self.assertTrue(AOp4iB.equals(Q8aStates([Q8a([9, 24, 0, 24])])))
+
+    def test_1310_op_n(self):
         opn = self.Op.op_n(n=self.q_i)
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].a[2] == 3)
+        
+    def test_1320_transpose(self):
+        opt = self.q_1234.transpose()
+        print("op1234 transposed: ", opt)
+        self.assertTrue(opt.qs[0].a[0]== 1)
+        self.assertTrue(opt.qs[1].a[0]== 3)
+        self.assertTrue(opt.qs[2].a[0]== 2)
+        self.assertTrue(opt.qs[3].a[0]== 4)
+        optt = self.q_1234.transpose().transpose()
+        self.assertTrue(optt.equals(self.q_1234))
+        
+    def test_1330_Hermitian_conj(self):
+        q_hc = self.q_1234.Hermitian_conj()
+        print("op1234 Hermtian_conj: ", q_hc)
+        self.assertTrue(q_hc.qs[0].a[0]== 1)
+        self.assertTrue(q_hc.qs[1].a[0]== 3)
+        self.assertTrue(q_hc.qs[2].a[0]== 2)
+        self.assertTrue(q_hc.qs[3].a[0]== 4)
+        self.assertTrue(q_hc.qs[0].a[3] == 1)
+        self.assertTrue(q_hc.qs[1].a[3] == 1)
+        self.assertTrue(q_hc.qs[2].a[3] == 1)
+        self.assertTrue(q_hc.qs[3].a[3] == 1)
+        
+    def test_1340_is_Hermitian(self):
+        self.assertTrue(self.sigma_y.is_Hermitian())
+        self.assertFalse(self.q_1234.is_Hermitian())
+        
+    def test_1350_is_square(self):
+        self.assertFalse(self.Op.is_square())
+        self.assertTrue(self.Op_scalar.is_square())    
         
 suite = unittest.TestLoader().loadTestsFromModule(TestQ8aStates())
 unittest.TextTestRunner().run(suite);
@@ -9714,5 +10181,5 @@ unittest.TextTestRunner().run(suite);
 # In[38]:
 
 
-1+1
+1+3
 
