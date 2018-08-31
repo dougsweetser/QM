@@ -6786,6 +6786,13 @@ class QHStates(QH):
     def set_qs_type(self, qs_type="", rows=0, columns=0, copy=True):
         """Set the qs_type to something sensible."""
     
+        # Checks.
+        if (rows) and (columns) and rows * columns != self.dim:
+            print("Oops, check those values again for rows:{} columns:{} dim:{}".format(
+                rows, columns, self.dim))
+            self.qs, self.rows, self.columns = None, 0, 0
+            return None
+        
         new_q = self
         
         if copy:
@@ -6822,7 +6829,7 @@ class QHStates(QH):
             else:
                 qs_type = "op"
             
-        if not qs_type or not new_q.rows:
+        if not qs_type:
             print("Oops, please set rows and columns for this quaternion series operator. Thanks.")
             return None
         
@@ -6847,6 +6854,11 @@ class QHStates(QH):
         """Utility for printing states as a quaternion series."""
 
         print(label)
+        
+        # Warn if empty.
+        if self.qs is None or len(self.qs) == 0:
+            print("Oops, no quaternions in the series.")
+            return
         
         for n, q in enumerate(self.qs):
             ##### print("n={}: {}".format(n + 1, q.__str__(quiet)))
@@ -7115,25 +7127,18 @@ class QHStates(QH):
     
         else:
             i_list = [id_q for i in range(dim)]
-            ident = QHStates(i_list, qs_type="ket")
+            ident = QHStates(i_list, qs_type="ket", rows=dim, columns=1)
             
         return ident
     
     def product(self, q1, kind="", reverse=False):
         """Forms the quaternion product for each state."""
         
-        # Diagonalize to allow more products to be formed.
         self_copy = deepcopy(self)
         q1_copy = deepcopy(q1)
         
-        oops = "Oops, cannot multiply series with row/column dimensions of {}/{} to {}/{}".format(
-            self.rows, self.columns, q1.rows, q1.columns)
-        
-        if self.columns == q1.rows:
-            qs_left = self_copy
-            qs_right = q1_copy
-        
-        elif ((self.rows == q1.rows) and (self.columns == q1.columns)) or             ("scalar" in [self.qs_type, q1.qs_type]):
+        # Diagonalize if need be.
+        if ((self.rows == q1.rows) and (self.columns == q1.columns)) or             ("scalar" in [self.qs_type, q1.qs_type]):
                 
             if self.columns == 1:
                 qs_right = q1_copy
@@ -7144,12 +7149,18 @@ class QHStates(QH):
                 qs_right = q1_copy.diagonal(qs_left.columns)
 
             else:
-                print(oops)
-                return None
-            
+                qs_left = self_copy
+                qs_right = q1_copy
+        
+        # Typical matrix multiplication criteria.
+        elif self.columns == q1.rows:
+            qs_left = self_copy
+            qs_right = q1_copy
+        
         else:
-            print(oops)            
-            return None    
+            print("Oops, cannot multiply series with row/column dimensions of {}/{} to {}/{}".format(
+                self.rows, self.columns, q1.rows, q1.columns))            
+            return None 
         
         outer_row_max = qs_left.rows
         outer_column_max = qs_right.columns
@@ -7306,7 +7317,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[31]:
+# In[32]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -7358,6 +7369,7 @@ class TestQHStates(unittest.TestCase):
     q_1234 = QHStates([QH([1, 1, 0, 0]), QH([2, 1, 0, 0]), QH([3, 1, 0, 0]), QH([4, 1, 0, 0])])
     sigma_y = QHStates([QH([1, 0, 0, 0]), QH([0, -1, 0, 0]), QH([0, 1, 0, 0]), QH([-1, 0, 0, 0])])
     qn = QHStates([QH([3,0,0,4])])
+    q_bad = QHStates([q_1], rows=2, columns=3)
     
     b = QHStates([q_1, q_2, q_3], qs_type="bra")
     k = QHStates([q_4, q_5, q_6], qs_type="ket")
@@ -7371,6 +7383,7 @@ class TestQHStates(unittest.TestCase):
         self.assertTrue(bk.rows == 3)
         self.assertTrue(bk.columns == 1)
         self.assertTrue(bk.qs_type == "ket")
+        self.assertTrue(self.q_bad.qs is None)
         
     def test_1020_set_rows_and_columns(self):
         self.assertTrue(self.q_i3.rows == 3)
@@ -7614,7 +7627,7 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[32]:
+# In[ ]:
 
 
 class QHaStates(QHa):
@@ -7643,6 +7656,13 @@ class QHaStates(QHa):
     def set_qs_type(self, qs_type="", rows=0, columns=0, copy=True):
         """Set the qs_type to something sensible."""
     
+        # Checks.
+        if (rows) and (columns) and rows * columns != self.dim:
+            print("Oops, check those values again for rows:{} columns:{} dim:{}".format(
+                rows, columns, self.dim))
+            self.qs, self.rows, self.columns = None, 0, 0
+            return None
+        
         new_q = self
         
         if copy:
@@ -7679,7 +7699,7 @@ class QHaStates(QHa):
             else:
                 qs_type = "op"
             
-        if not qs_type or not new_q.rows:
+        if not qs_type:
             print("Oops, please set rows and columns for this quaternion series operator. Thanks.")
             return None
         
@@ -7972,25 +7992,19 @@ class QHaStates(QHa):
     
         else:
             i_list = [id_q for i in range(dim)]
-            ident = QHaStates(i_list, qs_type="ket")
+            ### Not good to set always to ket.
+            ident = QHaStates(i_list, qs_type="ket", rows=dim, columns=1)
             
         return ident
     
     def product(self, q1, kind="", reverse=False):
         """Forms the quaternion product for each state."""
         
-        # Diagonalize to allow more products to be formed.
         self_copy = deepcopy(self)
         q1_copy = deepcopy(q1)
         
-        oops = "Oops, cannot multiply series with row/column dimensions of {}/{} to {}/{}".format(
-            self.rows, self.columns, q1.rows, q1.columns)
-        
-        if self.columns == q1.rows:
-            qs_left = self_copy
-            qs_right = q1_copy
-        
-        elif ((self.rows == q1.rows) and (self.columns == q1.columns)) or             ("scalar" in [self.qs_type, q1.qs_type]) :
+        # Diagonalize if need be.
+        if ((self.rows == q1.rows) and (self.columns == q1.columns)) or             ("scalar" in [self.qs_type, q1.qs_type]):
                 
             if self.columns == 1:
                 qs_right = q1_copy
@@ -8001,11 +8015,17 @@ class QHaStates(QHa):
                 qs_right = q1_copy.diagonal(qs_left.columns)
 
             else:
-                print(oops)
-                return None
-            
+                qs_left = self_copy
+                qs_right = q1_copy
+        
+        # Typical matrix multiplication criteria.
+        elif self.columns == q1.rows:
+            qs_left = self_copy
+            qs_right = q1_copy
+        
         else:
-            print(oops)            
+            print("Oops, cannot multiply series with row/column dimensions of {}/{} to {}/{}".format(
+                self.rows, self.columns, q1.rows, q1.columns))            
             return None
         
         outer_row_max = qs_left.rows
@@ -8163,7 +8183,7 @@ class QHaStates(QHa):
         return signma[kind].normalize()
 
 
-# In[33]:
+# In[ ]:
 
 
 class TestQHaStates(unittest.TestCase):
@@ -8215,6 +8235,7 @@ class TestQHaStates(unittest.TestCase):
     q_1234 = QHaStates([QHa([1, 1, 0, 0]), QHa([2, 1, 0, 0]), QHa([3, 1, 0, 0]), QHa([4, 1, 0, 0])])
     sigma_y = QHaStates([QHa([1, 0, 0, 0]), QHa([0, -1, 0, 0]), QHa([0, 1, 0, 0]), QHa([-1, 0, 0, 0])])
     qn = QHaStates([QHa([3,0,0,4])])
+    q_bad = QHaStates([q1], rows=2, columns=3)
     
     b = QHaStates([q_1, q_2, q_3], qs_type="bra")
     k = QHaStates([q_4, q_5, q_6], qs_type="ket")
@@ -8228,6 +8249,7 @@ class TestQHaStates(unittest.TestCase):
         self.assertTrue(bk.rows == 3)
         self.assertTrue(bk.columns == 1)
         self.assertTrue(bk.qs_type == "ket")
+        self.assertTrue(self.q_bad is None)
         
     def test_1020_set_rows_and_columns(self):
         self.assertTrue(self.q_i3.rows == 3)
@@ -8462,7 +8484,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[34]:
+# In[ ]:
 
 
 class Q8States(Q8):
@@ -8491,6 +8513,13 @@ class Q8States(Q8):
     def set_qs_type(self, qs_type="", rows=0, columns=0, copy=True):
         """Set the qs_type to something sensible."""
     
+        # Checks.
+        if (rows) and (columns) and rows * columns != self.dim:
+            print("Oops, check those values again for rows:{} columns:{} dim:{}".format(
+                rows, columns, self.dim))
+            self.qs, self.rows, self.columns = None, 0, 0
+            return None
+        
         new_q = self
         
         if copy:
@@ -8527,7 +8556,7 @@ class Q8States(Q8):
             else:
                 qs_type = "op"
             
-        if not qs_type or not new_q.rows:
+        if not qs_type:
             print("Oops, please set rows and columns for this quaternion series operator. Thanks.")
             return None
         
@@ -8830,25 +8859,19 @@ class Q8States(Q8):
     
         else:
             i_list = [id_q for i in range(dim)]
-            ident = Q8States(i_list, qs_type="ket")
+            ### Not good to fix only to ket.
+            ident = Q8States(i_list, qs_type="ket", rows=dim, columns=1)
             
         return ident
     
     def product(self, q1, kind="", reverse=False):
         """Forms the quaternion product for each state."""
         
-        # Diagonalize to allow more products to be formed.
         self_copy = deepcopy(self)
         q1_copy = deepcopy(q1)
         
-        oops = "Oops, cannot multiply series with row/column dimensions of {}/{} to {}/{}".format(
-            self.rows, self.columns, q1.rows, q1.columns)
-        
-        if self.columns == q1.rows:
-            qs_left = self_copy
-            qs_right = q1_copy
-        
-        elif ((self.rows == q1.rows) and (self.columns == q1.columns)) or             ("scalar" in [self.qs_type, q1.qs_type]) :
+        # Diagonalize if need be.
+        if ((self.rows == q1.rows) and (self.columns == q1.columns)) or             ("scalar" in [self.qs_type, q1.qs_type]):
                 
             if self.columns == 1:
                 qs_right = q1_copy
@@ -8859,11 +8882,17 @@ class Q8States(Q8):
                 qs_right = q1_copy.diagonal(qs_left.columns)
 
             else:
-                print(oops)
-                return None
-            
+                qs_left = self_copy
+                qs_right = q1_copy
+        
+        # Typical matrix multiplication criteria.
+        elif self.columns == q1.rows:
+            qs_left = self_copy
+            qs_right = q1_copy
+        
         else:
-            print(oops)            
+            print("Oops, cannot multiply series with row/column dimensions of {}/{} to {}/{}".format(
+                self.rows, self.columns, q1.rows, q1.columns))            
             return None
         
         outer_row_max = qs_left.rows
@@ -9021,7 +9050,7 @@ class Q8States(Q8):
         return signma[kind].normalize()
 
 
-# In[35]:
+# In[ ]:
 
 
 class TestQ8States(unittest.TestCase):
@@ -9073,6 +9102,7 @@ class TestQ8States(unittest.TestCase):
     q_1234 = Q8States([Q8([1, 1, 0, 0]), Q8([2, 1, 0, 0]), Q8([3, 1, 0, 0]), Q8([4, 1, 0, 0])])
     sigma_y = Q8States([Q8([1, 0, 0, 0]), Q8([0, -1, 0, 0]), Q8([0, 1, 0, 0]), Q8([-1, 0, 0, 0])])
     qn = Q8States([Q8([3,0,0,4])])
+    q_bad = Q8States([q_1], rows=2, columns=3)
     
     b = Q8States([q_1, q_2, q_3], qs_type="bra")
     k = Q8States([q_4, q_5, q_6], qs_type="ket")
@@ -9086,6 +9116,7 @@ class TestQ8States(unittest.TestCase):
         self.assertTrue(bk.rows == 3)
         self.assertTrue(bk.columns == 1)
         self.assertTrue(bk.qs_type == "ket")
+        self.assertTrue(self.q_bad.qs is None)
         
     def test_1020_set_rows_and_columns(self):
         self.assertTrue(self.q_i3.rows == 3)
@@ -9320,7 +9351,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[36]:
+# In[ ]:
 
 
 class Q8aStates(Q8a):
@@ -9349,6 +9380,13 @@ class Q8aStates(Q8a):
     def set_qs_type(self, qs_type="", rows=0, columns=0, copy=True):
         """Set the qs_type to something sensible."""
     
+        # Checks.
+        if (rows) and (columns) and rows * columns != self.dim:
+            print("Oops, check those values again for rows:{} columns:{} dim:{}".format(
+                rows, columns, self.dim))
+            self.qs, self.rows, self.columns = None, 0, 0
+            return None
+        
         new_q = self
         
         if copy:
@@ -9385,7 +9423,7 @@ class Q8aStates(Q8a):
             else:
                 qs_type = "op"
             
-        if not qs_type or not new_q.rows:
+        if not qs_type:
             print("Oops, please set rows and columns for this quaternion series operator. Thanks.")
             return None
         
@@ -9688,25 +9726,18 @@ class Q8aStates(Q8a):
     
         else:
             i_list = [id_q for i in range(dim)]
-            ident = Q8aStates(i_list, qs_type="ket")
+            ident = Q8aStates(i_list, qs_type="ket", rows=dim, columns=1)
             
         return ident
     
     def product(self, q1, kind="", reverse=False):
         """Forms the quaternion product for each state."""
         
-        # Diagonalize to allow more products to be formed.
         self_copy = deepcopy(self)
         q1_copy = deepcopy(q1)
         
-        oops = "Oops, cannot multiply series with row/column dimensions of {}/{} to {}/{}".format(
-            self.rows, self.columns, q1.rows, q1.columns)
-        
-        if self.columns == q1.rows:
-            qs_left = self_copy
-            qs_right = q1_copy
-        
-        elif ((self.rows == q1.rows) and (self.columns == q1.columns)) or             ("scalar" in [self.qs_type, q1.qs_type]) :
+        # Diagonalize if need be.
+        if ((self.rows == q1.rows) and (self.columns == q1.columns)) or             ("scalar" in [self.qs_type, q1.qs_type]):
                 
             if self.columns == 1:
                 qs_right = q1_copy
@@ -9717,12 +9748,18 @@ class Q8aStates(Q8a):
                 qs_right = q1_copy.diagonal(qs_left.columns)
 
             else:
-                print(oops)
-                return None
-            
+                qs_left = self_copy
+                qs_right = q1_copy
+        
+        # Typical matrix multiplication criteria.
+        elif self.columns == q1.rows:
+            qs_left = self_copy
+            qs_right = q1_copy
+        
         else:
-            print(oops)            
-            return None
+            print("Oops, cannot multiply series with row/column dimensions of {}/{} to {}/{}".format(
+                self.rows, self.columns, q1.rows, q1.columns))            
+            return None 
         
         outer_row_max = qs_left.rows
         outer_column_max = qs_right.columns
@@ -9879,7 +9916,7 @@ class Q8aStates(Q8a):
         return signma[kind].normalize()
 
 
-# In[37]:
+# In[ ]:
 
 
 class TestQ8aStates(unittest.TestCase):
@@ -9931,6 +9968,7 @@ class TestQ8aStates(unittest.TestCase):
     q_1234 = Q8aStates([Q8a([1, 1, 0, 0]), Q8a([2, 1, 0, 0]), Q8a([3, 1, 0, 0]), Q8a([4, 1, 0, 0])])
     sigma_y = Q8aStates([Q8a([1, 0, 0, 0]), Q8a([0, -1, 0, 0]), Q8a([0, 1, 0, 0]), Q8a([-1, 0, 0, 0])])
     qn = Q8aStates([Q8a([3,0,0,4])])
+    q_bad = QHStates([q_1], rows=2, columns=3)
     
     b = Q8aStates([q_1, q_2, q_3], qs_type="bra")
     k = Q8aStates([q_4, q_5, q_6], qs_type="ket")
@@ -9944,6 +9982,7 @@ class TestQ8aStates(unittest.TestCase):
         self.assertTrue(bk.rows == 3)
         self.assertTrue(bk.columns == 1)
         self.assertTrue(bk.qs_type == "ket")
+        self.assertTrue(self.q_bad.qs is None)
         
     def test_1020_set_rows_and_columns(self):
         self.assertTrue(self.q_i3.rows == 3)
@@ -10178,8 +10217,8 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8aStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[38]:
+# In[ ]:
 
 
-1+3
+1+3 +2
 
