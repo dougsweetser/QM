@@ -62,13 +62,13 @@ A.print_state("A")
 
 # Calculation the components.
 
-# In[4]:
+# In[8]:
 
 
-uA = u.Euclidean_product("bra", ket=A)
-dA = d.Euclidean_product("bra", ket=A)
-uA.print_state("αu = <u|A>",1)
-dA.print_state("αd = <d|A>")
+uA = u.set_qs_type("bra").Euclidean_product(A)
+uA.print_state("<u|A>")
+dA = d.set_qs_type("bra").Euclidean_product(A)
+dA.print_state("<d|A>")
 
 
 # That was easy. As different basis vectors are constructed, the 8 values that go into $A$ will shift around.
@@ -79,13 +79,11 @@ dA.print_state("αd = <d|A>")
 
 # ![](images/lecture_2/lecture_2_p_39_2.50.jpg)
 
-# In[5]:
+# In[9]:
 
 
-uA_norm_sq = uA.norm_squared()
-dA_norm_sq = dA.norm_squared()
-uA_norm_sq.print_state("|αu|²", 1)
-dA_norm_sq.print_state("|αd|²")
+uA.norm_squared().print_state("|αu|²")
+dA.norm_squared().print_state("|αd|²")
 
 
 # Everything evaluates to the expected positive real value. The up probability of spin is all from the first quaternion, while the down probability is all from the second quaternion. Quite clean and simple.
