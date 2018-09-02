@@ -6865,7 +6865,7 @@ class QHStates(QH):
         
         return states.rstrip()
     
-    def print_state(self, label, spacer=True, quiet=True):
+    def print_state(self, label, spacer=True, quiet=False, sum=False):
         """Utility for printing states as a quaternion series."""
 
         print(label)
@@ -6876,14 +6876,12 @@ class QHStates(QH):
             return
         
         for n, q in enumerate(self.qs):
-            ##### print("n={}: {}".format(n + 1, q.__str__(quiet)))
-            print("n={}: {}".format(n + 1, q.__str__()))
-        
-        print("{t}: {r}/{c}".format(
-            t=self.qs_type, r=self.rows, c=self.columns))
-        
-        if not quiet:
+            print("n={}: {}".format(n + 1, q.__str__(quiet)))
+            
+        if sum:
             print("sum= {ss}".format(ss=self.summation()))
+            
+        print("{t}: {r}/{c}".format(t=self.qs_type, r=self.rows, c=self.columns))
         
         if spacer:
             print("")
@@ -7777,20 +7775,18 @@ class QHaStates(QHa):
         
         return states.rstrip()
     
-    def print_state(self, label, spacer=True, quiet=True):
+    def print_state(self, label, spacer=True, quiet=False, sum=False):
         """Utility for printing states as a quaternion series."""
 
         print(label)
         
         for n, q in enumerate(self.qs):
-            ##### print("n={}: {}".format(n + 1, q.__str__(quiet)))
-            print("n={}: {}".format(n + 1, q.__str__()))
-        
-        print("{t}: {r}/{c}".format(
-            t=self.qs_type, r=self.rows, c=self.columns))
-        
-        if not quiet:
+            print("n={}: {}".format(n + 1, q.__str__(quiet)))
+            
+        if sum:
             print("sum= {ss}".format(ss=self.summation()))
+            
+        print("{t}: {r}/{c}".format(t=self.qs_type, r=self.rows, c=self.columns))
         
         if spacer:
             print("")
@@ -8676,20 +8672,18 @@ class Q8States(Q8):
         
         return states.rstrip()
     
-    def print_state(self, label, spacer=True, quiet=True):
+    def print_state(self, label, spacer=True, quiet=False, sum=False):
         """Utility for printing states as a quaternion series."""
 
         print(label)
         
         for n, q in enumerate(self.qs):
-            ##### print("n={}: {}".format(n + 1, q.__str__(quiet)))
-            print("n={}: {}".format(n + 1, q.__str__()))
+            print("n={}: {}".format(n + 1, q.__str__(quiet)))
         
-        print("{t}: {r}/{c}".format(
-            t=self.qs_type, r=self.rows, c=self.columns))
-        
-        if not quiet:
+        if sum:
             print("sum= {ss}".format(ss=self.summation()))
+            
+        print("{t}: {r}/{c}".format(t=self.qs_type, r=self.rows, c=self.columns))
         
         if spacer:
             print("")
@@ -9585,20 +9579,18 @@ class Q8aStates(Q8a):
         
         return states.rstrip()
     
-    def print_state(self, label, spacer=True, quiet=True):
+    def print_state(self, label, spacer=True, quiet=False, sum=False):
         """Utility for printing states as a quaternion series."""
 
         print(label)
         
         for n, q in enumerate(self.qs):
-            ##### print("n={}: {}".format(n + 1, q.__str__(quiet)))
-            print("n={}: {}".format(n + 1, q.__str__()))
-        
-        print("{t}: {r}/{c}".format(
-            t=self.qs_type, r=self.rows, c=self.columns))
-        
-        if not quiet:
+            print("n={}: {}".format(n + 1, q.__str__(quiet)))
+            
+        if sum:
             print("sum= {ss}".format(ss=self.summation()))
+            
+        print("{t}: {r}/{c}".format(t=self.qs_type, r=self.rows, c=self.columns))
         
         if spacer:
             print("")
@@ -10388,7 +10380,7 @@ unittest.TextTestRunner().run(suite);
 # In[38]:
 
 
-1+3 +2
+1+3 +2 +2
 
 
 # In[39]:
