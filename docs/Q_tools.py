@@ -5,7 +5,7 @@
 
 # In this notebook, tools for working with quaternions for physics issues are developed. The class QH treat quaternions as Hamilton would have done: as a 4-vector over the real numbers. 
 # 
-# In physics, group theory plays a central role in the fundamental forces of Nature via the standard model. The gauge symmetry U(1) a unit circle in the complex plane leads to electric charge conservation. The unit quaternions $SU(2)$ is the symmetry needed for the weak force which leads to beta decay. The group $SU(3)$ is the symmetry of the strong force that keeps a nucleus together.
+# In physics, group theory plays a central role in the fundamental forces of Nature via the standard model. The gauge symmetry U(1) a unit circle in the complex plane leads to electric charge conservation. The unit quaternions SU(2) is the symmetry needed for the weak force which leads to beta decay. The group SU(3) is the symmetry of the strong force that keeps a nucleus together.
 # 
 # The class Q8 was written in the hope that group theory would be written in first, not added as needed later. I call these "space-time numbers". The problem with such an approach is that one does not use the mathematical field of real numbers. Instead one relies on the set of positive reals. In some ways, this is like reverse engineering some basic computer science. Libraries written in C have a notion of a signed versus unsigned integer. The signed integer behaves like the familiar integers. The unsigned integer is like the positive integers. The difference between the two is whether there is a placeholder for the sign or not. All floats are signed. The modulo operations that work for unsigned integers does not work for floats.
 # 
@@ -17,7 +17,7 @@
 # 
 # Test driven development was used. The same tests were used for QH, QHa, Q8, and Q8a.  Either class can be used to study quaternions in physics.
 
-# In[1]:
+# In[3]:
 
 
 import IPython
@@ -37,9 +37,9 @@ from glob import glob
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# Define the stretch factor $\gamma$ and the $\gamma \beta$ used in special relativity.
+# Define the stretch factor \gamma and the $\gamma \beta$ used in special relativity.
 
-# In[2]:
+# In[4]:
 
 
 def sr_gamma(beta_x=0, beta_y=0, beta_z=0):
@@ -59,7 +59,7 @@ def sr_gamma_betas(beta_x=0, beta_y=0, beta_z=0):
 
 # Define a class QH to manipulate quaternions as Hamilton would have done it so many years ago. The "qtype" is a little bit of text to leave a trail of breadcrumbs about how a particular quaternion was generated.
 
-# In[3]:
+# In[5]:
 
 
 class QH(object):
@@ -968,7 +968,7 @@ class QH(object):
 
 # Write tests the QH class.
 
-# In[4]:
+# In[6]:
 
 
 class TestQH(unittest.TestCase):
@@ -1321,7 +1321,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQH())
 unittest.TextTestRunner().run(suite);
 
 
-# In[5]:
+# In[7]:
 
 
 class TestQHRep(unittest.TestCase):
@@ -1372,7 +1372,7 @@ unittest.TextTestRunner().run(suite);
 
 # A separate class is needed for numpy array due to technical issues I have getting sympy and numpy to play nicely with each other...
 
-# In[6]:
+# In[8]:
 
 
 class QHa(object):
@@ -2281,7 +2281,7 @@ class QHa(object):
         return self
 
 
-# In[7]:
+# In[9]:
 
 
 class TestQHa(unittest.TestCase):
@@ -2627,7 +2627,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHa())
 unittest.TextTestRunner().run(suite);
 
 
-# In[8]:
+# In[10]:
 
 
 class TestQHaRep(unittest.TestCase):
@@ -2679,7 +2679,7 @@ unittest.TextTestRunner().run(suite);
 
 # My long term goal is to deal with quaternions on a quaternion manifold. This will have 4 pairs of doublets. Each doublet is paired with its additive inverse. Instead of using real numbers, one uses (3, 0) and (0, 2) to represent +3 and -2 respectively. Numbers such as (5, 6) are allowed. That can be "reduced" to (0, 1).  My sense is that somewhere deep in the depths of relativistic quantum field theory, this will be a "good thing". For now, it is a minor pain to program.
 
-# In[9]:
+# In[11]:
 
 
 class Doublet(object):
@@ -2801,7 +2801,7 @@ class Doublet(object):
         return Doublet([p1, n1])
 
 
-# In[10]:
+# In[12]:
 
 
 class TestDoublet(unittest.TestCase):
@@ -2876,7 +2876,7 @@ unittest.TextTestRunner().run(suite);
 
 # Repeat the exercise for arrays.
 
-# In[11]:
+# In[13]:
 
 
 class Doubleta(object):
@@ -2987,7 +2987,7 @@ class Doubleta(object):
         return Doubleta([p1, n1])
 
 
-# In[12]:
+# In[14]:
 
 
 class TestDoubleta(unittest.TestCase):
@@ -3057,7 +3057,7 @@ class TestDoubleta(unittest.TestCase):
         self.assertTrue(Z2p_red.d[1] == Z2p_2.d[1])
 
 
-# In[13]:
+# In[15]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestDoubleta())
@@ -3068,7 +3068,7 @@ unittest.TextTestRunner().run(suite);
 
 # Write a class to handle quaternions given 8 numbers.
 
-# In[14]:
+# In[16]:
 
 
 class Q8(object):
@@ -4050,7 +4050,7 @@ class Q8(object):
         return self
 
 
-# In[15]:
+# In[17]:
 
 
 class TestQ8(unittest.TestCase):
@@ -4486,7 +4486,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8())
 unittest.TextTestRunner().run(suite);
 
 
-# In[16]:
+# In[18]:
 
 
 class TestQ8Rep(unittest.TestCase):
@@ -4538,7 +4538,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Class Q8a as nparrays
 
-# In[17]:
+# In[19]:
 
 
 class Q8a(Doubleta):
@@ -5659,7 +5659,7 @@ class Q8a(Doubleta):
         return self
 
 
-# In[18]:
+# In[20]:
 
 
 class TestQ8a(unittest.TestCase):
@@ -6025,7 +6025,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8a())
 unittest.TextTestRunner().run(suite);
 
 
-# In[19]:
+# In[21]:
 
 
 class TestQ8aRep(unittest.TestCase):
@@ -6086,7 +6086,7 @@ unittest.TextTestRunner().run(suite);
 # Such an exact relation is not of much interest to physicists since Einstein showed that holds for only one set of observers. If one is moving relative to the reference observer, the two events would look like they occured at different times in the future, presuming perfectly accurate measuring devices.
 # 
 
-# In[20]:
+# In[22]:
 
 
 def round_sig_figs(num, sig_figs):
@@ -6100,7 +6100,7 @@ def round_sig_figs(num, sig_figs):
         return 0  # Can't take the log of 0
 
 
-# In[21]:
+# In[23]:
 
 
 class EQ(object):
@@ -6424,7 +6424,7 @@ class EQ(object):
     
 
 
-# In[22]:
+# In[24]:
 
 
 class TestEQ(unittest.TestCase):
@@ -6534,7 +6534,7 @@ class TestEQ(unittest.TestCase):
         self.assertTrue(eq_small_tiny.norm_squared_of_unity() == 'less_than_unity')
 
 
-# In[23]:
+# In[25]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestEQ())
@@ -6545,7 +6545,7 @@ unittest.TextTestRunner().run(suite);
 
 # Create a class that can make many, many quaternions.
 
-# In[24]:
+# In[26]:
 
 
 class QHArray(QH):
@@ -6618,7 +6618,7 @@ class QHArray(QH):
         return QH([new_t, new_x, new_y, new_z])
 
 
-# In[25]:
+# In[27]:
 
 
 class TestQHArray(unittest.TestCase):
@@ -6646,7 +6646,7 @@ class TestQHArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.z > 13.9)
 
 
-# In[26]:
+# In[28]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHArray())
@@ -6655,7 +6655,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Array of nparrays
 
-# In[27]:
+# In[29]:
 
 
 class QHaArray(QHa):
@@ -6718,7 +6718,7 @@ class QHaArray(QHa):
                 self.q_max.a[3] = q1.a[3]
 
 
-# In[28]:
+# In[30]:
 
 
 class TestQHaArray(unittest.TestCase):
@@ -6746,7 +6746,7 @@ class TestQHaArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.a[3] > 13.9)
 
 
-# In[29]:
+# In[31]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaArray())
@@ -6757,7 +6757,7 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[30]:
+# In[32]:
 
 
 class QHStates(QH):
@@ -6930,7 +6930,15 @@ class QHStates(QH):
             else:
                 if self.dim == 1:
                     q_inv =QHStates(self.qs[0].inverse())
-        
+ 
+                elif self.qs_type in ["bra", "ket"]:
+                    new_qs = []
+                    
+                    for q in self.qs:
+                        new_qs.append(q.inverse())
+                    
+                    q_inv = QHStates(new_qs, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+
                 elif self.dim == 4:
                     det = self.determinant()
                     detinv = det.inverse()
@@ -7218,9 +7226,9 @@ class QHStates(QH):
         return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def norm_squared(self):
-        """Take the Euclidean product of each state and add it up, returning one quaternion."""
+        """Take the Euclidean product of each state and add it up, returning a scalar series."""
         
-        return self.Euclidean_product('bra', ket=self)
+        return self.set_qs_type("bra").Euclidean_product(self.set_qs_type("ket"))
     
     def transpose(self, m=None, n=None):
         """Transposes a series."""
@@ -7317,7 +7325,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[32]:
+# In[33]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -7348,6 +7356,10 @@ class TestQHStates(unittest.TestCase):
     v9 = QHStates([q_1, q_1, q_2, q_3, q_1, q_1, q_2, q_3, q_2])
     v9i = QHStates([QH([0,1,0,0]), QH([0,2,0,0]), QH([0,3,0,0]), QH([0,4,0,0]), QH([0,5,0,0]), QH([0,6,0,0]), QH([0,7,0,0]), QH([0,8,0,0]), QH([0,9,0,0])])
     vv9 = v9.add(v9i)
+    q_1d0 = QH([1.0, 0, 0, 0])
+    q12 = QHStates([q_1d0, q_1d0])
+    q14 = QHStates([q_1d0, q_1d0, q_1d0, q_1d0])
+    q19 = QHStates([q_1d0, q_0, q_1d0, q_1d0, q_1d0, q_1d0, q_1d0, q_1d0, q_1d0])
     qn627 = QH([-6,27,0,0])
     v33 = QHStates([q_7, q_0, q_n3, q_2, q_3, q_4, q_1, q_n1, q_n2])
     v33inv = QHStates([q_n2, q_3, q_9, q_8, q_n11, q_n34, q_n5, q_7, q_21])
@@ -7415,11 +7427,21 @@ class TestQHStates(unittest.TestCase):
     def test_1060_inverse(self):
         inv_v1123 = self.v1123.inverse(operator=True)
         print("inv_v1123 operator", inv_v1123)
-        self.assertTrue(inv_v1123.equals(self.v3n1n21))
+        vvinv = inv_v1123.product(self.v1123)
+        vvinv.print_state("vinvD x v")
+        self.assertTrue(vvinv.equals(self.q14))
 
         inv_v33 = self.v33.inverse(operator=True)
         print("inv_v33 operator", inv_v33)
-        self.assertTrue(inv_v33.equals(self.v33inv))
+        vv33 = inv_v33.product(self.v33)
+        vv33.print_state("inv_v33D x v33")
+        self.assertTrue(vv33.equals(self.q19))
+        
+        Ainv = self.A.inverse(operator=True)
+        print("A ket inverse, ", Ainv)
+        AAinv = self.A.product(Ainv)
+        AAinv.print_state("A x AinvD")
+        self.assertTrue(AAinv.equals(self.q12))
         
     def test_1070_normalize(self):
         qn = self.qn.normalize()
@@ -7584,6 +7606,11 @@ class TestQHStates(unittest.TestCase):
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].x == 3)
         
+    def test_1315_norm_squared(self):
+        ns = self.q_1_q_i.norm_squared()
+        ns.print_state("q_1_q_i norm squared")
+        self.assertTrue(ns.equals(QHStates([QH([2,0,0,0])])))
+        
     def test_1320_transpose(self):
         opt = self.q_1234.transpose()
         print("op1234 transposed: ", opt)
@@ -7627,7 +7654,7 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[ ]:
+# In[34]:
 
 
 class QHaStates(QHa):
@@ -7796,6 +7823,14 @@ class QHaStates(QHa):
                 if self.dim == 1:
                     q_inv =QHaStates(self.qs[0].inverse())
         
+                elif self.qs_type in ["bra", "ket"]:
+                    new_qs = []
+                    
+                    for q in self.qs:
+                        new_qs.append(q.inverse())
+                    
+                    q_inv = QHaStates(new_qs, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+                    
                 elif self.dim == 4:
                     det = self.determinant()
                     detinv = det.inverse()
@@ -8084,9 +8119,9 @@ class QHaStates(QHa):
         return QHaStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def norm_squared(self):
-        """Take the Euclidean product of each state and add it up, returning one quaternion."""
+        """Take the Euclidean product of each state and add it up, returning a scalar series."""
         
-        return self.Euclidean_product('bra', ket=self)
+        return self.set_qs_type("bra").Euclidean_product(self.set_qs_type("ket"))
     
     def transpose(self, m=None, n=None):
         """Transposes a series."""
@@ -8183,7 +8218,7 @@ class QHaStates(QHa):
         return signma[kind].normalize()
 
 
-# In[ ]:
+# In[35]:
 
 
 class TestQHaStates(unittest.TestCase):
@@ -8211,6 +8246,10 @@ class TestQHaStates(unittest.TestCase):
     v3 = QHaStates([q_3])
     v1123 = QHaStates([q_1, q_1, q_2, q_3])
     v3n1n21 = QHaStates([q_3,q_n1,q_n2,q_1])
+    q_1d0 = QHa([1.0, 0, 0, 0])
+    q12 = QHaStates([q_1d0, q_1d0])
+    q14 = QHaStates([q_1d0, q_1d0, q_1d0, q_1d0])
+    q19 = QHaStates([q_1d0, q_0, q_1d0, q_1d0, q_1d0, q_1d0, q_1d0, q_1d0, q_1d0])
     v9 = QHaStates([q_1, q_1, q_2, q_3, q_1, q_1, q_2, q_3, q_2])
     v9i = QHaStates([QHa([0,1,0,0]), QHa([0,2,0,0]), QHa([0,3,0,0]), QHa([0,4,0,0]), QHa([0,5,0,0]), QHa([0,6,0,0]), QHa([0,7,0,0]), QHa([0,8,0,0]), QHa([0,9,0,0])])
     vv9 = v9.add(v9i)
@@ -8235,7 +8274,7 @@ class TestQHaStates(unittest.TestCase):
     q_1234 = QHaStates([QHa([1, 1, 0, 0]), QHa([2, 1, 0, 0]), QHa([3, 1, 0, 0]), QHa([4, 1, 0, 0])])
     sigma_y = QHaStates([QHa([1, 0, 0, 0]), QHa([0, -1, 0, 0]), QHa([0, 1, 0, 0]), QHa([-1, 0, 0, 0])])
     qn = QHaStates([QHa([3,0,0,4])])
-    q_bad = QHaStates([q1], rows=2, columns=3)
+    q_bad = QHaStates([q_1], rows=2, columns=3)
     
     b = QHaStates([q_1, q_2, q_3], qs_type="bra")
     k = QHaStates([q_4, q_5, q_6], qs_type="ket")
@@ -8249,7 +8288,7 @@ class TestQHaStates(unittest.TestCase):
         self.assertTrue(bk.rows == 3)
         self.assertTrue(bk.columns == 1)
         self.assertTrue(bk.qs_type == "ket")
-        self.assertTrue(self.q_bad is None)
+        self.assertTrue(self.q_bad.qs is None)
         
     def test_1020_set_rows_and_columns(self):
         self.assertTrue(self.q_i3.rows == 3)
@@ -8281,11 +8320,21 @@ class TestQHaStates(unittest.TestCase):
     def test_1060_inverse(self):
         inv_v1123 = self.v1123.inverse(operator=True)
         print("inv_v1123 operator", inv_v1123)
-        self.assertTrue(inv_v1123.equals(self.v3n1n21))
+        vvinv = inv_v1123.product(self.v1123)
+        vvinv.print_state("vinvD x v")
+        self.assertTrue(vvinv.equals(self.q14))
 
         inv_v33 = self.v33.inverse(operator=True)
         print("inv_v33 operator", inv_v33)
-        self.assertTrue(inv_v33.equals(self.v33inv))
+        vv33 = inv_v33.product(self.v33)
+        vv33.print_state("inv_v33D x v33")
+        self.assertTrue(vv33.equals(self.q19))
+        
+        Ainv = self.A.inverse(operator=True)
+        print("A bra inverse, ", Ainv)
+        AAinv = self.A.product(Ainv)
+        AAinv.print_state("A x AinvD")
+        self.assertTrue(AAinv.equals(self.q12))
         
     def test_1070_normalize(self):
         qn = self.qn.normalize()
@@ -8450,6 +8499,11 @@ class TestQHaStates(unittest.TestCase):
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].a[1] == 3)
         
+    def test_1315_norm_squared(self):
+        ns = self.q_1_q_i.norm_squared()
+        ns.print_state("q_1_q_i norm squared")
+        self.assertTrue(ns.equals(QHaStates([QHa([2,0,0,0])])))
+        
     def test_1320_transpose(self):
         opt = self.q_1234.transpose()
         print("op1234 transposed: ", opt)
@@ -8484,7 +8538,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[ ]:
+# In[36]:
 
 
 class Q8States(Q8):
@@ -8653,6 +8707,14 @@ class Q8States(Q8):
                 if self.dim == 1:
                     q_inv =Q8States(self.qs[0].inverse())
         
+                elif self.qs_type in ["bra", "ket"]:
+                    new_qs = []
+                    
+                    for q in self.qs:
+                        new_qs.append(q.inverse())
+                    
+                    q_inv = Q8States(new_qs, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+                    
                 elif self.dim == 4:
                     det = self.determinant()
                     detinv = det.inverse()
@@ -8951,9 +9013,9 @@ class Q8States(Q8):
         return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def norm_squared(self):
-        """Take the Euclidean product of each state and add it up, returning one quaternion."""
+        """Take the Euclidean product of each state and add it up, returning a scalar series."""
         
-        return self.Euclidean_product('bra', ket=self)
+        return self.set_qs_type("bra").Euclidean_product(self.set_qs_type("ket"))
     
     def transpose(self, m=None, n=None):
         """Transposes a series."""
@@ -9050,7 +9112,7 @@ class Q8States(Q8):
         return signma[kind].normalize()
 
 
-# In[ ]:
+# In[37]:
 
 
 class TestQ8States(unittest.TestCase):
@@ -9078,6 +9140,10 @@ class TestQ8States(unittest.TestCase):
     v3 = Q8States([q_3])
     v1123 = Q8States([q_1, q_1, q_2, q_3])
     v3n1n21 = Q8States([q_3,q_n1,q_n2,q_1])
+    q_1d0 = Q8([1.0, 0, 0, 0])
+    q12 = Q8States([q_1d0, q_1d0])
+    q14 = Q8States([q_1d0, q_1d0, q_1d0, q_1d0])
+    q19 = Q8States([q_1d0, q_0, q_1d0, q_1d0, q_1d0, q_1d0, q_1d0, q_1d0, q_1d0])
     v9 = Q8States([q_1, q_1, q_2, q_3, q_1, q_1, q_2, q_3, q_2])
     v9i = Q8States([Q8([0,1,0,0]), Q8([0,2,0,0]), Q8([0,3,0,0]), Q8([0,4,0,0]), Q8([0,5,0,0]), Q8([0,6,0,0]), Q8([0,7,0,0]), Q8([0,8,0,0]), Q8([0,9,0,0])])
     vv9 = v9.add(v9i)
@@ -9148,11 +9214,21 @@ class TestQ8States(unittest.TestCase):
     def test_1060_inverse(self):
         inv_v1123 = self.v1123.inverse(operator=True)
         print("inv_v1123 operator", inv_v1123)
-        self.assertTrue(inv_v1123.equals(self.v3n1n21))
+        vvinv = inv_v1123.product(self.v1123)
+        vvinv.print_state("vinvD x v")
+        self.assertTrue(vvinv.equals(self.q14))
 
         inv_v33 = self.v33.inverse(operator=True)
         print("inv_v33 operator", inv_v33)
-        self.assertTrue(inv_v33.equals(self.v33inv))
+        vv33 = inv_v33.product(self.v33)
+        vv33.print_state("inv_v33D x v33")
+        self.assertTrue(vv33.equals(self.q19))
+        
+        Ainv = self.A.inverse(operator=True)
+        print("A bra inverse, ", Ainv)
+        AAinv = self.A.product(Ainv)
+        AAinv.print_state("A x AinvD")
+        self.assertTrue(AAinv.equals(self.q12))
         
     def test_1070_normalize(self):
         qn = self.qn.normalize()
@@ -9317,6 +9393,11 @@ class TestQ8States(unittest.TestCase):
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].dx.p == 3)
         
+    def test_1315_norm_squared(self):
+        ns = self.q_1_q_i.norm_squared()
+        ns.print_state("q_1_q_i norm squared")
+        self.assertTrue(ns.equals(Q8States([Q8([2,0,0,0])])))
+        
     def test_1320_transpose(self):
         opt = self.q_1234.transpose()
         print("op1234 transposed: ", opt)
@@ -9351,7 +9432,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[ ]:
+# In[38]:
 
 
 class Q8aStates(Q8a):
@@ -9519,6 +9600,14 @@ class Q8aStates(Q8a):
             else:
                 if self.dim == 1:
                     q_inv =Q8aStates(self.qs[0].inverse())
+        
+                elif self.qs_type in ["bra", "ket"]:
+                    new_qs = []
+                    
+                    for q in self.qs:
+                        new_qs.append(q.inverse())
+                    
+                    q_inv = Q8aStates(new_qs, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
         
                 elif self.dim == 4:
                     det = self.determinant()
@@ -9817,9 +9906,9 @@ class Q8aStates(Q8a):
         return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
     def norm_squared(self):
-        """Take the Euclidean product of each state and add it up, returning one quaternion."""
+        """Take the Euclidean product of each state and add it up, returning a scalar series."""
         
-        return self.Euclidean_product('bra', ket=self)
+        return self.set_qs_type("bra").Euclidean_product(self.set_qs_type("ket"))
     
     def transpose(self, m=None, n=None):
         """Transposes a series."""
@@ -9916,7 +10005,7 @@ class Q8aStates(Q8a):
         return signma[kind].normalize()
 
 
-# In[ ]:
+# In[39]:
 
 
 class TestQ8aStates(unittest.TestCase):
@@ -9944,6 +10033,10 @@ class TestQ8aStates(unittest.TestCase):
     v3 = Q8aStates([q_3])
     v1123 = Q8aStates([q_1, q_1, q_2, q_3])
     v3n1n21 = Q8aStates([q_3,q_n1,q_n2,q_1])
+    q_1d0 = Q8a([1.0, 0, 0, 0])
+    q12 = Q8aStates([q_1d0, q_1d0])
+    q14 = Q8aStates([q_1d0, q_1d0, q_1d0, q_1d0])
+    q19 = Q8aStates([q_1d0, q_0, q_1d0, q_1d0, q_1d0, q_1d0, q_1d0, q_1d0, q_1d0])
     v9 = Q8aStates([q_1, q_1, q_2, q_3, q_1, q_1, q_2, q_3, q_2])
     v9i = Q8aStates([Q8a([0,1,0,0]), Q8a([0,2,0,0]), Q8a([0,3,0,0]), Q8a([0,4,0,0]), Q8a([0,5,0,0]), Q8a([0,6,0,0]), Q8a([0,7,0,0]), Q8a([0,8,0,0]), Q8a([0,9,0,0])])
     vv9 = v9.add(v9i)
@@ -9968,7 +10061,7 @@ class TestQ8aStates(unittest.TestCase):
     q_1234 = Q8aStates([Q8a([1, 1, 0, 0]), Q8a([2, 1, 0, 0]), Q8a([3, 1, 0, 0]), Q8a([4, 1, 0, 0])])
     sigma_y = Q8aStates([Q8a([1, 0, 0, 0]), Q8a([0, -1, 0, 0]), Q8a([0, 1, 0, 0]), Q8a([-1, 0, 0, 0])])
     qn = Q8aStates([Q8a([3,0,0,4])])
-    q_bad = QHStates([q_1], rows=2, columns=3)
+    q_bad = Q8aStates([q_1], rows=2, columns=3)
     
     b = Q8aStates([q_1, q_2, q_3], qs_type="bra")
     k = Q8aStates([q_4, q_5, q_6], qs_type="ket")
@@ -10014,11 +10107,21 @@ class TestQ8aStates(unittest.TestCase):
     def test_1060_inverse(self):
         inv_v1123 = self.v1123.inverse(operator=True)
         print("inv_v1123 operator", inv_v1123)
-        self.assertTrue(inv_v1123.equals(self.v3n1n21))
+        vvinv = inv_v1123.product(self.v1123)
+        vvinv.print_state("vinvD x v")
+        self.assertTrue(vvinv.equals(self.q14))
 
         inv_v33 = self.v33.inverse(operator=True)
         print("inv_v33 operator", inv_v33)
-        self.assertTrue(inv_v33.equals(self.v33inv))
+        vv33 = inv_v33.product(self.v33)
+        vv33.print_state("inv_v33D x v33")
+        self.assertTrue(vv33.equals(self.q19))
+        
+        Ainv = self.A.inverse(operator=True)
+        print("A ket inverse, ", Ainv)
+        AAinv = self.A.product(Ainv)
+        AAinv.print_state("A x AinvD")
+        self.assertTrue(AAinv.equals(self.q12))
         
     def test_1070_normalize(self):
         qn = self.qn.normalize()
@@ -10183,6 +10286,11 @@ class TestQ8aStates(unittest.TestCase):
         print("op_n: ", opn)
         self.assertTrue(opn.qs[0].a[2] == 3)
         
+    def test_1315_norm_squared(self):
+        ns = self.q_1_q_i.norm_squared()
+        ns.print_state("q_1_q_i norm squared")
+        self.assertTrue(ns.equals(Q8aStates([Q8a([2,0,0,0])])))
+        
     def test_1320_transpose(self):
         opt = self.q_1234.transpose()
         print("op1234 transposed: ", opt)
@@ -10217,8 +10325,14 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8aStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[ ]:
+# In[40]:
 
 
 1+3 +2
+
+
+# In[41]:
+
+
+2+2
 
