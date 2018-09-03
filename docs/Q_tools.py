@@ -7322,9 +7322,9 @@ class QHStates(QH):
         z_factor = q1.product(QH([cos_theta, 0, 0, 0]))
 
         sigmas = {}
-        sigma['x'] =QHStates([q0, x_factor, x_factor, q0])
-        sigma['y'] =QHStates([q0, y_factor, y_factor.flip_signs(), q0]) 
-        sigma['z'] =QHStates([z_factor, q0, q0, z_factor.flip_signs()])
+        sigma['x'] =QHStates([q0, x_factor, x_factor, q0], "op")
+        sigma['y'] =QHStates([q0, y_factor, y_factor.flip_signs(), q0], "op") 
+        sigma['z'] =QHStates([z_factor, q0, q0, z_factor.flip_signs()], "op")
   
         sigmas['xy'] = sigma['x'].add(sigma['y'])
         sigmas['xz'] = sigma['x'].add(sigma['z'])
@@ -8228,9 +8228,9 @@ class QHaStates(QHa):
         z_factor = q1.product(QHa([cos_theta, 0, 0, 0]))
 
         sigmas = {}
-        sigma['x'] =QHaStates([q0, x_factor, x_factor, q0])
-        sigma['y'] =QHaStates([q0, y_factor, y_factor.flip_signs(), q0]) 
-        sigma['z'] =QHaStates([z_factor, q0, q0, z_factor.flip_signs()])
+        sigma['x'] =QHaStates([q0, x_factor, x_factor, q0], "op")
+        sigma['y'] =QHaStates([q0, y_factor, y_factor.flip_signs(), q0], "op") 
+        sigma['z'] =QHaStates([z_factor, q0, q0, z_factor.flip_signs()], "op")
   
         sigmas['xy'] = sigma['x'].add(sigma['y'])
         sigmas['xz'] = sigma['x'].add(sigma['z'])
@@ -9135,9 +9135,9 @@ class Q8States(Q8):
         z_factor = q1.product(Q8([cos_theta, 0, 0, 0]))
 
         sigmas = {}
-        sigma['x'] =Q8States([q0, x_factor, x_factor, q0])
-        sigma['y'] =Q8States([q0, y_factor, y_factor.flip_signs(), q0]) 
-        sigma['z'] =Q8States([z_factor, q0, q0, z_factor.flip_signs()])
+        sigma['x'] =Q8States([q0, x_factor, x_factor, q0], "op")
+        sigma['y'] =Q8States([q0, y_factor, y_factor.flip_signs(), q0], "op") 
+        sigma['z'] =Q8States([z_factor, q0, q0, z_factor.flip_signs()], "op")
   
         sigmas['xy'] = sigma['x'].add(sigma['y'])
         sigmas['xz'] = sigma['x'].add(sigma['z'])
@@ -10041,9 +10041,9 @@ class Q8aStates(Q8a):
         z_factor = q1.product(Q8a([cos_theta, 0, 0, 0]))
 
         sigmas = {}
-        sigma['x'] =Q8aStates([q0, x_factor, x_factor, q0])
-        sigma['y'] =Q8aStates([q0, y_factor, y_factor.flip_signs(), q0]) 
-        sigma['z'] =Q8aStates([z_factor, q0, q0, z_factor.flip_signs()])
+        sigma['x'] = Q8aStates([q0, x_factor, x_factor, q0], "op")
+        sigma['y'] = Q8aStates([q0, y_factor, y_factor.flip_signs(), q0], "op") 
+        sigma['z'] = Q8aStates([z_factor, q0, q0, z_factor.flip_signs()], "op")
   
         sigmas['xy'] = sigma['x'].add(sigma['y'])
         sigmas['xz'] = sigma['x'].add(sigma['z'])
