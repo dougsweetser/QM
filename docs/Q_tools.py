@@ -7073,9 +7073,10 @@ class QHStates(QH):
     def add(self, ket):
         """Add two states."""
         
-        if self.dim != ket.dim:
-            oops = "The dimensions are not the same: {} != {}".format(self.dim, ket.dim)
-            print(oops)
+        if ((self.rows != ket.rows) or (self.columns != ket.columns)):
+            print("Oops, can only add if rows and columns are the same.")
+            print("rows are: {}/{}, columns are: {}/{}".format(self.rows, ket.rows,
+                                                               self.columns, ket.columns))
             return None
         
         new_states = []
@@ -7978,9 +7979,10 @@ class QHaStates(QHa):
     def add(self, ket):
         """Add two states."""
         
-        if self.dim != ket.dim:
-            oops = "The dimensions are not the same: {} != {}".format(self.dim, ket.dim)
-            print(oops)
+        if ((self.rows != ket.rows) or (self.columns != ket.columns)):
+            print("Oops, can only add if rows and columns are the same.")
+            print("rows are: {}/{}, columns are: {}/{}".format(self.rows, ket.rows,
+                                                               self.columns, ket.columns))
             return None
         
         new_states = []
@@ -8875,9 +8877,10 @@ class Q8States(Q8):
     def add(self, ket):
         """Add two states."""
         
-        if self.dim != ket.dim:
-            oops = "The dimensions are not the same: {} != {}".format(self.dim, ket.dim)
-            print(oops)
+        if ((self.rows != ket.rows) or (self.columns != ket.columns)):
+            print("Oops, can only add if rows and columns are the same.")
+            print("rows are: {}/{}, columns are: {}/{}".format(self.rows, ket.rows,
+                                                               self.columns, ket.columns))
             return None
         
         new_states = []
@@ -9782,9 +9785,10 @@ class Q8aStates(Q8a):
     def add(self, ket):
         """Add two states."""
         
-        if self.dim != ket.dim:
-            oops = "The dimensions are not the same: {} != {}".format(self.dim, ket.dim)
-            print(oops)
+        if ((self.rows != ket.rows) or (self.columns != ket.columns)):
+            print("Oops, can only add if rows and columns are the same.")
+            print("rows are: {}/{}, columns are: {}/{}".format(self.rows, ket.rows,
+                                                               self.columns, ket.columns))
             return None
         
         new_states = []
