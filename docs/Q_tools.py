@@ -6757,7 +6757,7 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[30]:
+# In[43]:
 
 
 class QHStates(QH):
@@ -7135,21 +7135,35 @@ class QHStates(QH):
         return QHStates(diagonal, qs_type="op", rows=dim, columns=dim)
         
     @staticmethod    
-    def identity(dim, operator=False, additive=False):
+    def identity(dim, operator=False, additive=False, non_zeroes=None, qs_type="ket"):
         """Identity operator for states or operators which are diagonal."""
     
         if additive:
-            id_q =QH().q_0()
+            id_q = [QH().q_0() for i in range(dim)]
+           
+        elif non_zeroes is not None:
+            id_q = []
+            
+            if len(non_zeroes) != dim:
+                print("Oops, len(non_zeroes)={nz}, should be: {d}".format(nz=len(non_zeroes), d=dim))
+                return QHStates([QH().q_0()])
+            
+            else:
+                for non_zero in non_zeroes:
+                    if non_zero:
+                        id_q.append(QH().q_1())
+                    else:
+                        id_q.append(QH().q_0())
+            
         else:
-            id_q =QH().q_1()
+            id_q = [QH().q_1() for i in range(dim)]
             
         if operator:
-            q_1 = QHStates([id_q])
+            q_1 = QHStates(id_q)
             ident = QHStates.diagonal(q_1, dim)    
     
         else:
-            i_list = [id_q for i in range(dim)]
-            ident = QHStates(i_list, qs_type="ket", rows=dim, columns=1)
+            ident = QHStates(id_q, qs_type=qs_type)
             
         return ident
     
@@ -7339,7 +7353,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[31]:
+# In[44]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -8041,22 +8055,35 @@ class QHaStates(QHa):
         return QHaStates(diagonal, qs_type="op", rows=dim, columns=dim)
         
     @staticmethod    
-    def identity(dim, operator=False, additive=False):
+    def identity(dim, operator=False, additive=False, non_zeroes=None, qs_type="ket"):
         """Identity operator for states or operators which are diagonal."""
     
         if additive:
-            id_q =QHa().q_0()
+            id_q = [QHa().q_0() for i in range(dim)]
+           
+        elif non_zeroes is not None:
+            id_q = []
+            
+            if len(non_zeroes) != dim:
+                print("Oops, len(non_zeroes)={nz}, should be: {d}".format(nz=len(non_zeroes), d=dim))
+                return QHaStates([QHa().q_0()])
+            
+            else:
+                for non_zero in non_zeroes:
+                    if non_zero:
+                        id_q.append(QHa().q_1())
+                    else:
+                        id_q.append(QHa().q_0())
+            
         else:
-            id_q =QHa().q_1()
+            id_q = [QHa().q_1() for i in range(dim)]
             
         if operator:
-            q_1 = QHaStates([id_q])
+            q_1 = QHaStates(id_q)
             ident = QHaStates.diagonal(q_1, dim)    
     
         else:
-            i_list = [id_q for i in range(dim)]
-            ### Not good to set always to ket.
-            ident = QHaStates(i_list, qs_type="ket", rows=dim, columns=1)
+            ident = QHaStates(id_q, qs_type=qs_type)
             
         return ident
     
@@ -8949,22 +8976,35 @@ class Q8States(Q8):
         return Q8States(diagonal, qs_type="op", rows=dim, columns=dim)
         
     @staticmethod    
-    def identity(dim, operator=False, additive=False):
+    def identity(dim, operator=False, additive=False, non_zeroes=None, qs_type="ket"):
         """Identity operator for states or operators which are diagonal."""
     
         if additive:
-            id_q =Q8().q_0()
+            id_q = [Q8().q_0() for i in range(dim)]
+           
+        elif non_zeroes is not None:
+            id_q = []
+            
+            if len(non_zeroes) != dim:
+                print("Oops, len(non_zeroes)={nz}, should be: {d}".format(nz=len(non_zeroes), d=dim))
+                return Q8States([Q8().q_0()])
+            
+            else:
+                for non_zero in non_zeroes:
+                    if non_zero:
+                        id_q.append(Q8().q_1())
+                    else:
+                        id_q.append(Q8().q_0())
+            
         else:
-            id_q =Q8().q_1()
+            id_q = [Q8().q_1() for i in range(dim)]
             
         if operator:
-            q_1 = Q8States([id_q])
+            q_1 = Q8States(id_q)
             ident = Q8States.diagonal(q_1, dim)    
     
         else:
-            i_list = [id_q for i in range(dim)]
-            ### Not good to fix only to ket.
-            ident = Q8States(i_list, qs_type="ket", rows=dim, columns=1)
+            ident = Q8States(id_q, qs_type=qs_type)
             
         return ident
     
@@ -9857,21 +9897,35 @@ class Q8aStates(Q8a):
         return Q8aStates(diagonal, qs_type="op", rows=dim, columns=dim)
         
     @staticmethod    
-    def identity(dim, operator=False, additive=False):
+    def identity(dim, operator=False, additive=False, non_zeroes=None, qs_type="ket"):
         """Identity operator for states or operators which are diagonal."""
     
         if additive:
-            id_q =Q8a().q_0()
+            id_q = [Q8a().q_0() for i in range(dim)]
+           
+        elif non_zeroes is not None:
+            id_q = []
+            
+            if len(non_zeroes) != dim:
+                print("Oops, len(non_zeroes)={nz}, should be: {d}".format(nz=len(non_zeroes), d=dim))
+                return Q8aStates([Q8a().q_0()])
+            
+            else:
+                for non_zero in non_zeroes:
+                    if non_zero:
+                        id_q.append(Q8a().q_1())
+                    else:
+                        id_q.append(Q8a().q_0())
+            
         else:
-            id_q =Q8a().q_1()
+            id_q = [Q8a().q_1() for i in range(dim)]
             
         if operator:
-            q_1 = Q8aStates([id_q])
+            q_1 = Q8aStates(id_q)
             ident = Q8aStates.diagonal(q_1, dim)    
     
         else:
-            i_list = [id_q for i in range(dim)]
-            ident = Q8aStates(i_list, qs_type="ket", rows=dim, columns=1)
+            ident = Q8aStates(id_q, qs_type=qs_type)
             
         return ident
     
@@ -10379,16 +10433,4 @@ class TestQ8aStates(unittest.TestCase):
         
 suite = unittest.TestLoader().loadTestsFromModule(TestQ8aStates())
 unittest.TextTestRunner().run(suite);
-
-
-# In[38]:
-
-
-1+3 +2 +2
-
-
-# In[39]:
-
-
-2+2
 
