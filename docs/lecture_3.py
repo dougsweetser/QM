@@ -40,7 +40,7 @@ At1, Ax1, Ay1, Az1 = sp.symbols("At1 Ax1 Ay1 Az1")
 At2, Ax2, Ay2, Az2 = sp.symbols("At2 Ax2 Ay2 Az2")
 Aq1 = qt.QH([At1, Ax1, Ay1, Az1], qtype="a₁")
 Aq2 = qt.QH([At2, Ax2, Ay2, Az2], qtype="a₂")
-A = qt.QHStates([Aq1, Aq2])
+A = qt.QHStates([Aq1, Aq2], "ket")
 A.print_state("A")
 
 Mt1, Mx1, My1, Mz1 = sp.symbols("Mt1 Mx1 My1 Mz1")
@@ -124,7 +124,7 @@ print(MzA.dif(zMA))
 
 
 At3, Ax3, Ay3, Az3 = sp.symbols("At3 Ax3 Ay3 Az3")
-Aq3 = qt.QH([At3, Ax3, Ay3, Az3], qtype="a")
+Aq3 = qt.QH([At3, Ax3, Ay3, Az3], "ket")
 aj = qt.QHStates([Aq1, Aq2, Aq3]).diagonal(3)
 jj = qt.QHStates([qt.QH().q_1(), qt.QH().q_j(), qt.QH().q_j()])
 A = aj.Euclidean_product(jj)
@@ -161,8 +161,8 @@ M.print_state("M")
 # In[8]:
 
 
-MA = M.Euclidean_product(A)
-MA.print_state("MA", quiet=True)
+MA = M.product(A)
+MA.print_state("M|A>", quiet=True)
 
 
 # This simple result is crazy complex. Every term has 4 space-time dimensions. There are three state dimensions, so that makes 12 terms for the ket A. The operator M has nine state dimensions so has 36 spots to fill. All in all the ket $\beta$ is composed of the sum of $3 * 4 * 4 * 3 = 12 * 12 = 144$ terms. Quantum mechanics done over the field of complex numbers would have half this number, or 72, so it is still complicated.
@@ -188,7 +188,7 @@ MA.print_state("MA", quiet=True)
 
 # Test it:
 
-# In[11]:
+# In[9]:
 
 
 q_1 = qt.QH([1, 0, 0, 0])
@@ -203,7 +203,7 @@ M12k11.print_state("M12 k11, an eigen pair?: ")
 
 # ![](images/lecture_3/c3_p57_q3.jpg)
 
-# In[12]:
+# In[10]:
 
 
 q_n1 = qt.QH([-1, 0, 0, 0])
@@ -216,7 +216,7 @@ M12k11.print_state("M12 k1n1, an eigen pair?: ")
 
 # ![](images/lecture_3/c3_p58_q1.jpg)
 
-# In[13]:
+# In[11]:
 
 
 q_0 = qt.QH()
@@ -229,7 +229,7 @@ M12k10.print_state("M12 k10, an eigen pair?: ")
 
 # ![](images/lecture_3/c3_p58_q2.jpg)
 
-# In[15]:
+# In[12]:
 
 
 q_i = qt.QH([0, 1, 0, 0])
@@ -241,7 +241,7 @@ Mn11_k1i.print_state("Mn11 k1i, an eigen pair?: ")
 
 # What? This doesn't look like the first Eigen-value/Eigen-ket pair with repeated values. That "easy to spot" quality arose from the fact that both Eigen-values were real numbers.
 
-# In[16]:
+# In[13]:
 
 
 q_ni = qt.QH([0, -1, 0, 0])
@@ -258,7 +258,7 @@ op_ni_k1i.print_state("op_ni_k1i eigen pair?: ")
 
 # This is straight-forward to write into code.
 
-# In[17]:
+# In[14]:
 
 
 M.print_state("M")
@@ -273,7 +273,7 @@ M.dagger().print_state("M†")
 # 
 # Here's how I _know_ I am doing experiments: the first try did not work. The function Euclidean_product() is quite simple: all it does in the back end is take the conjugate of the bra vector (if there is one) and feeds it into the function product(). The function product() is not simple. It was written to handle all the varieties of bracket operations. It got a detail of how to multiply the operator by the bra vector incorrect. It took several days to debug that issue. Now we can proceed.
 
-# In[19]:
+# In[15]:
 
 
 AMd_conj = A.bra().Euclidean_product(M.dagger()).conj()
@@ -296,12 +296,12 @@ MA.dif(AMd_conj).print_state("M|A> - <A|M†", quiet=True)
 
 # Show this is not true in general.
 
-# In[20]:
+# In[16]:
 
 
 MD = M.dagger()
 MMD = M.dif(MD)
-MMD.print_state("Is M† + M?", quiet=True)
+MMD.print_state("What is M† + M?", quiet=True)
 
 
 # Notice how the real part of the diagonal terms **are** the same? That is kind of fascinating. The goal is to find observables where all those other terms drop out.
@@ -332,7 +332,7 @@ MMD.print_state("Is M† + M?", quiet=True)
 
 # It took me a while to see how this works, but once seen clearly, well, of course it is easy. The first quaternion in a quaternion series gets normalized, simple. Before the second one gets normalized, subtract away the Euclidean product with the first quaternion. That assures it will be orthogonal. Rinse and repeat. 
 
-# In[21]:
+# In[17]:
 
 
 def orthonormalize(qh):
@@ -350,7 +350,7 @@ def orthonormalize(qh):
     return qt.QHStates(orthonormal_qs)
 
 
-# In[22]:
+# In[18]:
 
 
 qa, qb, qc = qt.QH([0, 1, 2, 3]), qt.QH([1, 1, 3, 2]), qt.QH([2, 1, -2, 3])
@@ -359,7 +359,7 @@ qabc_on = orthonormalize(qabc)
 qabc_on.print_state("qabc_orthonormalized", quiet=True)
 
 
-# In[23]:
+# In[19]:
 
 
 qabc_on.norm_squared().print_state("square it up")
@@ -377,7 +377,7 @@ qabc_on.norm_squared().print_state("square it up")
 
 # In lecture 2, a way was worked out to represent $|u>$, $|d>$, $|L>$, and $|r>$. It is repeated here. Notice a few things: how $|L>$ and $|r>$ come from  $|u>$ and $|d>$, and there are an arbitrary number of other ways this could have been done - there is no "correct" way to do this. The kets all involve real-values which a time-ish, and don't use any of the three spatial dimensions.
 
-# In[25]:
+# In[20]:
 
 
 q_0, q_1, q_i, q_j, q_k = qt.QH().q_0(), qt.QH().q_1(), qt.QH().q_i(), qt.QH().q_j(), qt.QH().q_k()
@@ -404,7 +404,7 @@ L.print_state("|L>")
 
 # This is just a simple math fact. Orthonormal quaternions series are orthonormal. Non-orthonormal are non-orthonormal.
 
-# In[26]:
+# In[21]:
 
 
 u.bra().Euclidean_product(d).print_state("<u|d> - orthonormal", 1)
@@ -433,7 +433,7 @@ u.bra().Euclidean_product(r).print_state("<u|r> - not orthonormal")
 
 # This is a math problem. Principle 3 has already been demonstrated by direct calculation. The only work is to find an operator $\sigma_z$ that has an Eigenvalue of +1 for ket $|u>$ and -1 for ket $|d>$. Since those kets are both real, it is about the easiest operator to guess.
 
-# In[27]:
+# In[22]:
 
 
 σz = qt.QHStates([q_1, q_0, q_0, q_n1], "op")
@@ -455,7 +455,7 @@ u.bra().Euclidean_product(r).print_state("<u|r> - not orthonormal")
 
 # Define the operator $\sigma_x$ and run the calculations.
 
-# In[28]:
+# In[23]:
 
 
 σx = qt.QHStates([q_0, q_1, q_1, q_0], "op")
@@ -468,7 +468,7 @@ u.bra().Euclidean_product(r).print_state("<u|r> - not orthonormal")
 
 # Details for this calculation was not provided in the book because the factors of $i$ make the case confusing.
 
-# In[29]:
+# In[24]:
 
 
 one_root_two = sp.sqrt(1/2)
@@ -484,7 +484,7 @@ o.print_state("o")
 
 # Show they are orthonormal.
 
-# In[30]:
+# In[25]:
 
 
 i.norm_squared().print_state("<i|i>")
@@ -494,7 +494,7 @@ i.bra().Euclidean_product(o).print_state("<i|o>")
 
 # Define σy and put it to work.
 
-# In[31]:
+# In[26]:
 
 
 σy = qt.QHStates([q_0, q_ni, q_i, q_0], "op")
@@ -525,7 +525,7 @@ i.bra().Euclidean_product(o).print_state("<i|o>")
 
 #  I have tried to construct a general as possible operator for spin.
 
-# In[35]:
+# In[27]:
 
 
 def sigma(kind, theta=None, phi=None):
@@ -572,7 +572,7 @@ def sigma(kind, theta=None, phi=None):
 
 # See if the function creates the three sigmas discussed so far:
 
-# In[36]:
+# In[28]:
 
 
 sigma('x').print_state('σx')
@@ -581,7 +581,7 @@ sigma('z').print_state('σz')
 sigma('z').norm_squared().print_state("σz's norm")
 
 
-# In[37]:
+# In[29]:
 
 
 sigma('xy').norm_squared().print_state('σxy')
@@ -598,7 +598,7 @@ sigma('xy').normalize().norm_squared().print_state('σxy')
 
 # As I have already argued, spin is not about the three sphere. The three sigmas are about covering all the possibilities. Instead, by looking at the three representations under study (out of an infinite number of possibilities), what spin operators do is rearrange two  state dimensions. The three spin operators ($\sigma_x$, $\sigma_y$, and $\sigma_z$) as a team is cover all possible variations (a covering set). Let's look at what each one does, one at a time, starting with $\sigma_x$. 
 
-# In[42]:
+# In[30]:
 
 
 A = qt.QHStates([Aq1, Aq2])
@@ -610,7 +610,7 @@ sigma('x').print_state('σx', quiet=True)
 
 # All the first spin operator $\sigma_x$ does is take the first state and put it in the second states place while doing the reverse for the second state. The third operator $\sigma_z$ is also darn simple.
 
-# In[40]:
+# In[31]:
 
 
 σzA = sigma('z').product(A)
@@ -619,7 +619,7 @@ sigma('x').print_state('σx', quiet=True)
 
 # Both states stay in place. The difference is that the second term flips signs. It is easy enough to imagine a different representation where it was the first term that flips signs. Just one more to go.
 
-# In[41]:
+# In[32]:
 
 
 σyA = sigma('y').product(A)
@@ -628,7 +628,7 @@ sigma('x').print_state('σx', quiet=True)
 
 # Notice that the states "stayed together" in the sense that the first state space is made up of only the 2's, while the second state space has 1's. This time the t and x numbers switched spots. If this pattern is generally true, then one can expect a mixing between the positions, but not the two states per se. Time to do an experiment.
 
-# In[43]:
+# In[33]:
 
 
 σxyA = sigma('xy', .1, .2).product(A)
