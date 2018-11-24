@@ -17,8 +17,7 @@
 # 
 # Test driven development was used. The same tests were used for QH, QHa, Q8, and Q8a.  Either class can be used to study quaternions in physics.
 
-# In[1]:
-
+# In[ ]:
 
 import IPython
 import matplotlib.pyplot as plt
@@ -34,13 +33,12 @@ from copy import deepcopy
 from IPython.display import display
 from os.path import basename
 from glob import glob
-get_ipython().run_line_magic('matplotlib', 'inline')
+get_ipython().magic('matplotlib inline')
 
 
 # Define the stretch factor $\gamma$ and the $\gamma \beta$ used in special relativity.
 
-# In[2]:
-
+# In[ ]:
 
 def sr_gamma(beta_x=0, beta_y=0, beta_z=0):
     """The gamma used in special relativity using 3 velocites, some may be zero."""
@@ -59,8 +57,7 @@ def sr_gamma_betas(beta_x=0, beta_y=0, beta_z=0):
 
 # Define a class QH to manipulate quaternions as Hamilton would have done it so many years ago. The "qtype" is a little bit of text to leave a trail of breadcrumbs about how a particular quaternion was generated.
 
-# In[3]:
-
+# In[ ]:
 
 class QH(object):
     """Quaternions as Hamilton would have defined them, on the manifold R^4."""
@@ -966,10 +963,14 @@ class QH(object):
         return self
 
 
+# In[ ]:
+
+get_ipython().run_cell_magic('writefile', '"/Users/doug/workspace/qm_devo/Q_tools.py"', '')
+
+
 # Write tests the QH class.
 
-# In[4]:
-
+# In[ ]:
 
 class TestQH(unittest.TestCase):
     """Class to make sure all the functions work as expected."""
@@ -1321,8 +1322,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQH())
 unittest.TextTestRunner().run(suite);
 
 
-# In[5]:
-
+# In[ ]:
 
 class TestQHRep(unittest.TestCase):
     Q12 = QH([1, 2, 0, 0])
@@ -1372,8 +1372,7 @@ unittest.TextTestRunner().run(suite);
 
 # A separate class is needed for numpy array due to technical issues I have getting sympy and numpy to play nicely with each other...
 
-# In[6]:
-
+# In[ ]:
 
 class QHa(object):
     """Quaternions as nparrays."""
@@ -2281,8 +2280,7 @@ class QHa(object):
         return self
 
 
-# In[7]:
-
+# In[ ]:
 
 class TestQHa(unittest.TestCase):
     """Class to make sure all the functions work as expected."""
@@ -2627,8 +2625,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHa())
 unittest.TextTestRunner().run(suite);
 
 
-# In[8]:
-
+# In[ ]:
 
 class TestQHaRep(unittest.TestCase):
     Q12 = QHa([1, 2, 0, 0])
@@ -2679,8 +2676,7 @@ unittest.TextTestRunner().run(suite);
 
 # My long term goal is to deal with quaternions on a quaternion manifold. This will have 4 pairs of doublets. Each doublet is paired with its additive inverse. Instead of using real numbers, one uses (3, 0) and (0, 2) to represent +3 and -2 respectively. Numbers such as (5, 6) are allowed. That can be "reduced" to (0, 1).  My sense is that somewhere deep in the depths of relativistic quantum field theory, this will be a "good thing". For now, it is a minor pain to program.
 
-# In[9]:
-
+# In[ ]:
 
 class Doublet(object):
     """A pair of number that are additive inverses. It can take
@@ -2801,8 +2797,7 @@ class Doublet(object):
         return Doublet([p1, n1])
 
 
-# In[10]:
-
+# In[ ]:
 
 class TestDoublet(unittest.TestCase):
     """Class to make sure all the functions work as expected."""
@@ -2876,8 +2871,7 @@ unittest.TextTestRunner().run(suite);
 
 # Repeat the exercise for arrays.
 
-# In[11]:
-
+# In[ ]:
 
 class Doubleta(object):
     """A pair of number that are additive inverses. It can take
@@ -2987,8 +2981,7 @@ class Doubleta(object):
         return Doubleta([p1, n1])
 
 
-# In[12]:
-
+# In[ ]:
 
 class TestDoubleta(unittest.TestCase):
     """Class to make sure all the functions work as expected."""
@@ -3057,8 +3050,7 @@ class TestDoubleta(unittest.TestCase):
         self.assertTrue(Z2p_red.d[1] == Z2p_2.d[1])
 
 
-# In[13]:
-
+# In[ ]:
 
 suite = unittest.TestLoader().loadTestsFromModule(TestDoubleta())
 unittest.TextTestRunner().run(suite);
@@ -3068,8 +3060,7 @@ unittest.TextTestRunner().run(suite);
 
 # Write a class to handle quaternions given 8 numbers.
 
-# In[14]:
-
+# In[ ]:
 
 class Q8(object):
     """Quaternions on a quaternion manifold or space-time numbers."""
@@ -4050,8 +4041,7 @@ class Q8(object):
         return self
 
 
-# In[15]:
-
+# In[ ]:
 
 class TestQ8(unittest.TestCase):
     """Class to make sure all the functions work as expected."""
@@ -4486,8 +4476,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8())
 unittest.TextTestRunner().run(suite);
 
 
-# In[16]:
-
+# In[ ]:
 
 class TestQ8Rep(unittest.TestCase):
     Q12 = Q8([1.0, 2.0, 0, 0])
@@ -4538,8 +4527,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Class Q8a as nparrays
 
-# In[17]:
-
+# In[ ]:
 
 class Q8a(Doubleta):
     """Quaternions on a quaternion manifold or space-time numbers."""
@@ -5659,8 +5647,7 @@ class Q8a(Doubleta):
         return self
 
 
-# In[18]:
-
+# In[ ]:
 
 class TestQ8a(unittest.TestCase):
 
@@ -5947,8 +5934,7 @@ class TestQ8a(unittest.TestCase):
         self.assertTrue(q_z.a[5] == 0)
         self.assertTrue(q_z.a[6] == 0)
         self.assertTrue(q_z.a[7] == 18)
-    
-        
+       
     def test_inverse(self):
         q_z = self.q2.inverse().reduce()
         print("inverse: {}".format(q_z))
@@ -6025,8 +6011,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8a())
 unittest.TextTestRunner().run(suite);
 
 
-# In[19]:
-
+# In[ ]:
 
 class TestQ8aRep(unittest.TestCase):
     Q12 = Q8a([1.0, 2.0, 0, 0])
@@ -6086,8 +6071,7 @@ unittest.TextTestRunner().run(suite);
 # Such an exact relation is not of much interest to physicists since Einstein showed that holds for only one set of observers. If one is moving relative to the reference observer, the two events would look like they occured at different times in the future, presuming perfectly accurate measuring devices.
 # 
 
-# In[20]:
-
+# In[ ]:
 
 def round_sig_figs(num, sig_figs):
     """Round to specified number of sigfigs.
@@ -6100,8 +6084,7 @@ def round_sig_figs(num, sig_figs):
         return 0  # Can't take the log of 0
 
 
-# In[21]:
-
+# In[ ]:
 
 class EQ(object):
     """A class that compairs pairs of quaternions."""
@@ -6424,8 +6407,7 @@ class EQ(object):
     
 
 
-# In[22]:
-
+# In[ ]:
 
 class TestEQ(unittest.TestCase):
     """Class to make sure all the functions work as expected."""
@@ -6534,8 +6516,7 @@ class TestEQ(unittest.TestCase):
         self.assertTrue(eq_small_tiny.norm_squared_of_unity() == 'less_than_unity')
 
 
-# In[23]:
-
+# In[ ]:
 
 suite = unittest.TestLoader().loadTestsFromModule(TestEQ())
 unittest.TextTestRunner().run(suite);
@@ -6545,8 +6526,7 @@ unittest.TextTestRunner().run(suite);
 
 # Create a class that can make many, many quaternions.
 
-# In[24]:
-
+# In[ ]:
 
 class QHArray(QH):
     """A class that can generate many quaternions."""
@@ -6618,8 +6598,7 @@ class QHArray(QH):
         return QH([new_t, new_x, new_y, new_z])
 
 
-# In[25]:
-
+# In[ ]:
 
 class TestQHArray(unittest.TestCase):
     """Test array making software."""
@@ -6646,8 +6625,7 @@ class TestQHArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.z > 13.9)
 
 
-# In[26]:
-
+# In[ ]:
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHArray())
 unittest.TextTestRunner().run(suite);
@@ -6655,8 +6633,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Array of nparrays
 
-# In[27]:
-
+# In[ ]:
 
 class QHaArray(QHa):
     """A class that can generate many quaternions."""
@@ -6718,8 +6695,7 @@ class QHaArray(QHa):
                 self.q_max.a[3] = q1.a[3]
 
 
-# In[28]:
-
+# In[ ]:
 
 class TestQHaArray(unittest.TestCase):
     """Test array making software."""
@@ -6746,8 +6722,7 @@ class TestQHaArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.a[3] > 13.9)
 
 
-# In[29]:
-
+# In[ ]:
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaArray())
 unittest.TextTestRunner().run(suite);
@@ -6757,8 +6732,7 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[43]:
-
+# In[ ]:
 
 class QHStates(QH):
     """A class made up of many quaternions."""
@@ -6930,21 +6904,28 @@ class QHStates(QH):
             
         return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
-    def inverse(self, operator=False, additive=False):
+    def inverse(self, additive=False):
         """Inverseing bras and kets calls inverse() once for each.
         Inverseing operators is more tricky as one needs a diagonal identity matrix."""
     
-        if operator:
+        if self.qs_type in ["op", "operator"]:
         
+            print("an operator")
+            
             if additive:
+                
+                print("addative inverse")
+                
                 q_flip = self.inverse(additive=True)
                 q_inv = q_flip.diagonal(self.dim)
                 
             else:
                 if self.dim == 1:
+                    print("dim 1")
                     q_inv =QHStates(self.qs[0].inverse())
  
                 elif self.qs_type in ["bra", "ket"]:
+                    print("bra/ket situation")
                     new_qs = []
                     
                     for q in self.qs:
@@ -6953,6 +6934,7 @@ class QHStates(QH):
                     q_inv = QHStates(new_qs, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
 
                 elif self.dim == 4:
+                    print("dim 4")
                     det = self.determinant()
                     detinv = det.inverse()
 
@@ -6964,6 +6946,7 @@ class QHStates(QH):
                     q_inv =QHStates([q0, q1, q2, q3], qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
                 elif self.dim == 9:
+                    print("working on a 3x3=9 d inverse")
                     det = self.determinant()
                     detinv = det.inverse()
         
@@ -6983,7 +6966,8 @@ class QHStates(QH):
                     print("Oops, don't know how to inverse.")
                     q_inv =QHStates([QH().q_0()])
         
-        else:                
+        else:
+            print("op situation")
             new_states = []
         
             for bra in self.qs:
@@ -7353,8 +7337,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[44]:
-
+# In[ ]:
 
 class TestQHStates(unittest.TestCase):
     """Test states."""
@@ -7453,19 +7436,19 @@ class TestQHStates(unittest.TestCase):
         self.assertTrue(qf.qs[1].x == -1)
         
     def test_1060_inverse(self):
-        inv_v1123 = self.v1123.inverse(operator=True)
+        inv_v1123 = self.v1123.inverse()
         print("inv_v1123 operator", inv_v1123)
         vvinv = inv_v1123.product(self.v1123)
         vvinv.print_state("vinvD x v")
         self.assertTrue(vvinv.equals(self.q14))
 
-        inv_v33 = self.v33.inverse(operator=True)
+        inv_v33 = self.v33.inverse()
         print("inv_v33 operator", inv_v33)
         vv33 = inv_v33.product(self.v33)
         vv33.print_state("inv_v33D x v33")
         self.assertTrue(vv33.equals(self.q19))
         
-        Ainv = self.A.inverse(operator=True)
+        Ainv = self.A.inverse()
         print("A ket inverse, ", Ainv)
         AAinv = self.A.product(Ainv)
         AAinv.print_state("A x AinvD")
@@ -7682,8 +7665,7 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[32]:
-
+# In[ ]:
 
 class QHaStates(QHa):
     """A class made up of many quaternions."""
@@ -7850,11 +7832,11 @@ class QHaStates(QHa):
             
         return QHaStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
-    def inverse(self, operator=False, additive=False):
+    def inverse(self, additive=False):
         """Inverseing bras and kets calls inverse() once for each.
         Inverseing operators is more tricky as one needs a diagonal identity matrix."""
     
-        if operator:
+        if self.qs_type in ["op", "operator"]:
         
             if additive:
                 q_flip = self.inverse(additive=True)
@@ -8273,8 +8255,7 @@ class QHaStates(QHa):
         return signma[kind].normalize()
 
 
-# In[33]:
-
+# In[ ]:
 
 class TestQHaStates(unittest.TestCase):
     """Test states."""
@@ -8373,19 +8354,19 @@ class TestQHaStates(unittest.TestCase):
         self.assertTrue(qf.qs[1].a[1] == -1)
         
     def test_1060_inverse(self):
-        inv_v1123 = self.v1123.inverse(operator=True)
+        inv_v1123 = self.v1123.inverse()
         print("inv_v1123 operator", inv_v1123)
         vvinv = inv_v1123.product(self.v1123)
         vvinv.print_state("vinvD x v")
         self.assertTrue(vvinv.equals(self.q14))
 
-        inv_v33 = self.v33.inverse(operator=True)
+        inv_v33 = self.v33.inverse()
         print("inv_v33 operator", inv_v33)
         vv33 = inv_v33.product(self.v33)
         vv33.print_state("inv_v33D x v33")
         self.assertTrue(vv33.equals(self.q19))
         
-        Ainv = self.A.inverse(operator=True)
+        Ainv = self.A.inverse()
         print("A bra inverse, ", Ainv)
         AAinv = self.A.product(Ainv)
         AAinv.print_state("A x AinvD")
@@ -8593,8 +8574,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[34]:
-
+# In[ ]:
 
 class Q8States(Q8):
     """A class made up of many quaternions."""
@@ -8761,11 +8741,11 @@ class Q8States(Q8):
             
         return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
-    def inverse(self, operator=False, additive=False):
+    def inverse(self, additive=False):
         """Inverseing bras and kets calls inverse() once for each.
         Inverseing operators is more tricky as one needs a diagonal identity matrix."""
     
-        if operator:
+        if self.qs_type in ["op", "operator"]:
         
             if additive:
                 q_flip = self.inverse(additive=True)
@@ -9194,8 +9174,7 @@ class Q8States(Q8):
         return signma[kind].normalize()
 
 
-# In[35]:
-
+# In[ ]:
 
 class TestQ8States(unittest.TestCase):
     """Test states."""
@@ -9294,19 +9273,19 @@ class TestQ8States(unittest.TestCase):
         self.assertTrue(qf.qs[1].dx.n == 1)
         
     def test_1060_inverse(self):
-        inv_v1123 = self.v1123.inverse(operator=True)
+        inv_v1123 = self.v1123.inverse()
         print("inv_v1123 operator", inv_v1123)
         vvinv = inv_v1123.product(self.v1123)
         vvinv.print_state("vinvD x v")
         self.assertTrue(vvinv.equals(self.q14))
 
-        inv_v33 = self.v33.inverse(operator=True)
+        inv_v33 = self.v33.inverse()
         print("inv_v33 operator", inv_v33)
         vv33 = inv_v33.product(self.v33)
         vv33.print_state("inv_v33D x v33")
         self.assertTrue(vv33.equals(self.q19))
         
-        Ainv = self.A.inverse(operator=True)
+        Ainv = self.A.inverse()
         print("A bra inverse, ", Ainv)
         AAinv = self.A.product(Ainv)
         AAinv.print_state("A x AinvD")
@@ -9514,8 +9493,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[36]:
-
+# In[ ]:
 
 class Q8aStates(Q8a):
     """A class made up of many quaternions."""
@@ -9682,11 +9660,11 @@ class Q8aStates(Q8a):
             
         return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
-    def inverse(self, operator=False, additive=False):
+    def inverse(self, additive=False):
         """Inverseing bras and kets calls inverse() once for each.
         Inverseing operators is more tricky as one needs a diagonal identity matrix."""
     
-        if operator:
+        if self.qs_type in ["op", "operator"]:
         
             if additive:
                 q_flip = self.inverse(additive=True)
@@ -10115,8 +10093,7 @@ class Q8aStates(Q8a):
         return signma[kind].normalize()
 
 
-# In[37]:
-
+# In[ ]:
 
 class TestQ8aStates(unittest.TestCase):
     """Test states."""
@@ -10215,19 +10192,19 @@ class TestQ8aStates(unittest.TestCase):
         self.assertTrue(qf.qs[1].a[3] == 1)
         
     def test_1060_inverse(self):
-        inv_v1123 = self.v1123.inverse(operator=True)
+        inv_v1123 = self.v1123.inverse()
         print("inv_v1123 operator", inv_v1123)
         vvinv = inv_v1123.product(self.v1123)
         vvinv.print_state("vinvD x v")
         self.assertTrue(vvinv.equals(self.q14))
 
-        inv_v33 = self.v33.inverse(operator=True)
+        inv_v33 = self.v33.inverse()
         print("inv_v33 operator", inv_v33)
         vv33 = inv_v33.product(self.v33)
         vv33.print_state("inv_v33D x v33")
         self.assertTrue(vv33.equals(self.q19))
         
-        Ainv = self.A.inverse(operator=True)
+        Ainv = self.A.inverse()
         print("A ket inverse, ", Ainv)
         AAinv = self.A.product(Ainv)
         AAinv.print_state("A x AinvD")
