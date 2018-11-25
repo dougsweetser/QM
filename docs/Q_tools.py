@@ -17,7 +17,8 @@
 # 
 # Test driven development was used. The same tests were used for QH, QHa, Q8, and Q8a.  Either class can be used to study quaternions in physics.
 
-# In[ ]:
+# In[1]:
+
 
 import IPython
 import matplotlib.pyplot as plt
@@ -33,12 +34,13 @@ from copy import deepcopy
 from IPython.display import display
 from os.path import basename
 from glob import glob
-get_ipython().magic('matplotlib inline')
+get_ipython().run_line_magic('matplotlib', 'inline')
 
 
 # Define the stretch factor $\gamma$ and the $\gamma \beta$ used in special relativity.
 
-# In[ ]:
+# In[2]:
+
 
 def sr_gamma(beta_x=0, beta_y=0, beta_z=0):
     """The gamma used in special relativity using 3 velocites, some may be zero."""
@@ -57,7 +59,8 @@ def sr_gamma_betas(beta_x=0, beta_y=0, beta_z=0):
 
 # Define a class QH to manipulate quaternions as Hamilton would have done it so many years ago. The "qtype" is a little bit of text to leave a trail of breadcrumbs about how a particular quaternion was generated.
 
-# In[ ]:
+# In[3]:
+
 
 class QH(object):
     """Quaternions as Hamilton would have defined them, on the manifold R^4."""
@@ -963,14 +966,10 @@ class QH(object):
         return self
 
 
-# In[ ]:
-
-get_ipython().run_cell_magic('writefile', '"/Users/doug/workspace/qm_devo/Q_tools.py"', '')
-
-
 # Write tests the QH class.
 
-# In[ ]:
+# In[4]:
+
 
 class TestQH(unittest.TestCase):
     """Class to make sure all the functions work as expected."""
@@ -1322,7 +1321,8 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQH())
 unittest.TextTestRunner().run(suite);
 
 
-# In[ ]:
+# In[5]:
+
 
 class TestQHRep(unittest.TestCase):
     Q12 = QH([1, 2, 0, 0])
@@ -1372,7 +1372,8 @@ unittest.TextTestRunner().run(suite);
 
 # A separate class is needed for numpy array due to technical issues I have getting sympy and numpy to play nicely with each other...
 
-# In[ ]:
+# In[6]:
+
 
 class QHa(object):
     """Quaternions as nparrays."""
@@ -2280,7 +2281,8 @@ class QHa(object):
         return self
 
 
-# In[ ]:
+# In[7]:
+
 
 class TestQHa(unittest.TestCase):
     """Class to make sure all the functions work as expected."""
@@ -2625,7 +2627,8 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHa())
 unittest.TextTestRunner().run(suite);
 
 
-# In[ ]:
+# In[8]:
+
 
 class TestQHaRep(unittest.TestCase):
     Q12 = QHa([1, 2, 0, 0])
@@ -2676,7 +2679,8 @@ unittest.TextTestRunner().run(suite);
 
 # My long term goal is to deal with quaternions on a quaternion manifold. This will have 4 pairs of doublets. Each doublet is paired with its additive inverse. Instead of using real numbers, one uses (3, 0) and (0, 2) to represent +3 and -2 respectively. Numbers such as (5, 6) are allowed. That can be "reduced" to (0, 1).  My sense is that somewhere deep in the depths of relativistic quantum field theory, this will be a "good thing". For now, it is a minor pain to program.
 
-# In[ ]:
+# In[9]:
+
 
 class Doublet(object):
     """A pair of number that are additive inverses. It can take
@@ -2797,7 +2801,8 @@ class Doublet(object):
         return Doublet([p1, n1])
 
 
-# In[ ]:
+# In[10]:
+
 
 class TestDoublet(unittest.TestCase):
     """Class to make sure all the functions work as expected."""
@@ -2871,7 +2876,8 @@ unittest.TextTestRunner().run(suite);
 
 # Repeat the exercise for arrays.
 
-# In[ ]:
+# In[11]:
+
 
 class Doubleta(object):
     """A pair of number that are additive inverses. It can take
@@ -2981,7 +2987,8 @@ class Doubleta(object):
         return Doubleta([p1, n1])
 
 
-# In[ ]:
+# In[12]:
+
 
 class TestDoubleta(unittest.TestCase):
     """Class to make sure all the functions work as expected."""
@@ -3050,7 +3057,8 @@ class TestDoubleta(unittest.TestCase):
         self.assertTrue(Z2p_red.d[1] == Z2p_2.d[1])
 
 
-# In[ ]:
+# In[13]:
+
 
 suite = unittest.TestLoader().loadTestsFromModule(TestDoubleta())
 unittest.TextTestRunner().run(suite);
@@ -3060,7 +3068,8 @@ unittest.TextTestRunner().run(suite);
 
 # Write a class to handle quaternions given 8 numbers.
 
-# In[ ]:
+# In[14]:
+
 
 class Q8(object):
     """Quaternions on a quaternion manifold or space-time numbers."""
@@ -4041,7 +4050,8 @@ class Q8(object):
         return self
 
 
-# In[ ]:
+# In[15]:
+
 
 class TestQ8(unittest.TestCase):
     """Class to make sure all the functions work as expected."""
@@ -4476,7 +4486,8 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8())
 unittest.TextTestRunner().run(suite);
 
 
-# In[ ]:
+# In[16]:
+
 
 class TestQ8Rep(unittest.TestCase):
     Q12 = Q8([1.0, 2.0, 0, 0])
@@ -4527,7 +4538,8 @@ unittest.TextTestRunner().run(suite);
 
 # ## Class Q8a as nparrays
 
-# In[ ]:
+# In[17]:
+
 
 class Q8a(Doubleta):
     """Quaternions on a quaternion manifold or space-time numbers."""
@@ -5647,7 +5659,8 @@ class Q8a(Doubleta):
         return self
 
 
-# In[ ]:
+# In[18]:
+
 
 class TestQ8a(unittest.TestCase):
 
@@ -6011,7 +6024,8 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8a())
 unittest.TextTestRunner().run(suite);
 
 
-# In[ ]:
+# In[19]:
+
 
 class TestQ8aRep(unittest.TestCase):
     Q12 = Q8a([1.0, 2.0, 0, 0])
@@ -6071,7 +6085,8 @@ unittest.TextTestRunner().run(suite);
 # Such an exact relation is not of much interest to physicists since Einstein showed that holds for only one set of observers. If one is moving relative to the reference observer, the two events would look like they occured at different times in the future, presuming perfectly accurate measuring devices.
 # 
 
-# In[ ]:
+# In[20]:
+
 
 def round_sig_figs(num, sig_figs):
     """Round to specified number of sigfigs.
@@ -6084,7 +6099,8 @@ def round_sig_figs(num, sig_figs):
         return 0  # Can't take the log of 0
 
 
-# In[ ]:
+# In[21]:
+
 
 class EQ(object):
     """A class that compairs pairs of quaternions."""
@@ -6407,7 +6423,8 @@ class EQ(object):
     
 
 
-# In[ ]:
+# In[22]:
+
 
 class TestEQ(unittest.TestCase):
     """Class to make sure all the functions work as expected."""
@@ -6516,7 +6533,8 @@ class TestEQ(unittest.TestCase):
         self.assertTrue(eq_small_tiny.norm_squared_of_unity() == 'less_than_unity')
 
 
-# In[ ]:
+# In[23]:
+
 
 suite = unittest.TestLoader().loadTestsFromModule(TestEQ())
 unittest.TextTestRunner().run(suite);
@@ -6526,7 +6544,8 @@ unittest.TextTestRunner().run(suite);
 
 # Create a class that can make many, many quaternions.
 
-# In[ ]:
+# In[24]:
+
 
 class QHArray(QH):
     """A class that can generate many quaternions."""
@@ -6598,7 +6617,8 @@ class QHArray(QH):
         return QH([new_t, new_x, new_y, new_z])
 
 
-# In[ ]:
+# In[25]:
+
 
 class TestQHArray(unittest.TestCase):
     """Test array making software."""
@@ -6625,7 +6645,8 @@ class TestQHArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.z > 13.9)
 
 
-# In[ ]:
+# In[26]:
+
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHArray())
 unittest.TextTestRunner().run(suite);
@@ -6633,7 +6654,8 @@ unittest.TextTestRunner().run(suite);
 
 # ## Array of nparrays
 
-# In[ ]:
+# In[27]:
+
 
 class QHaArray(QHa):
     """A class that can generate many quaternions."""
@@ -6695,7 +6717,8 @@ class QHaArray(QHa):
                 self.q_max.a[3] = q1.a[3]
 
 
-# In[ ]:
+# In[28]:
+
 
 class TestQHaArray(unittest.TestCase):
     """Test array making software."""
@@ -6722,7 +6745,8 @@ class TestQHaArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.a[3] > 13.9)
 
 
-# In[ ]:
+# In[29]:
+
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaArray())
 unittest.TextTestRunner().run(suite);
@@ -6732,7 +6756,8 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[ ]:
+# In[30]:
+
 
 class QHStates(QH):
     """A class made up of many quaternions."""
@@ -7337,7 +7362,8 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[ ]:
+# In[31]:
+
 
 class TestQHStates(unittest.TestCase):
     """Test states."""
@@ -7665,7 +7691,8 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[ ]:
+# In[32]:
+
 
 class QHaStates(QHa):
     """A class made up of many quaternions."""
@@ -8255,7 +8282,8 @@ class QHaStates(QHa):
         return signma[kind].normalize()
 
 
-# In[ ]:
+# In[33]:
+
 
 class TestQHaStates(unittest.TestCase):
     """Test states."""
@@ -8574,7 +8602,8 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[ ]:
+# In[34]:
+
 
 class Q8States(Q8):
     """A class made up of many quaternions."""
@@ -9174,7 +9203,8 @@ class Q8States(Q8):
         return signma[kind].normalize()
 
 
-# In[ ]:
+# In[35]:
+
 
 class TestQ8States(unittest.TestCase):
     """Test states."""
@@ -9493,7 +9523,8 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[ ]:
+# In[36]:
+
 
 class Q8aStates(Q8a):
     """A class made up of many quaternions."""
@@ -10093,7 +10124,8 @@ class Q8aStates(Q8a):
         return signma[kind].normalize()
 
 
-# In[ ]:
+# In[37]:
+
 
 class TestQ8aStates(unittest.TestCase):
     """Test states."""
