@@ -11771,17 +11771,27 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Inverse-Quaternion-Series">Inverse Quaternion Series<a class="anchor-link" href="#Inverse-Quaternion-Series">&#182;</a></h1>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[99]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">capture</span>
 %matplotlib inline
 import numpy as np
 import sympy as sp
-import matplotlib.pyplot as plt
 import math
+import matplotlib.pyplot as plt
+import unittest
+
 
 # To get equations the look like, well, equations, use the following.
 from sympy.interactive import printing
@@ -11791,7 +11801,7 @@ from IPython.display import display
 # Tools for manipulating quaternions.
 import Q_tools as qt;
 
-from IPython.core.display import display, HTML, Math, Latex
+from IPython.core.display import display, HTML
 display(HTML(&quot;&lt;style&gt;.container { width:100% !important; }&lt;/style&gt;&quot;))
 </pre></div>
 
@@ -11800,43 +11810,42 @@ display(HTML(&quot;&lt;style&gt;.container { width:100% !important; }&lt;/style&
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Given eigenvalues and eigenvectors, figure out the matrix operator.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[118]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Transposes a series.&quot;&quot;&quot;</span>
-        
-        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># test if it is square.</span>
-            <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
-                <span class="n">m</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
-                <span class="n">n</span> <span class="o">=</span> <span class="n">m</span>
-               
-        <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">/</span> <span class="n">m</span>
-            
-        <span class="k">if</span> <span class="n">m</span> <span class="o">*</span> <span class="n">n</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        
-        <span class="n">matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">)]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> 
-        
-        <span class="n">qs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span>
-        <span class="n">qs_t</span> <span class="o">=</span> <span class="p">[]</span>
-        
-        <span class="k">for</span> <span class="n">mi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">ni</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-                <span class="n">matrix</span><span class="p">[</span><span class="n">ni</span><span class="p">][</span><span class="n">mi</span><span class="p">]</span> <span class="o">=</span> <span class="n">qs</span><span class="p">[</span><span class="n">n</span> <span class="o">*</span> <span class="n">mi</span> <span class="o">+</span> <span class="n">ni</span><span class="p">]</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;mi, ni, n, n * mi + ni: </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span> <span class="n">ni</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span> <span class="o">*</span> <span class="n">mi</span> <span class="o">+</span> <span class="n">ni</span><span class="p">))</span>
-        
-        <span class="n">qs_t</span> <span class="o">=</span> <span class="p">[]</span>
-        
-        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">matrix</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
-                <span class="n">qs_t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-                
-        <span class="k">return</span><span class="p">(</span><span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">(</span><span class="n">qs_t</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">eigens_2_matrix</span><span class="p">(</span><span class="n">Eigen_values_N</span><span class="p">,</span> <span class="n">Eigen_vectors_V</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    V xR N V⁻¹ = M, must be fed quaternion series of the same dimensions.</span>
+<span class="sd">    There is one issue that needs to be addressed with going to quaternions from </span>
+<span class="sd">    the real and complex numbers which commute. The reverse product must be used, so</span>
+<span class="sd">        N|V&gt; = M|V&gt; = V xR N V⁻¹|V&gt; = V xR N = N X V</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">Eigen_values_N</span><span class="o">.</span><span class="n">dim</span> <span class="o">!=</span> <span class="n">Eigen_values_N</span><span class="o">.</span><span class="n">dim</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Oops, the dimensions of the diagonal Eigen_value series must be the same as the Eigen_vectors.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    
+    <span class="n">Vinv</span> <span class="o">=</span> <span class="n">Eigen_vectors_V</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">Vinv</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;V inv&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    
+    <span class="n">Eigen_vectors_V</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">Vinv</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;VVinv&quot;</span><span class="p">)</span>
+    
+    <span class="n">NVinv</span> <span class="o">=</span> <span class="n">Vinv</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">Eigen_values_N</span><span class="p">)</span>
+    
+    <span class="n">VNVinv</span> <span class="o">=</span> <span class="n">NVinv</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">Eigen_vectors_V</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">VNVinv</span>
 </pre></div>
 
 </div>
@@ -11846,22 +11855,51 @@ display(HTML(&quot;&lt;style&gt;.container { width:100% !important; }&lt;/style&
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[119]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Op</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span>
-                <span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">q_0</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">q_1</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">q_2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">q_3</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">q_n2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">q_7</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 
-<span class="n">transpose</span><span class="p">(</span><span class="n">Op</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;3,2&quot;</span><span class="p">)</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_1</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_2</span><span class="p">,</span> <span class="n">q_3</span><span class="p">])</span>
+<span class="n">v1</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_1</span><span class="p">])</span>
+<span class="n">v2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_2</span><span class="p">])</span>
+<span class="n">v3</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_3</span><span class="p">])</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_n2</span><span class="p">,</span> <span class="n">q_0</span><span class="p">,</span> <span class="n">q_0</span><span class="p">,</span> <span class="n">q_7</span><span class="p">])</span>
 
-<span class="n">Op</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span>
-                <span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])])</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">eigens_2_matrix</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;m?&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-<span class="n">transpose</span><span class="p">(</span><span class="n">Op</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;3,2&quot;</span><span class="p">)</span>
+<span class="n">mv</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
+<span class="n">nv</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
 
-<span class="n">Op</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">])])</span>
+<span class="n">mv1</span> <span class="o">=</span> <span class="n">v1</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
+<span class="n">nv1</span> <span class="o">=</span> <span class="n">v1</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
 
-<span class="n">transpose</span><span class="p">(</span><span class="n">Op</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;2x2&quot;</span><span class="p">)</span>
+<span class="n">mv2</span> <span class="o">=</span> <span class="n">v2</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
+<span class="n">nv2</span> <span class="o">=</span> <span class="n">v2</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+<span class="n">mv3</span> <span class="o">=</span> <span class="n">v3</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
+<span class="n">nv3</span> <span class="o">=</span> <span class="n">v3</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+
+
+
+<span class="n">mv</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;mv&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">nv</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;nv&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">mv1</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;mv1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">nv1</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;nv1&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">mv2</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;mv2&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">nv2</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;nv2&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">mv3</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;mv3&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">nv3</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;nv3&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11878,44 +11916,71 @@ display(HTML(&quot;&lt;style&gt;.container { width:100% !important; }&lt;/style&
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>mi, ni, n, n * mi + ni: 0, 0, 3, 0
-mi, ni, n, n * mi + ni: 0, 1, 3, 1
-mi, ni, n, n * mi + ni: 0, 2, 3, 2
-mi, ni, n, n * mi + ni: 1, 0, 3, 3
-mi, ni, n, n * mi + ni: 1, 1, 3, 4
-mi, ni, n, n * mi + ni: 1, 2, 3, 5
-3,2
-n=1: (0, 0, 0, 0) Q
-n=2: (0, 0, 0, 3) Q
-n=3: (0, 1, 0, 0) Q
-n=4: (4, 0, 0, 0) Q
-n=5: (0, 0, 2, 0) Q
-n=6: (0, 5, 0, 0) Q
-sum= (4, 6, 2, 3) Q+Q+Q+Q+Q+Q
-mi, ni, n, n * mi + ni: 0, 0, 2, 0
-mi, ni, n, n * mi + ni: 0, 1, 2, 1
-mi, ni, n, n * mi + ni: 1, 0, 2, 2
-mi, ni, n, n * mi + ni: 1, 1, 2, 3
-mi, ni, n, n * mi + ni: 2, 0, 2, 4
-mi, ni, n, n * mi + ni: 2, 1, 2, 5
-3,2
-n=1: (0, 0, 0, 0) Q
-n=2: (0, 0, 2, 0) Q
-n=3: (4, 0, 0, 0) Q
-n=4: (0, 1, 0, 0) Q
-n=5: (0, 0, 0, 3) Q
-n=6: (0, 5, 0, 0) Q
-sum= (4, 6, 2, 3) Q+Q+Q+Q+Q+Q
-mi, ni, n, n * mi + ni: 0, 0, 2, 0
-mi, ni, n, n * mi + ni: 0, 1, 2, 1
-mi, ni, n, n * mi + ni: 1, 0, 2, 2
-mi, ni, n, n * mi + ni: 1, 1, 2, 3
-2x2
-n=1: (0, 0, 0, 0) Q
-n=2: (0, 0, 2, 0) Q
-n=3: (0, 1, 0, 0) Q
-n=4: (0, 0, 0, 3) Q
-sum= (0, 1, 2, 3) Q+Q+Q+Q
+<pre>V inv
+n=1: (0.25, 0.0, 0.0, 0.0) Q^-1UxQUxQ
+n=2: (0.25, 0.0, 0.0, 0.0) Q^-1UxQUxQ
+n=3: (0.25, 0.0, 0.0, 0.0) Q^-1UxQUxQ
+n=4: (0.25, 0.0, 0.0, 0.0) Q^-1UxQUxQ
+sum= (1.0, 0.0, 0.0, 0.0) Q^-1UxQUxQ+Q^-1UxQUxQ+Q^-1UxQUxQ+Q^-1UxQUxQ
+
+VVinv
+(1.75, 0.0, 0.0, 0.0) Q*xQ^-1UxQUxQ+Q*xQ^-1UxQUxQ+Q*xQ^-1UxQUxQ+Q*xQ^-1UxQUxQ
+m?
+n=1: (1.25, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ
+n=2: (1.25, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ
+n=3: (2.5, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ
+n=4: (3.75, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ
+sum= (8.75, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ
+
+mv
+n=1: (18.75, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+sum= (18.75, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+
+nv
+n=1: (19, 0, 0, 0) QxQ+QxQ+QxQ+QxQ
+sum= (19, 0, 0, 0) QxQ+QxQ+QxQ+QxQ
+
+mv1
+n=1: (1.25, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+n=2: (1.25, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+n=3: (2.5, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+n=4: (3.75, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+sum= (8.75, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+
+nv1
+n=1: (-2, 0, 0, 0) QxQ
+n=2: (0, 0, 0, 0) QxQ
+n=3: (0, 0, 0, 0) QxQ
+n=4: (7, 0, 0, 0) QxQ
+sum= (5, 0, 0, 0) QxQ+QxQ+QxQ+QxQ
+
+mv2
+n=1: (2.5, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+n=2: (2.5, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+n=3: (5.0, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+n=4: (7.5, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+sum= (17.5, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+
+nv2
+n=1: (-4, 0, 0, 0) QxQ
+n=2: (0, 0, 0, 0) QxQ
+n=3: (0, 0, 0, 0) QxQ
+n=4: (14, 0, 0, 0) QxQ
+sum= (10, 0, 0, 0) QxQ+QxQ+QxQ+QxQ
+
+mv3
+n=1: (3.75, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+n=2: (3.75, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+n=3: (7.5, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+n=4: (11.25, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+sum= (26.25, 0.0, 0.0, 0.0) QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ+QxRQxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQ+QxQ^-1UxQUxQxQ
+
+nv3
+n=1: (-6, 0, 0, 0) QxQ
+n=2: (0, 0, 0, 0) QxQ
+n=3: (0, 0, 0, 0) QxQ
+n=4: (21, 0, 0, 0) QxQ
+sum= (15, 0, 0, 0) QxQ+QxQ+QxQ+QxQ
 </pre>
 </div>
 </div>
@@ -11926,10 +11991,32 @@ sum= (0, 1, 2, 3) Q+Q+Q+Q
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[107]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">transpose</span><span class="p">(</span><span class="n">Op</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Normalize all states.&quot;&quot;&quot;</span>
+        
+    <span class="n">new_states</span> <span class="o">=</span> <span class="p">[]</span>
+        
+    <span class="n">zero_norm_count</span> <span class="o">=</span> <span class="mi">0</span>
+        
+    <span class="k">for</span> <span class="n">bra</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">bra</span><span class="o">.</span><span class="n">norm_squared</span><span class="p">()</span><span class="o">.</span><span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">zero_norm_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">new_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_0</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bra</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;bra </span><span class="si">{}</span><span class="s2">, normalized to n </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bra</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">bra</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">n</span><span class="p">)))</span>
+        
+    <span class="n">new_states_normalized</span> <span class="o">=</span> <span class="p">[]</span>
+        
+    <span class="n">non_zero_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">-</span> <span class="n">zero_norm_count</span>
+        
+    <span class="k">for</span> <span class="n">new_state</span> <span class="ow">in</span> <span class="n">new_states</span><span class="p">:</span>
+        <span class="n">new_states_normalized</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_state</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">1</span><span class="o">/</span><span class="n">non_zero_states</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])))</span>
+            
+    <span class="k">return</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">(</span><span class="n">new_states_normalized</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11939,40 +12026,1128 @@ sum= (0, 1, 2, 3) Q+Q+Q+Q
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[108]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Transposes a series.&quot;&quot;&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">determinant</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the determinant of a &#39;square&#39; quaternion series.&quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">q_det</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         
-        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># test if it is square.</span>
-            <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
-                <span class="n">m</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
-                <span class="n">n</span> <span class="o">=</span> <span class="n">m</span>
-               
-        <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">/</span> <span class="n">m</span>
-            
-        <span class="k">if</span> <span class="n">m</span> <span class="o">*</span> <span class="n">n</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="n">q</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">ad</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">bc</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">q_det</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span>  
         
-        <span class="n">matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">)]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> 
+    <span class="k">elif</span> <span class="n">q</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
+        <span class="n">aei</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">8</span><span class="p">]))</span>
+        <span class="n">bfg</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="n">cdh</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">5</span><span class="p">]))</span>
+        <span class="n">ceg</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="n">bdi</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">8</span><span class="p">]))</span>
+        <span class="n">afh</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">5</span><span class="p">]))</span>
         
-        <span class="n">qs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span>
-        <span class="n">qs_t</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sum_pos</span> <span class="o">=</span> <span class="n">aei</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">bfg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cdh</span><span class="p">))</span>
+        <span class="n">sum_neg</span> <span class="o">=</span> <span class="n">ceg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">bdi</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">afh</span><span class="p">))</span>
         
-        <span class="k">for</span> <span class="n">mi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">ni</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-                <span class="n">matrix</span><span class="p">[</span><span class="n">ni</span><span class="p">][</span><span class="n">mi</span><span class="p">]</span> <span class="o">=</span> <span class="n">qs</span><span class="p">[</span><span class="n">mi</span>  <span class="o">*</span> <span class="n">ni</span> <span class="o">+</span> <span class="n">ni</span><span class="p">]</span>
+        <span class="n">q_det</span> <span class="o">=</span> <span class="n">sum_pos</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">sum_neg</span><span class="p">)</span>
         
-        <span class="n">qs_t</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Oops, don&#39;t know how to calculate the determinant of this one.&quot;</span><span class="p">)</span>
+        <span class="n">q_det</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_0</span><span class="p">()])</span>
         
-        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">matrix</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
-                <span class="n">qs_t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">q_det</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">additive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find the additive or multiplicative inverse of a bra, ket or operator.&quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">operator</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">additive</span><span class="p">:</span>
+            <span class="n">q_inv</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">flip_signs</span><span class="p">()</span>
+    
+        <span class="k">else</span><span class="p">:</span>    
+            <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">q_inv</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">inverse</span><span class="p">())</span>
+        
+            <span class="k">elif</span> <span class="n">q</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q is: &quot;</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+                <span class="n">det</span> <span class="o">=</span> <span class="n">determinant</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+                <span class="n">detinv</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;detinv&quot;</span><span class="p">,</span> <span class="n">detinv</span><span class="p">)</span>
+                <span class="n">q0</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q0&quot;</span><span class="p">,</span> <span class="n">q0</span><span class="p">)</span>
+                <span class="n">q1</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">flip_signs</span><span class="p">()</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q1&quot;</span><span class="p">,</span> <span class="n">q1</span><span class="p">)</span>
+                <span class="n">q2</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">flip_signs</span><span class="p">()</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q2&quot;</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
+                <span class="n">q3</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q3&quot;</span><span class="p">,</span> <span class="n">q3</span><span class="p">)</span>
+                <span class="n">q_inv</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="p">])</span>
+    
+            <span class="k">elif</span> <span class="n">q</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
+                <span class="n">det</span> <span class="o">=</span> <span class="n">determinant</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+                <span class="n">detinv</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+        
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;detinv&quot;</span><span class="p">,</span> <span class="n">detinv</span><span class="p">)</span>
+                <span class="n">q0</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">7</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q0&quot;</span><span class="p">,</span> <span class="n">q0</span><span class="p">)</span>
+                <span class="n">q1</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q1&quot;</span><span class="p">,</span> <span class="n">q1</span><span class="p">)</span>
+                <span class="n">q2</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q2&quot;</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
+                <span class="n">q3</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q3&quot;</span><span class="p">,</span> <span class="n">q3</span><span class="p">)</span>
+                <span class="n">q4</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">6</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q4&quot;</span><span class="p">,</span> <span class="n">q4</span><span class="p">)</span>
+                <span class="n">q5</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q5&quot;</span><span class="p">,</span> <span class="n">q5</span><span class="p">)</span>
+                <span class="n">q6</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">6</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q6&quot;</span><span class="p">,</span> <span class="n">q6</span><span class="p">)</span>
+                <span class="n">q7</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q7&quot;</span><span class="p">,</span> <span class="n">q7</span><span class="p">)</span>
+                <span class="n">q8</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q8&quot;</span><span class="p">,</span> <span class="n">q8</span><span class="p">)</span>
+        
+                <span class="n">q_inv</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="p">,</span> <span class="n">q4</span><span class="p">,</span> <span class="n">q5</span><span class="p">,</span> <span class="n">q6</span><span class="p">,</span> <span class="n">q7</span><span class="p">,</span> <span class="n">q8</span><span class="p">])</span>
+        
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Oops, don&#39;t know how to inverse.&quot;</span><span class="p">)</span>
+                <span class="n">q_inv</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_0</span><span class="p">()])</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">additive</span><span class="p">:</span>
+            <span class="n">q_inv</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">flip_signs</span><span class="p">()</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+        
+            <span class="n">new_states</span> <span class="o">=</span> <span class="p">[]</span>
+        
+            <span class="k">for</span> <span class="n">bra</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">qs</span><span class="p">:</span>
+                <span class="n">new_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bra</span><span class="o">.</span><span class="n">inverse</span><span class="p">())</span>
                 
-        <span class="k">return</span> <span class="n">QHStates</span><span class="p">(</span><span class="n">qs_t</span><span class="p">)</span>
+            <span class="n">q_inv</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">(</span><span class="n">new_states</span><span class="p">)</span>
+            
+    <span class="k">return</span> <span class="n">q_inv</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">c1</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">c3</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">c4</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">c5</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="n">c1_inv</span> <span class="o">=</span> <span class="n">c1</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+<span class="n">c2_inv</span> <span class="o">=</span> <span class="n">c2</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+<span class="n">c3_inv</span> <span class="o">=</span> <span class="n">c3</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+<span class="n">c4_inv</span> <span class="o">=</span> <span class="n">c4</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+<span class="n">c5_inv</span> <span class="o">=</span> <span class="n">c5</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+
+<span class="n">c1_inv</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;c1_inv&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">c2_inv</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;c2_inv&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">c3_inv</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;c3_inv&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">c4_inv</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;c4_inv&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">c5_inv</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;c5_inv&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">cs_1</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">c3</span><span class="p">,</span> <span class="n">c4</span><span class="p">])</span>
+<span class="n">cs_2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">c5</span><span class="p">,</span> <span class="n">c4</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">c3</span><span class="p">])</span>
+
+<span class="n">cs_1</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_1: &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">cs_2</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_2: &quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>c1_inv
+(0.2, -0.4, 0.0, 0.0) Q^-1
+
+c2_inv
+(0.2, -0.1, 0.0, 0.0) Q^-1
+
+c3_inv
+(0.16666666666666666, -0.16666666666666666, 0.0, 0.0) Q^-1
+
+c4_inv
+(0.06896551724137931, 0.1724137931034483, 0.0, 0.0) Q^-1
+
+c5_inv
+(-0.49875311720698257, -0.02493765586034913, 0.0, 0.0) Q^-1
+
+cs_1: 
+n=1: (1, 2, 0, 0) Q
+n=2: (4, 2, 0, 0) Q
+n=3: (3, 3, 0, 0) Q
+n=4: (2, -5, 0, 0) Q
+sum= (10, 2, 0, 0) Q+Q+Q+Q
+
+cs_2: 
+n=1: (-2, 0.1, 0, 0) Q
+n=2: (2, -5, 0, 0) Q
+n=3: (4, 2, 0, 0) Q
+n=4: (3, 3, 0, 0) Q
+sum= (7, 0.09999999999999964, 0, 0) Q+Q+Q+Q
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cs_1_inverse</span> <span class="o">=</span> <span class="n">inverse</span><span class="p">(</span><span class="n">cs_1</span><span class="p">)</span>
+<span class="n">cs_2_inverse</span> <span class="o">=</span> <span class="n">inverse</span><span class="p">(</span><span class="n">cs_2</span><span class="p">)</span>
+<span class="n">cs_1_inverse</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_1_inverse&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">cs_2_inverse</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_2_inverse&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>cs_1_inverse
+n=1: (0.2, -0.4, 0.0, 0.0) Q^-1
+n=2: (0.2, -0.1, 0.0, 0.0) Q^-1
+n=3: (0.16666666666666666, -0.16666666666666666, 0.0, 0.0) Q^-1
+n=4: (0.06896551724137931, 0.1724137931034483, 0.0, 0.0) Q^-1
+sum= (0.635632183908046, -0.49425287356321834, 0.0, 0.0) Q^-1+Q^-1+Q^-1+Q^-1
+
+cs_2_inverse
+n=1: (-0.49875311720698257, -0.02493765586034913, 0.0, 0.0) Q^-1
+n=2: (0.06896551724137931, 0.1724137931034483, 0.0, 0.0) Q^-1
+n=3: (0.2, -0.1, 0.0, 0.0) Q^-1
+n=4: (0.16666666666666666, -0.16666666666666666, 0.0, 0.0) Q^-1
+sum= (-0.06312093329893656, -0.1191905294235675, 0.0, 0.0) Q^-1+Q^-1+Q^-1+Q^-1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cs_1_cs_1_inv</span> <span class="o">=</span> <span class="n">cs_1</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">cs_1_inverse</span><span class="p">)</span>
+<span class="n">cs_2_cs_2_inv</span> <span class="o">=</span> <span class="n">cs_2</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">cs_2_inverse</span><span class="p">)</span>
+<span class="n">cs_1_cs_1_inv</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_1_cs_1_inv: &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">cs_2_cs_2_inv</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_2_cs_2_inv: &quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>cs_1_cs_1_inv: 
+(4.0, 0.0, 0.0, 0.0) QxQ^-1+QxQ^-1+QxQ^-1+QxQ^-1
+
+cs_2_cs_2_inv: 
+(4.0, 0.0, 0.0, 0.0) QxQ^-1+QxQ^-1+QxQ^-1+QxQ^-1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cs_1_cs_1_inv</span> <span class="o">=</span> <span class="n">cs_1</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">cs_1_inverse</span><span class="p">)</span>
+<span class="n">cs_2_cs_2_inv</span> <span class="o">=</span> <span class="n">cs_2</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">cs_2_inverse</span><span class="p">)</span>
+<span class="n">cs_1_cs_1_inv</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_1_cs_1_inv: &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">cs_2_cs_2_inv</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_2_cs_2_inv: &quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>cs_1_cs_1_inv: 
+(-0.7241379310344829, -1.910344827586207, 0.0, 0.0) Q*xQ^-1+Q*xQ^-1+Q*xQ^-1+Q*xQ^-1
+
+cs_2_cs_2_inv: 
+(0.8708745377934475, -1.0105942041448104, 0.0, 0.0) Q*xQ^-1+Q*xQ^-1+Q*xQ^-1+Q*xQ^-1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[45]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cs_1_inverse_diagonal</span> <span class="o">=</span> <span class="n">cs_1_inverse</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">cs_2_inverse_diagonal</span> <span class="o">=</span> <span class="n">cs_2_inverse</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">cs_1_inverse_diagonal</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_1_inverse_diagonal&quot;</span><span class="p">)</span>
+<span class="n">cs_2_inverse_diagonal</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_2_inverse_diagonal&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>cs_1_inverse_diagonal
+n=1: (0.2, -0.4, 0.0, 0.0) Q^-1
+n=2: (0, 0, 0, 0) 0
+n=3: (0, 0, 0, 0) 0
+n=4: (0, 0, 0, 0) 0
+n=5: (0, 0, 0, 0) 0
+n=6: (0.2, -0.1, 0.0, 0.0) Q^-1
+n=7: (0, 0, 0, 0) 0
+n=8: (0, 0, 0, 0) 0
+n=9: (0, 0, 0, 0) 0
+n=10: (0, 0, 0, 0) 0
+n=11: (0.16666666666666666, -0.16666666666666666, 0.0, 0.0) Q^-1
+n=12: (0, 0, 0, 0) 0
+n=13: (0, 0, 0, 0) 0
+n=14: (0, 0, 0, 0) 0
+n=15: (0, 0, 0, 0) 0
+n=16: (0.06896551724137931, 0.1724137931034483, 0.0, 0.0) Q^-1
+sum= (0.635632183908046, -0.49425287356321834, 0.0, 0.0) Q^-1+0+0+0+0+Q^-1+0+0+0+0+Q^-1+0+0+0+0+Q^-1
+cs_2_inverse_diagonal
+n=1: (-0.49875311720698257, -0.02493765586034913, 0.0, 0.0) Q^-1
+n=2: (0, 0, 0, 0) 0
+n=3: (0, 0, 0, 0) 0
+n=4: (0, 0, 0, 0) 0
+n=5: (0, 0, 0, 0) 0
+n=6: (0.06896551724137931, 0.1724137931034483, 0.0, 0.0) Q^-1
+n=7: (0, 0, 0, 0) 0
+n=8: (0, 0, 0, 0) 0
+n=9: (0, 0, 0, 0) 0
+n=10: (0, 0, 0, 0) 0
+n=11: (0.2, -0.1, 0.0, 0.0) Q^-1
+n=12: (0, 0, 0, 0) 0
+n=13: (0, 0, 0, 0) 0
+n=14: (0, 0, 0, 0) 0
+n=15: (0, 0, 0, 0) 0
+n=16: (0.16666666666666666, -0.16666666666666666, 0.0, 0.0) Q^-1
+sum= (-0.06312093329893656, -0.1191905294235675, 0.0, 0.0) Q^-1+0+0+0+0+Q^-1+0+0+0+0+Q^-1+0+0+0+0+Q^-1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[46]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cs_1_cs_1_inv_op</span> <span class="o">=</span> <span class="n">cs_1</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">cs_1_inverse_diagonal</span><span class="p">)</span>
+<span class="n">cs_2_cs_2_inv_op</span> <span class="o">=</span> <span class="n">cs_2</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">cs_2_inverse_diagonal</span><span class="p">)</span>
+<span class="n">cs_1_cs_1_inv_op</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_1_cs_1_inv_op&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">cs_2_cs_2_inv_op</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_2_cs_2_inv_op&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>cs_1_cs_1_inv_op
+n=1: (1.0, 0.0, 0.0, 0.0) Q^-1xQ+0xQ+0xQ+0xQ
+n=2: (1.0, 0.0, 0.0, 0.0) 0xQ+Q^-1xQ+0xQ+0xQ
+n=3: (1.0, 0.0, 0.0, 0.0) 0xQ+0xQ+Q^-1xQ+0xQ
+n=4: (1.0, 0.0, 0.0, 0.0) 0xQ+0xQ+0xQ+Q^-1xQ
+sum= (4.0, 0.0, 0.0, 0.0) Q^-1xQ+0xQ+0xQ+0xQ+0xQ+Q^-1xQ+0xQ+0xQ+0xQ+0xQ+Q^-1xQ+0xQ+0xQ+0xQ+0xQ+Q^-1xQ
+
+cs_2_cs_2_inv_op
+n=1: (1.0, 0.0, 0.0, 0.0) Q^-1xQ+0xQ+0xQ+0xQ
+n=2: (1.0, 0.0, 0.0, 0.0) 0xQ+Q^-1xQ+0xQ+0xQ
+n=3: (1.0, 0.0, 0.0, 0.0) 0xQ+0xQ+Q^-1xQ+0xQ
+n=4: (1.0, 0.0, 0.0, 0.0) 0xQ+0xQ+0xQ+Q^-1xQ
+sum= (4.0, 0.0, 0.0, 0.0) Q^-1xQ+0xQ+0xQ+0xQ+0xQ+Q^-1xQ+0xQ+0xQ+0xQ+0xQ+Q^-1xQ+0xQ+0xQ+0xQ+0xQ+Q^-1xQ
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">cs_1_inverse</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cs_1</span><span class="o">.</span><span class="n">qs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cs_1_inverse</span><span class="o">.</span><span class="n">qs</span><span class="p">)</span>
+<span class="n">cs_1_inverse</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_1_inverse&quot;</span><span class="p">)</span>
+<span class="n">cs_1_inverse_diagonal</span> <span class="o">=</span> <span class="n">cs_1_inverse</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">cs_1_inverse_diagonal</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_1 inv diagonal&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>4
+[&lt;Q_tools.QH object at 0x1116ed400&gt;, &lt;Q_tools.QH object at 0x1116ed898&gt;, &lt;Q_tools.QH object at 0x1116eda20&gt;, &lt;Q_tools.QH object at 0x1116ed128&gt;]
+[]
+cs_1_inverse
+sum= None
+Oops, need the length to be equal to the dimensions.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">UnboundLocalError</span>                         Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-41-fa4e5aa20d50&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">      3</span> print<span class="ansi-blue-fg">(</span>cs_1_inverse<span class="ansi-blue-fg">.</span>qs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      4</span> cs_1_inverse<span class="ansi-blue-fg">.</span>print_state<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;cs_1_inverse&#34;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">----&gt; 5</span><span class="ansi-red-fg"> </span>cs_1_inverse_diagonal <span class="ansi-blue-fg">=</span> cs_1_inverse<span class="ansi-blue-fg">.</span>diagonal<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">4</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      6</span> cs_1_inverse_diagonal<span class="ansi-blue-fg">.</span>print_state<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;cs_1 inv diagonal&#34;</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/workspace/QM/docs/Q_tools.py</span> in <span class="ansi-cyan-fg">diagonal</span><span class="ansi-blue-fg">(self, dim)</span>
+<span class="ansi-green-intense-fg ansi-bold">   6997</span>             <span class="ansi-green-fg">for</span> j <span class="ansi-green-fg">in</span> range<span class="ansi-blue-fg">(</span>dim<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   6998</span>                 <span class="ansi-green-fg">if</span> i <span class="ansi-blue-fg">==</span> j<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 6999</span><span class="ansi-red-fg">                     </span>diagonal<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>q_values<span class="ansi-blue-fg">.</span>pop<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   7000</span>                 <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   7001</span>                     diagonal<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>QH<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>q_0<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-red-fg">UnboundLocalError</span>: local variable &#39;q_values&#39; referenced before assignment</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cs_1_inv_series</span> <span class="o">=</span> <span class="n">cs_1</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">cs_1_inverse</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">cs_1_inv_series</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_1 inv as series&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Oops, need the length to be equal to the dimensions.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">UnboundLocalError</span>                         Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-39-1bb591fca7e4&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>cs_1_inv_series <span class="ansi-blue-fg">=</span> cs_1<span class="ansi-blue-fg">.</span>product<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;ket&#34;</span><span class="ansi-blue-fg">,</span> operator<span class="ansi-blue-fg">=</span>cs_1_inverse<span class="ansi-blue-fg">.</span>diagonal<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">4</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      2</span> cs_1_inv_series<span class="ansi-blue-fg">.</span>print_state<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;cs_1 inv as series&#34;</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/workspace/QM/docs/Q_tools.py</span> in <span class="ansi-cyan-fg">diagonal</span><span class="ansi-blue-fg">(self, dim)</span>
+<span class="ansi-green-intense-fg ansi-bold">   6997</span>             <span class="ansi-green-fg">for</span> j <span class="ansi-green-fg">in</span> range<span class="ansi-blue-fg">(</span>dim<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   6998</span>                 <span class="ansi-green-fg">if</span> i <span class="ansi-blue-fg">==</span> j<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 6999</span><span class="ansi-red-fg">                     </span>diagonal<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>q_values<span class="ansi-blue-fg">.</span>pop<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   7000</span>                 <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   7001</span>                     diagonal<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>QH<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>q_0<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-red-fg">UnboundLocalError</span>: local variable &#39;q_values&#39; referenced before assignment</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cs_1_inverse dim: &quot;</span><span class="p">,</span> <span class="n">cs_1_inverse</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cs_1_inverse len qs: &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cs_1_inverse</span><span class="o">.</span><span class="n">qs</span><span class="p">))</span>
+<span class="n">cs_1_inverse_diag</span> <span class="o">=</span> <span class="n">cs_1_inverse</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">cs_1_inverse_diag</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;cs_1_inverse_diag&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>cs_1_inverse dim:  4
+cs_1_inverse len qs:  0
+Oops, need the length to be equal to the dimensions.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">UnboundLocalError</span>                         Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-40-2d510fa3755d&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> print<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;cs_1_inverse dim: &#34;</span><span class="ansi-blue-fg">,</span> cs_1_inverse<span class="ansi-blue-fg">.</span>dim<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      2</span> print<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;cs_1_inverse len qs: &#34;</span><span class="ansi-blue-fg">,</span> len<span class="ansi-blue-fg">(</span>cs_1_inverse<span class="ansi-blue-fg">.</span>qs<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">----&gt; 3</span><span class="ansi-red-fg"> </span>cs_1_inverse_diag <span class="ansi-blue-fg">=</span> cs_1_inverse<span class="ansi-blue-fg">.</span>diagonal<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">4</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      4</span> cs_1_inverse_diag<span class="ansi-blue-fg">.</span>print_state<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;cs_1_inverse_diag&#34;</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/workspace/QM/docs/Q_tools.py</span> in <span class="ansi-cyan-fg">diagonal</span><span class="ansi-blue-fg">(self, dim)</span>
+<span class="ansi-green-intense-fg ansi-bold">   6997</span>             <span class="ansi-green-fg">for</span> j <span class="ansi-green-fg">in</span> range<span class="ansi-blue-fg">(</span>dim<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   6998</span>                 <span class="ansi-green-fg">if</span> i <span class="ansi-blue-fg">==</span> j<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 6999</span><span class="ansi-red-fg">                     </span>diagonal<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>q_values<span class="ansi-blue-fg">.</span>pop<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   7000</span>                 <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   7001</span>                     diagonal<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>QH<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>q_0<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-red-fg">UnboundLocalError</span>: local variable &#39;q_values&#39; referenced before assignment</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">v</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">determinant</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+<span class="n">inverse</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;v inv&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>v
+n=1: (1, 0, 0, 0) Q
+n=2: (1, 0, 0, 0) Q
+n=3: (2, 0, 0, 0) Q
+n=4: (3, 0, 0, 0) Q
+sum= (7, 0, 0, 0) Q+Q+Q+Q
+
+(1, 0, 0, 0) QxQ-QxQ
+v inv
+n=1: (1.0, 0.0, 0.0, 0.0) Q^-1
+n=2: (1.0, 0.0, 0.0, 0.0) Q^-1
+n=3: (0.5, 0.0, 0.0, 0.0) Q^-1
+n=4: (0.3333333333333333, 0.0, 0.0, 0.0) Q^-1
+sum= (2.8333333333333335, 0.0, 0.0, 0.0) Q^-1+Q^-1+Q^-1+Q^-1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">v</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">inverse</span><span class="p">(</span><span class="n">v</span><span class="p">))</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;v vinverse&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>v vinverse
+(4.0, 0.0, 0.0, 0.0) QxQ^-1+QxQ^-1+QxQ^-1+QxQ^-1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">determinant</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(1, 0, 0, 0) QxQ-QxQ
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">v9</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_1</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_2</span><span class="p">,</span> <span class="n">q_3</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_2</span><span class="p">,</span> <span class="n">q_3</span><span class="p">,</span> <span class="n">q_2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">v9</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">determinant</span><span class="p">(</span><span class="n">v9</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>n=1: (1, 0, 0, 0) Q
+n=2: (1, 0, 0, 0) Q
+n=3: (2, 0, 0, 0) Q
+n=4: (3, 0, 0, 0) Q
+n=5: (1, 0, 0, 0) Q
+n=6: (1, 0, 0, 0) Q
+n=7: (2, 0, 0, 0) Q
+n=8: (3, 0, 0, 0) Q
+n=9: (2, 0, 0, 0) Q
+(9, 0, 0, 0) QxQxQ+QxQxQ+QxQxQ-QxQxQ+QxQxQ+QxQxQ
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">v9i</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vv9</span> <span class="o">=</span> <span class="n">v9</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v9i</span><span class="p">)</span>
+<span class="n">vv9</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;vv9&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">determinant</span><span class="p">(</span><span class="n">vv9</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">v1123</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_1</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_2</span><span class="p">,</span> <span class="n">q_3</span><span class="p">])</span>
+<span class="n">dv1123</span> <span class="o">=</span> <span class="n">determinant</span><span class="p">(</span><span class="n">v1123</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dv1123</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">identity</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Identity operator for states or operators which are diagonal.&quot;&quot;&quot;</span>
+    
+        <span class="k">if</span> <span class="n">operator</span><span class="p">:</span>
+            <span class="n">q_1</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_1</span><span class="p">()])</span>
+            <span class="n">ident</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">q_1</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>    
+    
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">i_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_1</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">)]</span>
+            <span class="n">ident</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">(</span><span class="n">i_list</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">ident</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">TestDet</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="n">q_0</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_0</span><span class="p">()</span>
+    <span class="n">q_1</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_1</span><span class="p">()</span>
+    <span class="n">q_n1</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q_2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q_n2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q_3</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q_n3</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q_4</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q_n5</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q_7</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q_8</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q_9</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">9</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q_n11</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="o">-</span><span class="mi">11</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q_21</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">21</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q_n34</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="o">-</span><span class="mi">34</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">v3</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_3</span><span class="p">])</span>
+    <span class="n">v1123</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_1</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_2</span><span class="p">,</span> <span class="n">q_3</span><span class="p">])</span>
+    <span class="n">v3n1n21</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_3</span><span class="p">,</span><span class="n">q_n1</span><span class="p">,</span><span class="n">q_n2</span><span class="p">,</span><span class="n">q_1</span><span class="p">])</span>
+    <span class="n">v9</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_1</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_2</span><span class="p">,</span> <span class="n">q_3</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_2</span><span class="p">,</span> <span class="n">q_3</span><span class="p">,</span> <span class="n">q_2</span><span class="p">])</span>
+    <span class="n">v9i</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])])</span>
+    <span class="n">vv9</span> <span class="o">=</span> <span class="n">v9</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v9i</span><span class="p">)</span>
+    <span class="n">qn627</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="mi">27</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">v33</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_7</span><span class="p">,</span> <span class="n">q_0</span><span class="p">,</span> <span class="n">q_n3</span><span class="p">,</span> <span class="n">q_2</span><span class="p">,</span> <span class="n">q_3</span><span class="p">,</span> <span class="n">q_4</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_n1</span><span class="p">,</span> <span class="n">q_n2</span><span class="p">])</span>
+    <span class="n">v33inv</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_n2</span><span class="p">,</span> <span class="n">q_3</span><span class="p">,</span> <span class="n">q_9</span><span class="p">,</span> <span class="n">q_8</span><span class="p">,</span> <span class="n">q_n11</span><span class="p">,</span> <span class="n">q_n34</span><span class="p">,</span> <span class="n">q_n5</span><span class="p">,</span> <span class="n">q_7</span><span class="p">,</span> <span class="n">q_21</span><span class="p">])</span>
+    <span class="n">q_i3</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_1</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_1</span><span class="p">])</span>
+    <span class="n">q_i2d</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_1</span><span class="p">,</span> <span class="n">q_0</span><span class="p">,</span> <span class="n">q_0</span><span class="p">,</span> <span class="n">q_1</span><span class="p">])</span>
+            
+    <span class="k">def</span> <span class="nf">test_identity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ident</span> <span class="o">=</span> <span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ket 3 identity&quot;</span><span class="p">,</span> <span class="n">ident</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ident</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_i3</span><span class="p">))</span>
+        <span class="n">ident</span> <span class="o">=</span> <span class="n">identity</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;operator 2 identity&quot;</span><span class="p">,</span> <span class="n">ident</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ident</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_i2d</span><span class="p">))</span>
+
+
+    
+    <span class="k">def</span> <span class="nf">test_determinant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">det_v3</span> <span class="o">=</span> <span class="n">determinant</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v3</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;det v3:&quot;</span><span class="p">,</span> <span class="n">det_v3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">det_v3</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_3</span><span class="p">))</span>
+        <span class="n">det_v1123</span> <span class="o">=</span> <span class="n">determinant</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v1123</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;det v1123&quot;</span><span class="p">,</span> <span class="n">det_v1123</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">det_v1123</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_1</span><span class="p">))</span>
+        <span class="n">det_v9</span> <span class="o">=</span> <span class="n">determinant</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v9</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;det_v9&quot;</span><span class="p">,</span> <span class="n">det_v9</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">det_v9</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_9</span><span class="p">))</span>
+        <span class="n">det_vv9</span> <span class="o">=</span> <span class="n">determinant</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vv9</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;det_vv9&quot;</span><span class="p">,</span> <span class="n">det_vv9</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">det_vv9</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qn627</span><span class="p">))</span>
+        
+    <span class="k">def</span> <span class="nf">test_inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inv_v1123</span> <span class="o">=</span> <span class="n">inverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v1123</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;inv_v1123&quot;</span><span class="p">,</span> <span class="n">inv_v1123</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">inv_v1123</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v3n1n21</span><span class="p">))</span>
+
+        <span class="n">inv_v33</span> <span class="o">=</span> <span class="n">inverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v33</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;inv_v33&quot;</span><span class="p">,</span> <span class="n">inv_v33</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">inv_v33</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v33inv</span><span class="p">))</span>
+
+        
+<span class="n">suite</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestLoader</span><span class="p">()</span><span class="o">.</span><span class="n">loadTestsFromModule</span><span class="p">(</span><span class="n">TestDet</span><span class="p">())</span>
+<span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">suite</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">v2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">])])</span>
+<span class="n">v2inv</span> <span class="o">=</span> <span class="n">v2</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+<span class="n">v2v2inv_product</span> <span class="o">=</span> <span class="n">v2</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">v2inv</span><span class="p">)</span>
+<span class="n">v2v2inv_Euclidean_product</span> <span class="o">=</span> <span class="n">v2</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">v2inv</span><span class="p">)</span>
+
+<span class="n">v2</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;v2&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">v2inv</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;v2inv&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">v2v2inv_product</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;v2v2inv_product&quot;</span><span class="p">)</span>
+<span class="n">v2v2inv_Euclidean_product</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;v2v2inv_Euclidean_product&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vinverse</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+<span class="n">vvinverse_product</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">vinverse</span><span class="p">)</span>
+<span class="n">vvinverse_Euclidean_product</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">vinverse</span><span class="p">)</span>
+
+<span class="n">v</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">vinverse</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;vinverse&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">vvinverse_product</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;vvinverse_product&quot;</span><span class="p">)</span>
+<span class="n">vvinverse_Euclidean_product</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;vvinverse_Euclidean_product&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">u2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">])])</span>
+<span class="n">u4</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">])])</span>
+<span class="n">I2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_1</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_1</span><span class="p">()])</span>
+<span class="n">I4</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_1</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_1</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_1</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_1</span><span class="p">()])</span>
+<span class="n">u2</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;u2&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">u2</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">I2</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;u2 I2 product&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">u2</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">bra</span><span class="o">=</span><span class="n">I2</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;u2* I2 Euclidean product&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="n">u4</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;u4&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">u4</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">I4</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;u4 I4 product&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">u4</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">bra</span><span class="o">=</span><span class="n">I4</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;u4* I4 Euclidean product&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">v</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;v&quot;</span><span class="p">)</span>
+<span class="n">v</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;v inverse&quot;</span><span class="p">)</span>
+<span class="n">v</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">operator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;v inverse&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Identity bra, ket or operator(diagonal).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;i3&quot;</span><span class="p">)</span>
+<span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;i3 op&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">additive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Inverseing bras and kets calls inverse() once for each.</span>
+<span class="sd">    Inverseing operators is more tricky as one needs a diagonal identity matrix.&quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">operator</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">additive</span><span class="p">:</span>
+            <span class="n">q_inv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flip_signs</span><span class="p">()</span>
+    
+        <span class="k">else</span><span class="p">:</span>    
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">q_inv</span> <span class="o">=</span> <span class="n">QHStates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">inverse</span><span class="p">())</span>
+        
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">det</span> <span class="o">=</span> <span class="n">determinant</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+                <span class="n">detinv</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+                
+                <span class="n">q0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="n">q1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">flip_signs</span><span class="p">()</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="n">q2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">flip_signs</span><span class="p">()</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="n">q3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                
+                <span class="n">q_inv</span> <span class="o">=</span> <span class="n">QHStates</span><span class="p">([</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="p">])</span>
+    
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
+                <span class="n">det</span> <span class="o">=</span> <span class="n">determinant</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+                <span class="n">detinv</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+        
+                
+                <span class="n">q0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">7</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="n">q1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="n">q2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="n">q3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="n">q4</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">6</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="n">q5</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="n">q6</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">6</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="n">q7</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                <span class="n">q8</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">detinv</span><span class="p">)</span>
+                
+                <span class="n">q_inv</span> <span class="o">=</span> <span class="n">QHStates</span><span class="p">([</span><span class="n">q0</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="p">,</span> <span class="n">q4</span><span class="p">,</span> <span class="n">q5</span><span class="p">,</span> <span class="n">q6</span><span class="p">,</span> <span class="n">q7</span><span class="p">,</span> <span class="n">q8</span><span class="p">])</span>
+        
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Oops, don&#39;t know yet how to inverse an operator of this size, sorry.&quot;</span><span class="p">)</span>
+                <span class="n">q_inv</span> <span class="o">=</span> <span class="n">QHStates</span><span class="p">([</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_0</span><span class="p">()])</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">additive</span><span class="p">:</span>
+            <span class="n">q_inv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flip_signs</span><span class="p">()</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_states</span> <span class="o">=</span> <span class="p">[]</span>
+        
+            <span class="k">for</span> <span class="n">bra</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">:</span>
+                <span class="n">new_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bra</span><span class="o">.</span><span class="n">inverse</span><span class="p">())</span>
+                
+            <span class="n">q_inv</span> <span class="o">=</span> <span class="n">QHStates</span><span class="p">(</span><span class="n">new_states</span><span class="p">)</span>
+            
+    <span class="k">return</span> <span class="n">q_inv</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">determinant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the determinant of a &#39;square&#39; quaternion series.&quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">q_det</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">ad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">bc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">q_det</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span>  
+        
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
+        <span class="n">aei</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">8</span><span class="p">]))</span>
+        <span class="n">bfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="n">cdh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">5</span><span class="p">]))</span>
+        <span class="n">ceg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="n">bdi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">8</span><span class="p">]))</span>
+        <span class="n">afh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">5</span><span class="p">]))</span>
+        
+        <span class="n">sum_pos</span> <span class="o">=</span> <span class="n">aei</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">bfg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cdh</span><span class="p">))</span>
+        <span class="n">sum_neg</span> <span class="o">=</span> <span class="n">ceg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">bdi</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">afh</span><span class="p">))</span>
+        
+        <span class="n">q_det</span> <span class="o">=</span> <span class="n">sum_pos</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">sum_neg</span><span class="p">)</span>
+        
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Oops, don&#39;t know how to calculate the determinant of this one.&quot;</span><span class="p">)</span>
+        <span class="n">q_det</span> <span class="o">=</span> <span class="n">QHStates</span><span class="p">([</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_0</span><span class="p">()])</span>
+        
+    <span class="k">return</span> <span class="n">q_det</span>
 </pre></div>
 
 </div>

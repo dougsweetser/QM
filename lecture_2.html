@@ -11799,7 +11799,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">capture</span>
@@ -11901,7 +11901,7 @@ display(HTML(&quot;&lt;style&gt;.container { width:100% !important; }&lt;/style&
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">q_0</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_i</span><span class="p">,</span> <span class="n">q_j</span><span class="p">,</span> <span class="n">q_k</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_0</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_1</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_i</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_j</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_k</span><span class="p">()</span>
@@ -11909,8 +11909,8 @@ display(HTML(&quot;&lt;style&gt;.container { width:100% !important; }&lt;/style&
 <span class="n">u</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_1</span><span class="p">,</span> <span class="n">q_0</span><span class="p">])</span>
 <span class="n">d</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_0</span><span class="p">,</span> <span class="n">q_1</span><span class="p">])</span>
 
-<span class="n">u</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">d</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|u&gt;&quot;</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|d&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11927,15 +11927,16 @@ display(HTML(&quot;&lt;style&gt;.container { width:100% !important; }&lt;/style&
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>u
+<pre>|u&gt;
 n=1: (1, 0, 0, 0) 1
 n=2: (0, 0, 0, 0) 0
-sum= (1, 0, 0, 0) 1+0
+ket: 2/1
 
-d
+|d&gt;
 n=1: (0, 0, 0, 0) 0
 n=2: (1, 0, 0, 0) 1
-sum= (1, 0, 0, 0) 0+1
+ket: 2/1
+
 </pre>
 </div>
 </div>
@@ -11964,15 +11965,15 @@ sum= (1, 0, 0, 0) 0+1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">At1</span><span class="p">,</span> <span class="n">Ax1</span><span class="p">,</span> <span class="n">Ay1</span><span class="p">,</span> <span class="n">Az1</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;At1 Ax1 Ay1 Az1&quot;</span><span class="p">)</span>
 <span class="n">At2</span><span class="p">,</span> <span class="n">Ax2</span><span class="p">,</span> <span class="n">Ay2</span><span class="p">,</span> <span class="n">Az2</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;At2 Ax2 Ay2 Az2&quot;</span><span class="p">)</span>
-<span class="n">Aq2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">At2</span><span class="p">,</span> <span class="n">Ax2</span><span class="p">,</span> <span class="n">Ay2</span><span class="p">,</span> <span class="n">Az2</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;a₁&quot;</span><span class="p">)</span>
+<span class="n">Aq1</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">At1</span><span class="p">,</span> <span class="n">Ax1</span><span class="p">,</span> <span class="n">Ay1</span><span class="p">,</span> <span class="n">Az1</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;a₁&quot;</span><span class="p">)</span>
 <span class="n">Aq2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">At2</span><span class="p">,</span> <span class="n">Ax2</span><span class="p">,</span> <span class="n">Ay2</span><span class="p">,</span> <span class="n">Az2</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;a₂&quot;</span><span class="p">)</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">Aq2</span><span class="p">,</span> <span class="n">Aq2</span><span class="p">])</span>
-<span class="n">A</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">Aq1</span><span class="p">,</span> <span class="n">Aq2</span><span class="p">])</span>
+<span class="n">A</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|A&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11989,10 +11990,11 @@ sum= (1, 0, 0, 0) 0+1
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>A
-n=1: (At2, Ax2, Ay2, Az2) a₂
+<pre>|A&gt;
+n=1: (At1, Ax1, Ay1, Az1) a₁
 n=2: (At2, Ax2, Ay2, Az2) a₂
-sum= (2*At2, 2*Ax2, 2*Ay2, 2*Az2) a₂+a₂
+ket: 2/1
+
 </pre>
 </div>
 </div>
@@ -12015,10 +12017,10 @@ sum= (2*At2, 2*Ax2, 2*Ay2, 2*Az2) a₂+a₂
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">uA</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">A</span><span class="p">)</span>
-<span class="n">dA</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">A</span><span class="p">)</span>
-<span class="n">uA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;αu = &lt;u|A&gt;&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">dA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;αd = &lt;d|A&gt;&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">uA</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">uA</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;u|A&gt;&quot;</span><span class="p">)</span>
+<span class="n">dA</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">dA</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;d|A&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12035,15 +12037,14 @@ sum= (2*At2, 2*Ax2, 2*Ay2, 2*Az2) a₂+a₂
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>αu = &lt;u|A&gt;
-n=1: (A1t, A1x, A1y, A1z) 1*xa₁
-n=2: (0, 0, 0, 0) 0*xa₂
-sum= (A1t, A1x, A1y, A1z) 1*xa₁+0*xa₂
+<pre>&lt;u|A&gt;
+n=1: (At1, Ax1, Ay1, Az1) +1*xa₁+0*xa₂
+scalar: 1/1
 
-αd = &lt;d|A&gt;
-n=1: (0, 0, 0, 0) 0*xa₁
-n=2: (A2t, A2x, A2y, A2z) 1*xa₂
-sum= (A2t, A2x, A2y, A2z) 0*xa₁+1*xa₂
+&lt;d|A&gt;
+n=1: (At2, Ax2, Ay2, Az2) +0*xa₁+1*xa₂
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -12093,10 +12094,8 @@ sum= (A2t, A2x, A2y, A2z) 0*xa₁+1*xa₂
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">uA_norm_sq</span> <span class="o">=</span> <span class="n">uA</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">uA</span><span class="p">)</span>
-<span class="n">dA_norm_sq</span> <span class="o">=</span> <span class="n">dA</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">dA</span><span class="p">)</span>
-<span class="n">uA_norm_sq</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;|αu|²&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">dA_norm_sq</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;|αd|²&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">uA</span><span class="o">.</span><span class="n">norm_squared</span><span class="p">()</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|αu|²&quot;</span><span class="p">)</span>
+<span class="n">dA</span><span class="o">.</span><span class="n">norm_squared</span><span class="p">()</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|αd|²&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12114,14 +12113,13 @@ sum= (A2t, A2x, A2y, A2z) 0*xa₁+1*xa₂
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>|αu|²
-n=1: (A1t**2 + A1x**2 + A1y**2 + A1z**2, 0, 0, 0) 1*xa₁*x1*xa₁
-n=2: (0, 0, 0, 0) 0*xa₂*x0*xa₂
-sum= (A1t**2 + A1x**2 + A1y**2 + A1z**2, 0, 0, 0) 1*xa₁*x1*xa₁+0*xa₂*x0*xa₂
+n=1: (At1**2 + Ax1**2 + Ay1**2 + Az1**2, 0, 0, 0) ++1*xa₁+0*xa₂*x+1*xa₁+0*xa₂
+scalar: 1/1
 
 |αd|²
-n=1: (0, 0, 0, 0) 0*xa₁*x0*xa₁
-n=2: (A2t**2 + A2x**2 + A2y**2 + A2z**2, 0, 0, 0) 1*xa₂*x1*xa₂
-sum= (A2t**2 + A2x**2 + A2y**2 + A2z**2, 0, 0, 0) 0*xa₁*x0*xa₁+1*xa₂*x1*xa₂
+n=1: (At2**2 + Ax2**2 + Ay2**2 + Az2**2, 0, 0, 0) ++0*xa₁+1*xa₂*x+0*xa₁+1*xa₂
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -12159,11 +12157,11 @@ sum= (A2t**2 + A2x**2 + A2y**2 + A2z**2, 0, 0, 0) 0*xa₁*x0*xa₁+1*xa₂*x1*xa
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ud</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
-<span class="n">ud</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;u|d&gt;&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ud</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">ud</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;u|d&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12181,9 +12179,9 @@ sum= (A2t**2 + A2x**2 + A2y**2 + A2z**2, 0, 0, 0) 0*xa₁*x0*xa₁+1*xa₂*x1*xa
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>&lt;u|d&gt;
-n=1: (0, 0, 0, 0) 1*x0
-n=2: (0, 0, 0, 0) 0*x1
-sum= (0, 0, 0, 0) 1*x0+0*x1
+n=1: (0, 0, 0, 0) +1*x0+0*x1
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -12230,21 +12228,17 @@ sum= (0, 0, 0, 0) 1*x0+0*x1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">An</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
-<span class="n">An</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;A, normalized&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">Anp</span> <span class="o">=</span> <span class="n">An</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">An</span><span class="p">)</span>
-<span class="n">Anp</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;An|An&gt;&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simplified t, n=1: &quot;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">Anp</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">t</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simplified x, n=1: &quot;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">Anp</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simplified y, n=1: &quot;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">Anp</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simplified z, n=1: &quot;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">Anp</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">z</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simplified t, n=2: &quot;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">Anp</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">t</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simplified x, n=2: &quot;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">Anp</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simplified y, n=2: &quot;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">Anp</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simplified z, n=2: &quot;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">Anp</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">z</span><span class="p">))</span>
+<span class="n">An</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;A, normalized&quot;</span><span class="p">)</span>
+<span class="n">Anp</span> <span class="o">=</span> <span class="n">An</span><span class="o">.</span><span class="n">norm_squared</span><span class="p">()</span>
+<span class="n">Anp</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;An|An&gt;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simplified t: &quot;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">Anp</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">t</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simplified x: &quot;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">Anp</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simplified y: &quot;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">Anp</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simplified z: &quot;</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">Anp</span><span class="o">.</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">z</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12262,22 +12256,18 @@ sum= (0, 0, 0, 0) 1*x0+0*x1
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>A, normalized
-n=1: (0.707106781186548*A1t*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5), 0.707106781186548*A1x*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5), 0.707106781186548*A1y*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5), 0.707106781186548*A1z*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5)) a₁UxQ
-n=2: (0.707106781186548*A2t*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5), 0.707106781186548*A2x*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5), 0.707106781186548*A2y*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5), 0.707106781186548*A2z*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5)) a₂UxQ
-sum= (0.707106781186548*A1t*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5) + 0.707106781186548*A2t*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5), 0.707106781186548*A1x*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5) + 0.707106781186548*A2x*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5), 0.707106781186548*A1y*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5) + 0.707106781186548*A2y*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5), 0.707106781186548*A1z*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-0.5) + 0.707106781186548*A2z*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-0.5)) a₁UxQ+a₂UxQ
+n=1: (0.707106781186548*At1*(At1**2 + Ax1**2 + Ay1**2 + Az1**2)**(-0.5), 0.707106781186548*Ax1*(At1**2 + Ax1**2 + Ay1**2 + Az1**2)**(-0.5), 0.707106781186548*Ay1*(At1**2 + Ax1**2 + Ay1**2 + Az1**2)**(-0.5), 0.707106781186548*Az1*(At1**2 + Ax1**2 + Ay1**2 + Az1**2)**(-0.5)) a₁UxQ
+n=2: (0.707106781186548*At2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5), 0.707106781186548*Ax2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5), 0.707106781186548*Ay2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5), 0.707106781186548*Az2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-0.5)) a₂UxQ
+ket: 2/1
 
 &lt;An|An&gt;
-n=1: (0.5*A1t**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A1x**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A1y**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A1z**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0), 0, 0, 0) a₁UxQ*xa₁UxQ
-n=2: (0.5*A2t**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0) + 0.5*A2x**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0) + 0.5*A2y**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0) + 0.5*A2z**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0), 0, 0, 0) a₂UxQ*xa₂UxQ
-sum= (0.5*A1t**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A1x**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A1y**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A1z**2*(A1t**2 + A1x**2 + A1y**2 + A1z**2)**(-1.0) + 0.5*A2t**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0) + 0.5*A2x**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0) + 0.5*A2y**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0) + 0.5*A2z**2*(A2t**2 + A2x**2 + A2y**2 + A2z**2)**(-1.0), 0, 0, 0) a₁UxQ*xa₁UxQ+a₂UxQ*xa₂UxQ
-simplified t, n=1:  0.500000000000000
-simplified x, n=1:  0
-simplified y, n=1:  0
-simplified z, n=1:  0
-simplified t, n=2:  0.500000000000000
-simplified x, n=2:  0
-simplified y, n=2:  0
-simplified z, n=2:  0
+n=1: (0.5*At1**2*(At1**2 + Ax1**2 + Ay1**2 + Az1**2)**(-1.0) + 0.5*At2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0) + 0.5*Ax1**2*(At1**2 + Ax1**2 + Ay1**2 + Az1**2)**(-1.0) + 0.5*Ax2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0) + 0.5*Ay1**2*(At1**2 + Ax1**2 + Ay1**2 + Az1**2)**(-1.0) + 0.5*Ay2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0) + 0.5*Az1**2*(At1**2 + Ax1**2 + Ay1**2 + Az1**2)**(-1.0) + 0.5*Az2**2*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0), 0, 0, 0) +a₁UxQ*xa₁UxQ+a₂UxQ*xa₂UxQ
+scalar: 1/1
+
+simplified t:  0.5*((At1**2 + Ax1**2 + Ay1**2 + Az1**2)*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**1.0 + (At1**2 + Ax1**2 + Ay1**2 + Az1**2)**1.0*(At2**2 + Ax2**2 + Ay2**2 + Az2**2))*(At1**2 + Ax1**2 + Ay1**2 + Az1**2)**(-1.0)*(At2**2 + Ax2**2 + Ay2**2 + Az2**2)**(-1.0)
+simplified x:  0
+simplified y:  0
+simplified z:  0
 </pre>
 </div>
 </div>
@@ -12315,19 +12305,19 @@ simplified z, n=2:  0
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sqrt_2op</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">sp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sqrt_2op</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">sp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])],</span> <span class="n">qs_type</span><span class="o">=</span><span class="s2">&quot;op&quot;</span><span class="p">)</span>
 
-<span class="n">u2</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;ket&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">sqrt_2op</span><span class="p">)</span>
-<span class="n">d2</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;ket&#39;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">sqrt_2op</span><span class="p">)</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="n">sqrt_2op</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">sqrt_2op</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
 <span class="n">r</span> <span class="o">=</span> <span class="n">u2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>
 <span class="n">L</span> <span class="o">=</span> <span class="n">u2</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>
 
-<span class="n">r</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">L</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">)</span>
+<span class="n">r</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|r&gt;&quot;</span><span class="p">)</span>
+<span class="n">L</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|L&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12344,15 +12334,16 @@ simplified z, n=2:  0
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>r
-n=1: (0.707106781186548, 0, 0, 0) Qx1+0x0+Qx0+0x1
-n=2: (0.707106781186548, 0, 0, 0) 0x1+Qx0+0x0+Qx1
-sum= (1.41421356237310, 0, 0, 0) Qx1+0x0+Qx0+0x1+0x1+Qx0+0x0+Qx1
+<pre>|r&gt;
+n=1: (0.707106781186548, 0, 0, 0) +Qx1+0x0++Qx0+0x1
+n=2: (0.707106781186548, 0, 0, 0) +0x1+Qx0++0x0+Qx1
+ket: 2/1
 
-L
-n=1: (0.707106781186548, 0, 0, 0) Qx1+0x0-Qx0+0x1
-n=2: (-0.707106781186548, 0, 0, 0) 0x1+Qx0-0x0+Qx1
-sum= (0, 0, 0, 0) Qx1+0x0-Qx0+0x1+0x1+Qx0-0x0+Qx1
+|L&gt;
+n=1: (0.707106781186548, 0, 0, 0) +Qx1+0x0-+Qx0+0x1
+n=2: (-0.707106781186548, 0, 0, 0) +0x1+Qx0-+0x0+Qx1
+ket: 2/1
+
 </pre>
 </div>
 </div>
@@ -12400,12 +12391,12 @@ sum= (0, 0, 0, 0) Qx1+0x0-Qx0+0x1+0x1+Qx0-0x0+Qx1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">r</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;r|r&gt;&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">L</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">L</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;L|L&gt;&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">r</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">L</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;r|L&gt;&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">r</span><span class="o">.</span><span class="n">norm_squared</span><span class="p">()</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;r|r&gt;&quot;</span><span class="p">)</span>
+<span class="n">L</span><span class="o">.</span><span class="n">norm_squared</span><span class="p">()</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;L|L&gt;&quot;</span><span class="p">)</span>
+<span class="n">r</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">L</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;r|L&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12423,19 +12414,17 @@ sum= (0, 0, 0, 0) Qx1+0x0-Qx0+0x1+0x1+Qx0-0x0+Qx1
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>&lt;r|r&gt;
-n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0+Qx0+0x1
-n=2: (0.500000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0+0x0+Qx1
-sum= (1.00000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0+Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0+0x0+Qx1
+n=1: (1.00000000000000, 0, 0, 0) ++Qx1+0x0++Qx0+0x1*x+Qx1+0x0++Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
 &lt;L|L&gt;
-n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0-Qx0+0x1*xQx1+0x0-Qx0+0x1
-n=2: (0.500000000000000, 0, 0, 0) 0x1+Qx0-0x0+Qx1*x0x1+Qx0-0x0+Qx1
-sum= (1.00000000000000, 0, 0, 0) Qx1+0x0-Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0-0x0+Qx1*x0x1+Qx0-0x0+Qx1
+n=1: (1.00000000000000, 0, 0, 0) ++Qx1+0x0-+Qx0+0x1*x+Qx1+0x0-+Qx0+0x1++0x1+Qx0-+0x0+Qx1*x+0x1+Qx0-+0x0+Qx1
+scalar: 1/1
 
 &lt;r|L&gt;
-n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1
-n=2: (-0.500000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
-sum= (0, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+n=1: (0, 0, 0, 0) ++Qx1+0x0++Qx0+0x1*x+Qx1+0x0-+Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0-+0x0+Qx1
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -12455,14 +12444,14 @@ sum= (0, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Ar</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
-<span class="n">Ar</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;A|r&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Ar</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="n">Ar</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;A|r&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-<span class="n">AL</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">L</span><span class="p">)</span>
-<span class="n">AL</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;A|L&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">AL</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<span class="n">AL</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;A|L&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12480,14 +12469,12 @@ sum= (0, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>&lt;A|r&gt;
-n=1: (0.707106781186548*A1t, -0.707106781186548*A1x, -0.707106781186548*A1y, -0.707106781186548*A1z) a₁*xQx1+0x0+Qx0+0x1
-n=2: (0.707106781186548*A2t, -0.707106781186548*A2x, -0.707106781186548*A2y, -0.707106781186548*A2z) a₂*x0x1+Qx0+0x0+Qx1
-sum= (0.707106781186548*A1t + 0.707106781186548*A2t, -0.707106781186548*A1x - 0.707106781186548*A2x, -0.707106781186548*A1y - 0.707106781186548*A2y, -0.707106781186548*A1z - 0.707106781186548*A2z) a₁*xQx1+0x0+Qx0+0x1+a₂*x0x1+Qx0+0x0+Qx1
+n=1: (0.707106781186548*At1 + 0.707106781186548*At2, -0.707106781186548*Ax1 - 0.707106781186548*Ax2, -0.707106781186548*Ay1 - 0.707106781186548*Ay2, -0.707106781186548*Az1 - 0.707106781186548*Az2) +a₁*x+Qx1+0x0++Qx0+0x1+a₂*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
 &lt;A|L&gt;
-n=1: (0.707106781186548*A1t, -0.707106781186548*A1x, -0.707106781186548*A1y, -0.707106781186548*A1z) a₁*xQx1+0x0-Qx0+0x1
-n=2: (-0.707106781186548*A2t, 0.707106781186548*A2x, 0.707106781186548*A2y, 0.707106781186548*A2z) a₂*x0x1+Qx0-0x0+Qx1
-sum= (0.707106781186548*A1t - 0.707106781186548*A2t, -0.707106781186548*A1x + 0.707106781186548*A2x, -0.707106781186548*A1y + 0.707106781186548*A2y, -0.707106781186548*A1z + 0.707106781186548*A2z) a₁*xQx1+0x0-Qx0+0x1+a₂*x0x1+Qx0-0x0+Qx1
+n=1: (0.707106781186548*At1 - 0.707106781186548*At2, -0.707106781186548*Ax1 + 0.707106781186548*Ax2, -0.707106781186548*Ay1 + 0.707106781186548*Ay2, -0.707106781186548*Az1 + 0.707106781186548*Az2) +a₁*x+Qx1+0x0-+Qx0+0x1+a₂*x+0x1+Qx0-+0x0+Qx1
+scalar: 1/1
 
 </pre>
 </div>
@@ -12562,18 +12549,18 @@ sum= (0.707106781186548*A1t - 0.707106781186548*A2t, -0.707106781186548*A1x + 0.
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">one_root_two</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">q_2</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">(</span> <span class="p">[</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">sp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="p">]</span> <span class="p">)</span>
 <span class="n">q_2i</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])])</span>
 
-<span class="n">i</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">q_2</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">q_2i</span><span class="p">))</span>
-<span class="n">o</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">q_2</span><span class="p">)</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">q_2i</span><span class="p">))</span>
+<span class="n">i</span> <span class="o">=</span> <span class="n">q_2</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">q_2i</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+<span class="n">o</span> <span class="o">=</span> <span class="n">q_2</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">dif</span><span class="p">(</span><span class="n">q_2i</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
 
-<span class="n">i</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">o</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">i</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|i&gt;&quot;</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|o&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12590,15 +12577,15 @@ sum= (0.707106781186548*A1t - 0.707106781186548*A2t, -0.707106781186548*A1x + 0.
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>i
-n=1: (0.707106781186548, 0, 0, 0) Qx1+0x0+Qx0+0x1
-n=2: (0, 0.707106781186548, 0, 0) 0x1+Qx0+0x0+Qx1
-sum= (0.707106781186548, 0.707106781186548, 0, 0) Qx1+0x0+Qx0+0x1+0x1+Qx0+0x0+Qx1
+<pre>|i&gt;
+n=1: (0.707106781186548, 0, 0, 0) +Qx1+0x0++Qx0+0x1
+n=2: (0, 0.707106781186548, 0, 0) +0x1+Qx0++0x0+Qx1
+ket: 2/1
 
-o
-n=1: (0.707106781186548, 0, 0, 0) Qx1+0x0-Qx0+0x1
-n=2: (0, -0.707106781186548, 0, 0) 0x1+Qx0-0x0+Qx1
-sum= (0.707106781186548, -0.707106781186548, 0, 0) Qx1+0x0-Qx0+0x1+0x1+Qx0-0x0+Qx1
+|o&gt;
+n=1: (0.707106781186548, 0, 0, 0) +Qx1+0x0-+Qx0+0x1
+n=2: (0, -0.707106781186548, 0, 0) +0x1+Qx0-+0x0+Qx1
+ket: 2/1
 
 </pre>
 </div>
@@ -12619,12 +12606,12 @@ sum= (0.707106781186548, -0.707106781186548, 0, 0) Qx1+0x0-Qx0+0x1+0x1+Qx0-0x0+Q
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">i</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|i&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">o</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">o</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;o|o&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">i</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">o</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|o&gt;&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">i</span><span class="o">.</span><span class="n">norm_squared</span><span class="p">()</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;i|i&gt;&quot;</span><span class="p">)</span>
+<span class="n">o</span><span class="o">.</span><span class="n">norm_squared</span><span class="p">()</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;o|o&gt;&quot;</span><span class="p">)</span>
+<span class="n">i</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;i|o&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12642,19 +12629,17 @@ sum= (0.707106781186548, -0.707106781186548, 0, 0) Qx1+0x0-Qx0+0x1+0x1+Qx0-0x0+Q
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>&lt;i|i&gt;
-n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0+Qx0+0x1
-n=2: (0.500000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0+0x0+Qx1
-sum= (1.00000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0+Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0+0x0+Qx1
+n=1: (1.00000000000000, 0, 0, 0) ++Qx1+0x0++Qx0+0x1*x+Qx1+0x0++Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
 &lt;o|o&gt;
-n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0-Qx0+0x1*xQx1+0x0-Qx0+0x1
-n=2: (0.500000000000000, 0, 0, 0) 0x1+Qx0-0x0+Qx1*x0x1+Qx0-0x0+Qx1
-sum= (1.00000000000000, 0, 0, 0) Qx1+0x0-Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0-0x0+Qx1*x0x1+Qx0-0x0+Qx1
+n=1: (1.00000000000000, 0, 0, 0) ++Qx1+0x0-+Qx0+0x1*x+Qx1+0x0-+Qx0+0x1++0x1+Qx0-+0x0+Qx1*x+0x1+Qx0-+0x0+Qx1
+scalar: 1/1
 
 &lt;i|o&gt;
-n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1
-n=2: (-0.500000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
-sum= (0, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+n=1: (0, 0, 0, 0) ++Qx1+0x0++Qx0+0x1*x+Qx1+0x0-+Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0-+0x0+Qx1
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -12674,27 +12659,27 @@ sum= (0, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Equation 2.8</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="n">ou</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
-<span class="n">uo</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">o</span><span class="p">)</span>
-<span class="n">ouuo</span> <span class="o">=</span> <span class="n">ou</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">uo</span><span class="p">)</span>
-<span class="n">ouuo</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;o|u&gt;&lt;u|o&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">od</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
-<span class="n">do</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">o</span><span class="p">)</span>
-<span class="n">oddo</span> <span class="o">=</span> <span class="n">od</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">do</span><span class="p">)</span>
-<span class="n">oddo</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;o|d&gt;&lt;d|o&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">iu</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
-<span class="n">ui</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
-<span class="n">iuui</span> <span class="o">=</span> <span class="n">iu</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">ui</span><span class="p">)</span>
-<span class="n">iuui</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|d&gt;&lt;d|i&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="nb">id</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
-<span class="n">di</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
-<span class="n">iddi</span> <span class="o">=</span> <span class="nb">id</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">di</span><span class="p">)</span>
-<span class="n">iddi</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|d&gt;&lt;d|i&gt;&quot;</span><span class="p">)</span>
+<span class="n">ou</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">uo</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+<span class="n">ouuo</span> <span class="o">=</span> <span class="n">ou</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">uo</span><span class="p">)</span>
+<span class="n">ouuo</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;o|u&gt;&lt;u|o&gt;&quot;</span><span class="p">)</span>
+<span class="n">od</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">do</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+<span class="n">oddo</span> <span class="o">=</span> <span class="n">od</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">do</span><span class="p">)</span>
+<span class="n">oddo</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;o|d&gt;&lt;d|o&gt;&quot;</span><span class="p">)</span>
+<span class="n">iu</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">ui</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="n">iuui</span> <span class="o">=</span> <span class="n">iu</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">ui</span><span class="p">)</span>
+<span class="n">iuui</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;i|d&gt;&lt;d|i&gt;&quot;</span><span class="p">)</span>
+<span class="nb">id</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">di</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="n">iddi</span> <span class="o">=</span> <span class="nb">id</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">di</span><span class="p">)</span>
+<span class="n">iddi</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;i|d&gt;&lt;d|i&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12714,24 +12699,21 @@ sum= (0, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+
 <pre>Equation 2.8
 
 &lt;o|u&gt;&lt;u|o&gt;
-n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0-Qx0+0x1*x1x1*xQx1+0x0-Qx0+0x1
-n=2: (0, 0, 0, 0) 0x1+Qx0-0x0+Qx1*x0x0*x0x1+Qx0-0x0+Qx1
-sum= (0.500000000000000, 0, 0, 0) Qx1+0x0-Qx0+0x1*x1x1*xQx1+0x0-Qx0+0x1+0x1+Qx0-0x0+Qx1*x0x0*x0x1+Qx0-0x0+Qx1
+n=1: (0.500000000000000, 0, 0, 0) +++Qx1+0x0-+Qx0+0x1*x1++0x1+Qx0-+0x0+Qx1*x0x+1*x+Qx1+0x0-+Qx0+0x1+0*x+0x1+Qx0-+0x0+Qx1
+scalar: 1/1
 
 &lt;o|d&gt;&lt;d|o&gt;
-n=1: (0, 0, 0, 0) Qx1+0x0-Qx0+0x1*x0x0*xQx1+0x0-Qx0+0x1
-n=2: (0.500000000000000, 0, 0, 0) 0x1+Qx0-0x0+Qx1*x1x1*x0x1+Qx0-0x0+Qx1
-sum= (0.500000000000000, 0, 0, 0) Qx1+0x0-Qx0+0x1*x0x0*xQx1+0x0-Qx0+0x1+0x1+Qx0-0x0+Qx1*x1x1*x0x1+Qx0-0x0+Qx1
+n=1: (0.500000000000000, 0, 0, 0) +++Qx1+0x0-+Qx0+0x1*x0++0x1+Qx0-+0x0+Qx1*x1x+0*x+Qx1+0x0-+Qx0+0x1+1*x+0x1+Qx0-+0x0+Qx1
+scalar: 1/1
 
 &lt;i|d&gt;&lt;d|i&gt;
-n=1: (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*x1x1*xQx1+0x0+Qx0+0x1
-n=2: (0, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x0*x0x1+Qx0+0x0+Qx1
-sum= (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*x1x1*xQx1+0x0+Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x0*x0x1+Qx0+0x0+Qx1
+n=1: (0.500000000000000, 0, 0, 0) +++Qx1+0x0++Qx0+0x1*x1++0x1+Qx0++0x0+Qx1*x0x+1*x+Qx1+0x0++Qx0+0x1+0*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
 &lt;i|d&gt;&lt;d|i&gt;
-n=1: (0, 0, 0, 0) Qx1+0x0+Qx0+0x1*x0x0*xQx1+0x0+Qx0+0x1
-n=2: (0.500000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x1x1*x0x1+Qx0+0x0+Qx1
-sum= (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*x0x0*xQx1+0x0+Qx0+0x1+0x1+Qx0+0x0+Qx1*x1x1*x0x1+Qx0+0x0+Qx1
+n=1: (0.500000000000000, 0, 0, 0) +++Qx1+0x0++Qx0+0x1*x0++0x1+Qx0++0x0+Qx1*x1x+0*x+Qx1+0x0++Qx0+0x1+1*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -12751,27 +12733,27 @@ sum= (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*x0x0*xQx1+0x0+Qx0+0x1+0x1+Qx0+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Equation 2.9</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="n">Or</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
-<span class="n">ro</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">o</span><span class="p">)</span>
-<span class="n">orro</span> <span class="o">=</span> <span class="n">Or</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">ro</span><span class="p">)</span>
-<span class="n">orro</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;o|r&gt;&lt;r|o&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">oL</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">L</span><span class="p">)</span>
-<span class="n">Lo</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">o</span><span class="p">)</span>
-<span class="n">oLLo</span> <span class="o">=</span> <span class="n">oL</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">Lo</span><span class="p">)</span>
-<span class="n">oLLo</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;o|L&gt;&lt;L|o&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">ir</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
-<span class="n">ri</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
-<span class="n">irri</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">ri</span><span class="p">)</span>
-<span class="n">irri</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|r&gt;&lt;r|i&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">iL</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">L</span><span class="p">)</span>
-<span class="n">Li</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
-<span class="n">iLLi</span> <span class="o">=</span> <span class="n">iL</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s1">&#39;bra&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">Li</span><span class="p">)</span>
-<span class="n">iLLi</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|L&gt;&lt;L|i&gt;&quot;</span><span class="p">)</span>
+<span class="n">Or</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="n">ro</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+<span class="n">orro</span> <span class="o">=</span> <span class="n">Or</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">ro</span><span class="p">)</span>
+<span class="n">orro</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;o|r&gt;&lt;r|o&gt;&quot;</span><span class="p">)</span>
+<span class="n">oL</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<span class="n">Lo</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+<span class="n">oLLo</span> <span class="o">=</span> <span class="n">oL</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">Lo</span><span class="p">)</span>
+<span class="n">oLLo</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;o|L&gt;&lt;L|o&gt;&quot;</span><span class="p">)</span>
+<span class="n">ir</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="n">ri</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="n">irri</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">ri</span><span class="p">)</span>
+<span class="n">irri</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;i|r&gt;&lt;r|i&gt;&quot;</span><span class="p">)</span>
+<span class="n">iL</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<span class="n">Li</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="n">iLLi</span> <span class="o">=</span> <span class="n">iL</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">Li</span><span class="p">)</span>
+<span class="n">iLLi</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;i|L&gt;&lt;L|i&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12791,24 +12773,21 @@ sum= (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*x0x0*xQx1+0x0+Qx0+0x1+0x1+Qx0+
 <pre>Equation 2.9
 
 &lt;o|r&gt;&lt;r|o&gt;
-n=1: (0.250000000000000, 0, 0, 0) Qx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1xQx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1
-n=2: (0.250000000000000, 0, 0, 0) 0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1x0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
-sum= (0.500000000000000, 0, 0, 0) Qx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1xQx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1x0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1
+n=1: (0.500000000000000, 0, 0, 0) +++Qx1+0x0-+Qx0+0x1*x+Qx1+0x0++Qx0+0x1++0x1+Qx0-+0x0+Qx1*x+0x1+Qx0++0x0+Qx1x++Qx1+0x0++Qx0+0x1*x+Qx1+0x0-+Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0-+0x0+Qx1
+scalar: 1/1
 
 &lt;o|L&gt;&lt;L|o&gt;
-n=1: (0.250000000000000, 0, 0, 0) Qx1+0x0-Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0x1*xQx1+0x0-Qx0+0x1
-n=2: (0.250000000000000, 0, 0, 0) 0x1+Qx0-0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0-0x0+Qx1*x0x1+Qx0-0x0+Qx1
-sum= (0.500000000000000, 0, 0, 0) Qx1+0x0-Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0x1*xQx1+0x0-Qx0+0x1+0x1+Qx0-0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0-0x0+Qx1*x0x1+Qx0-0x0+Qx1
+n=1: (0.500000000000000, 0, 0, 0) +++Qx1+0x0-+Qx0+0x1*x+Qx1+0x0-+Qx0+0x1++0x1+Qx0-+0x0+Qx1*x+0x1+Qx0-+0x0+Qx1x++Qx1+0x0-+Qx0+0x1*x+Qx1+0x0-+Qx0+0x1++0x1+Qx0-+0x0+Qx1*x+0x1+Qx0-+0x0+Qx1
+scalar: 1/1
 
 &lt;i|r&gt;&lt;r|i&gt;
-n=1: (0.250000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0+Qx0+0x1xQx1+0x0+Qx0+0x1*xQx1+0x0+Qx0+0x1
-n=2: (0.250000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0+0x0+Qx1x0x1+Qx0+0x0+Qx1*x0x1+Qx0+0x0+Qx1
-sum= (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0+Qx0+0x1xQx1+0x0+Qx0+0x1*xQx1+0x0+Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0+0x0+Qx1x0x1+Qx0+0x0+Qx1*x0x1+Qx0+0x0+Qx1
+n=1: (0.500000000000000, 0, 0, 0) +++Qx1+0x0++Qx0+0x1*x+Qx1+0x0++Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0++0x0+Qx1x++Qx1+0x0++Qx0+0x1*x+Qx1+0x0++Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
 &lt;i|L&gt;&lt;L|i&gt;
-n=1: (0.250000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1
-n=2: (0.250000000000000, 0, 0, 0) 0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1
-sum= (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0x1*xQx1+0x0+Qx0+0x1+0x1+Qx0+0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0-0x0+Qx1*x0x1+Qx0+0x0+Qx1
+n=1: (0.500000000000000, 0, 0, 0) +++Qx1+0x0++Qx0+0x1*x+Qx1+0x0-+Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0-+0x0+Qx1x++Qx1+0x0-+Qx0+0x1*x+Qx1+0x0++Qx0+0x1++0x1+Qx0-+0x0+Qx1*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -12856,7 +12835,7 @@ sum= (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">αt</span><span class="p">,</span> <span class="n">αx</span><span class="p">,</span> <span class="n">αy</span><span class="p">,</span> <span class="n">αz</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;αt αx αy αz&quot;</span><span class="p">)</span>
@@ -12866,19 +12845,19 @@ sum= (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0
 
 <span class="n">αq</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">αt</span><span class="p">,</span> <span class="n">αx</span><span class="p">,</span> <span class="n">αy</span><span class="p">,</span> <span class="n">αz</span><span class="p">])</span>
 <span class="n">αs</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">αq</span><span class="p">])</span>
-<span class="n">αs</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;α component&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">αs</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;α component&quot;</span><span class="p">)</span>
 
 <span class="n">βq</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">βt</span><span class="p">,</span> <span class="n">βx</span><span class="p">,</span> <span class="n">βy</span><span class="p">,</span> <span class="n">βz</span><span class="p">])</span>
 <span class="n">βs</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">βq</span><span class="p">])</span>
-<span class="n">βs</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;β component&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">βs</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;β component&quot;</span><span class="p">)</span>
 
 <span class="n">γq</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">γt</span><span class="p">,</span> <span class="n">γx</span><span class="p">,</span> <span class="n">γy</span><span class="p">,</span> <span class="n">γz</span><span class="p">])</span>
 <span class="n">γs</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">γq</span><span class="p">])</span>
-<span class="n">γs</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;γ component&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">γs</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;γ component&quot;</span><span class="p">)</span>
 
 <span class="n">δq</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">δt</span><span class="p">,</span> <span class="n">δx</span><span class="p">,</span> <span class="n">δy</span><span class="p">,</span> <span class="n">δz</span><span class="p">])</span>
 <span class="n">δs</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">δq</span><span class="p">])</span>
-<span class="n">δs</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;δ component&quot;</span><span class="p">)</span>
+<span class="n">δs</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;δ component&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12897,19 +12876,20 @@ sum= (0.500000000000000, 0, 0, 0) Qx1+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>α component
 n=1: (αt, αx, αy, αz) Q
-sum= (αt, αx, αy, αz) Q
+scalar: 1/1
 
 β component
 n=1: (βt, βx, βy, βz) Q
-sum= (βt, βx, βy, βz) Q
+scalar: 1/1
 
 γ component
 n=1: (γt, γx, γy, γz) Q
-sum= (γt, γx, γy, γz) Q
+scalar: 1/1
 
 δ component
 n=1: (δt, δx, δy, δz) Q
-sum= (δt, δx, δy, δz) Q
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -12929,14 +12909,14 @@ sum= (δt, δx, δy, δz) Q
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">iαβ</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">αs</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">βs</span><span class="p">))</span>
-<span class="n">iαβ</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;iαβ&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">iαβ</span> <span class="o">=</span> <span class="n">αs</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">βs</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+<span class="n">iαβ</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;iαβ&quot;</span><span class="p">)</span>
 
-<span class="n">oγδ</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">γs</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">δs</span><span class="p">))</span>
-<span class="n">oγδ</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;oγδ&quot;</span><span class="p">)</span>
+<span class="n">oγδ</span> <span class="o">=</span> <span class="n">γs</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">δs</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+<span class="n">oγδ</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;oγδ&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12954,14 +12934,15 @@ sum= (δt, δx, δy, δz) Q
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>iαβ
-n=1: (αt, αx, αy, αz) 1xQ+0x0+Qx0+0x1
-n=2: (βt, βx, βy, βz) 1x0+0xQ+0x0+Qx1
-sum= (αt + βt, αx + βx, αy + βy, αz + βz) 1xQ+0x0+Qx0+0x1+1x0+0xQ+0x0+Qx1
+n=1: (αt, αx, αy, αz) +Qx1+0x0++Qx0+0x1
+n=2: (βt, βx, βy, βz) +0x1+Qx0++0x0+Qx1
+ket: 2/1
 
 oγδ
-n=1: (γt, γx, γy, γz) 1xQ+0x0+Qx0+0x1
-n=2: (δt, δx, δy, δz) 1x0+0xQ+0x0+Qx1
-sum= (γt + δt, γx + δx, γy + δy, γz + δz) 1xQ+0x0+Qx0+0x1+1x0+0xQ+0x0+Qx1
+n=1: (γt, γx, γy, γz) +Qx1+0x0++Qx0+0x1
+n=2: (δt, δx, δy, δz) +0x1+Qx0++0x0+Qx1
+ket: 2/1
+
 </pre>
 </div>
 </div>
@@ -12981,20 +12962,20 @@ sum= (γt + δt, γx + δx, γy + δy, γz + δz) 1xQ+0x0+Qx0+0x1+1x0+0xQ+0x0+Qx
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">alpha</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">iαβ</span><span class="p">)</span>
-<span class="n">alpha</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">alpha</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">iαβ</span><span class="p">)</span>
+<span class="n">alpha</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">)</span>
 
-<span class="n">beta</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">iαβ</span><span class="p">)</span>
-<span class="n">beta</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;betaa&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">iαβ</span><span class="p">)</span>
+<span class="n">beta</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;beta&quot;</span><span class="p">)</span>
 
-<span class="n">gamma</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">oγδ</span><span class="p">)</span>
-<span class="n">gamma</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;gamma&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">oγδ</span><span class="p">)</span>
+<span class="n">gamma</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;gamma&quot;</span><span class="p">)</span>
 
-<span class="n">delta</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">oγδ</span><span class="p">)</span>
-<span class="n">delta</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)</span>
+<span class="n">delta</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">oγδ</span><span class="p">)</span>
+<span class="n">delta</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13012,24 +12993,21 @@ sum= (γt + δt, γx + δx, γy + δy, γz + δz) 1xQ+0x0+Qx0+0x1+1x0+0xQ+0x0+Qx
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>alpha
-n=1: (αt, αx, αy, αz) 1*x1xQ+0x0+Qx0+0x1
-n=2: (0, 0, 0, 0) 0*x1x0+0xQ+0x0+Qx1
-sum= (αt, αx, αy, αz) 1*x1xQ+0x0+Qx0+0x1+0*x1x0+0xQ+0x0+Qx1
+n=1: (αt, αx, αy, αz) +1*x+Qx1+0x0++Qx0+0x1+0*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
-betaa
-n=1: (0, 0, 0, 0) 0*x1xQ+0x0+Qx0+0x1
-n=2: (βt, βx, βy, βz) 1*x1x0+0xQ+0x0+Qx1
-sum= (βt, βx, βy, βz) 0*x1xQ+0x0+Qx0+0x1+1*x1x0+0xQ+0x0+Qx1
+beta
+n=1: (βt, βx, βy, βz) +0*x+Qx1+0x0++Qx0+0x1+1*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
 gamma
-n=1: (γt, γx, γy, γz) 1*x1xQ+0x0+Qx0+0x1
-n=2: (0, 0, 0, 0) 0*x1x0+0xQ+0x0+Qx1
-sum= (γt, γx, γy, γz) 1*x1xQ+0x0+Qx0+0x1+0*x1x0+0xQ+0x0+Qx1
+n=1: (γt, γx, γy, γz) +1*x+Qx1+0x0++Qx0+0x1+0*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
 delta
-n=1: (0, 0, 0, 0) 0*x1xQ+0x0+Qx0+0x1
-n=2: (δt, δx, δy, δz) 1*x1x0+0xQ+0x0+Qx1
-sum= (δt, δx, δy, δz) 0*x1xQ+0x0+Qx0+0x1+1*x1x0+0xQ+0x0+Qx1
+n=1: (δt, δx, δy, δz) +0*x+Qx1+0x0++Qx0+0x1+1*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -13049,41 +13027,41 @@ sum= (δt, δx, δy, δz) 0*x1xQ+0x0+Qx0+0x1+1*x1x0+0xQ+0x0+Qx1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exercise 2.3: a)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;equation 2.8.1: &lt;i|u&gt;&lt;u|i&gt; = 1/2 =? α* α&quot;</span><span class="p">)</span>
 
-<span class="n">iu</span> <span class="o">=</span> <span class="n">iαβ</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
-<span class="n">ui</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">iαβ</span><span class="p">)</span>
-<span class="n">iuui</span> <span class="o">=</span> <span class="n">iu</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">ui</span><span class="p">)</span>
-<span class="n">iuui</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|u&gt;&lt;u|i&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">iu</span> <span class="o">=</span> <span class="n">iαβ</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">ui</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">iαβ</span><span class="p">)</span>
+<span class="n">iuui</span> <span class="o">=</span> <span class="n">iu</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">ui</span><span class="p">)</span>
+<span class="n">iuui</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;i|u&gt;&lt;u|i&gt;&quot;</span><span class="p">)</span>
 
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;equation 2.8.2: &lt;i|d&gt;&lt;d|i&gt; = 1/2 =? β* β&quot;</span><span class="p">)</span>
 
-<span class="nb">id</span> <span class="o">=</span> <span class="n">iαβ</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
-<span class="n">di</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">iαβ</span><span class="p">)</span>
-<span class="n">iddi</span> <span class="o">=</span> <span class="nb">id</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">di</span><span class="p">)</span>
-<span class="n">iddi</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|d&gt;&lt;d|i&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">id</span> <span class="o">=</span> <span class="n">iαβ</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">di</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">iαβ</span><span class="p">)</span>
+<span class="n">iddi</span> <span class="o">=</span> <span class="nb">id</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">di</span><span class="p">)</span>
+<span class="n">iddi</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;i|d&gt;&lt;d|i&gt;&quot;</span><span class="p">)</span>
 
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;equation 2.8.3: &lt;o|u&gt;&lt;u|o&gt; = 1/2 =? γ* γ&quot;</span><span class="p">)</span>
 
-<span class="n">ou</span> <span class="o">=</span> <span class="n">oγδ</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
-<span class="n">uo</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">oγδ</span><span class="p">)</span>
-<span class="n">ouuo</span> <span class="o">=</span> <span class="n">ou</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">uo</span><span class="p">)</span>
-<span class="n">ouuo</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;o|u&gt;&lt;u|o&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ou</span> <span class="o">=</span> <span class="n">oγδ</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">uo</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">oγδ</span><span class="p">)</span>
+<span class="n">ouuo</span> <span class="o">=</span> <span class="n">ou</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">uo</span><span class="p">)</span>
+<span class="n">ouuo</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;o|u&gt;&lt;u|o&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;equation 2.8.4: &lt;o|d&gt;&lt;d|o&gt; = 1/2 =? δ* δ&quot;</span><span class="p">)</span>
 
-<span class="n">od</span> <span class="o">=</span> <span class="n">oγδ</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
-<span class="n">do</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">oγδ</span><span class="p">)</span>
-<span class="n">oddo</span> <span class="o">=</span> <span class="n">od</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">do</span><span class="p">)</span>
-<span class="n">oddo</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;o|d&gt;&lt;d|o&gt;&quot;</span><span class="p">)</span>
+<span class="n">od</span> <span class="o">=</span> <span class="n">oγδ</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">do</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">oγδ</span><span class="p">)</span>
+<span class="n">oddo</span> <span class="o">=</span> <span class="n">od</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">do</span><span class="p">)</span>
+<span class="n">oddo</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;o|d&gt;&lt;d|o&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13104,27 +13082,24 @@ sum= (δt, δx, δy, δz) 0*x1xQ+0x0+Qx0+0x1+1*x1x0+0xQ+0x0+Qx1
 
 equation 2.8.1: &lt;i|u&gt;&lt;u|i&gt; = 1/2 =? α* α
 &lt;i|u&gt;&lt;u|i&gt;
-n=1: (αt**2 + αx**2 + αy**2 + αz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*x1x1*x1xQ+0x0+Qx0+0x1
-n=2: (0, 0, 0, 0) 1x0+0xQ+0x0+Qx1*x0x0*x1x0+0xQ+0x0+Qx1
-sum= (αt**2 + αx**2 + αy**2 + αz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*x1x1*x1xQ+0x0+Qx0+0x1+1x0+0xQ+0x0+Qx1*x0x0*x1x0+0xQ+0x0+Qx1
+n=1: (αt**2 + αx**2 + αy**2 + αz**2, 0, 0, 0) +++Qx1+0x0++Qx0+0x1*x1++0x1+Qx0++0x0+Qx1*x0x+1*x+Qx1+0x0++Qx0+0x1+0*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
 equation 2.8.2: &lt;i|d&gt;&lt;d|i&gt; = 1/2 =? β* β
 &lt;i|d&gt;&lt;d|i&gt;
-n=1: (0, 0, 0, 0) 1xQ+0x0+Qx0+0x1*x0x0*x1xQ+0x0+Qx0+0x1
-n=2: (βt**2 + βx**2 + βy**2 + βz**2, 0, 0, 0) 1x0+0xQ+0x0+Qx1*x1x1*x1x0+0xQ+0x0+Qx1
-sum= (βt**2 + βx**2 + βy**2 + βz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*x0x0*x1xQ+0x0+Qx0+0x1+1x0+0xQ+0x0+Qx1*x1x1*x1x0+0xQ+0x0+Qx1
+n=1: (βt**2 + βx**2 + βy**2 + βz**2, 0, 0, 0) +++Qx1+0x0++Qx0+0x1*x0++0x1+Qx0++0x0+Qx1*x1x+0*x+Qx1+0x0++Qx0+0x1+1*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
 equation 2.8.3: &lt;o|u&gt;&lt;u|o&gt; = 1/2 =? γ* γ
 &lt;o|u&gt;&lt;u|o&gt;
-n=1: (γt**2 + γx**2 + γy**2 + γz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*x1x1*x1xQ+0x0+Qx0+0x1
-n=2: (0, 0, 0, 0) 1x0+0xQ+0x0+Qx1*x0x0*x1x0+0xQ+0x0+Qx1
-sum= (γt**2 + γx**2 + γy**2 + γz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*x1x1*x1xQ+0x0+Qx0+0x1+1x0+0xQ+0x0+Qx1*x0x0*x1x0+0xQ+0x0+Qx1
+n=1: (γt**2 + γx**2 + γy**2 + γz**2, 0, 0, 0) +++Qx1+0x0++Qx0+0x1*x1++0x1+Qx0++0x0+Qx1*x0x+1*x+Qx1+0x0++Qx0+0x1+0*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
 equation 2.8.4: &lt;o|d&gt;&lt;d|o&gt; = 1/2 =? δ* δ
 &lt;o|d&gt;&lt;d|o&gt;
-n=1: (0, 0, 0, 0) 1xQ+0x0+Qx0+0x1*x0x0*x1xQ+0x0+Qx0+0x1
-n=2: (δt**2 + δx**2 + δy**2 + δz**2, 0, 0, 0) 1x0+0xQ+0x0+Qx1*x1x1*x1x0+0xQ+0x0+Qx1
-sum= (δt**2 + δx**2 + δy**2 + δz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*x0x0*x1xQ+0x0+Qx0+0x1+1x0+0xQ+0x0+Qx1*x1x1*x1x0+0xQ+0x0+Qx1
+n=1: (δt**2 + δx**2 + δy**2 + δz**2, 0, 0, 0) +++Qx1+0x0++Qx0+0x1*x0++0x1+Qx0++0x0+Qx1*x1x+0*x+Qx1+0x0++Qx0+0x1+1*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -13144,41 +13119,41 @@ sum= (δt**2 + δx**2 + δy**2 + δz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*x0x0*x1xQ+0x0+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exercise 2.3: b)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;equation 2.9.1: &lt;o|r&gt;&lt;r|o&gt; = 1/2 =?&quot;</span><span class="p">)</span>
 
-<span class="n">OR</span> <span class="o">=</span> <span class="n">oγδ</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
-<span class="n">ro</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">oγδ</span><span class="p">)</span>
-<span class="n">orro</span> <span class="o">=</span> <span class="n">OR</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">ro</span><span class="p">)</span>
-<span class="n">orro</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;o|r&gt;&lt;r|o&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">OR</span> <span class="o">=</span> <span class="n">oγδ</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="n">ro</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">oγδ</span><span class="p">)</span>
+<span class="n">orro</span> <span class="o">=</span> <span class="n">OR</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">ro</span><span class="p">)</span>
+<span class="n">orro</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;o|r&gt;&lt;r|o&gt;&quot;</span><span class="p">)</span>
 
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;equation 2.9.2: &lt;o|L&gt;&lt;L|o&gt; = 1/2 =?&quot;</span><span class="p">)</span>
 
-<span class="n">oL</span> <span class="o">=</span> <span class="n">oγδ</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">L</span><span class="p">)</span>
-<span class="n">Lo</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">oγδ</span><span class="p">)</span>
-<span class="n">oLLo</span> <span class="o">=</span> <span class="n">oL</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">Lo</span><span class="p">)</span>
-<span class="n">oLLo</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;o|L&gt;&lt;L|o&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">oL</span> <span class="o">=</span> <span class="n">oγδ</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<span class="n">Lo</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">oγδ</span><span class="p">)</span>
+<span class="n">oLLo</span> <span class="o">=</span> <span class="n">oL</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">Lo</span><span class="p">)</span>
+<span class="n">oLLo</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;o|L&gt;&lt;L|o&gt;&quot;</span><span class="p">)</span>
 
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;equation 2.9.3: &lt;i|r&gt;&lt;r|i&gt; = 1/2 =?&quot;</span><span class="p">)</span>
 
-<span class="n">ir</span> <span class="o">=</span> <span class="n">iαβ</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
-<span class="n">ri</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">iαβ</span><span class="p">)</span>
-<span class="n">irri</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">ri</span><span class="p">)</span>
-<span class="n">irri</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|r&gt;&lt;r|i&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ir</span> <span class="o">=</span> <span class="n">iαβ</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="n">ri</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">iαβ</span><span class="p">)</span>
+<span class="n">irri</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">ri</span><span class="p">)</span>
+<span class="n">irri</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;i|r&gt;&lt;r|i&gt;&quot;</span><span class="p">)</span>
 
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;equation 2.9.4: &lt;i|L&gt;&lt;L|i&gt; = 1/2 =?&quot;</span><span class="p">)</span>
 
-<span class="n">iL</span> <span class="o">=</span> <span class="n">iαβ</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">L</span><span class="p">)</span>
-<span class="n">Li</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">iαβ</span><span class="p">)</span>
-<span class="n">iLLi</span> <span class="o">=</span> <span class="n">iL</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">Li</span><span class="p">)</span>
-<span class="n">iLLi</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;i|L&gt;&lt;L|i&gt;&quot;</span><span class="p">)</span>
+<span class="n">iL</span> <span class="o">=</span> <span class="n">iαβ</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<span class="n">Li</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">iαβ</span><span class="p">)</span>
+<span class="n">iLLi</span> <span class="o">=</span> <span class="n">iL</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">Li</span><span class="p">)</span>
+<span class="n">iLLi</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;i|L&gt;&lt;L|i&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13199,27 +13174,24 @@ sum= (δt**2 + δx**2 + δy**2 + δz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*x0x0*x1xQ+0x0+
 
 equation 2.9.1: &lt;o|r&gt;&lt;r|o&gt; = 1/2 =?
 &lt;o|r&gt;&lt;r|o&gt;
-n=1: (0.5*γt**2 + 0.5*γx**2 + 0.5*γy**2 + 0.5*γz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*xQx1+0x0+Qx0+0x1xQx1+0x0+Qx0+0x1*x1xQ+0x0+Qx0+0x1
-n=2: (0.5*δt**2 + 0.5*δx**2 + 0.5*δy**2 + 0.5*δz**2, 0, 0, 0) 1x0+0xQ+0x0+Qx1*x0x1+Qx0+0x0+Qx1x0x1+Qx0+0x0+Qx1*x1x0+0xQ+0x0+Qx1
-sum= (0.5*γt**2 + 0.5*γx**2 + 0.5*γy**2 + 0.5*γz**2 + 0.5*δt**2 + 0.5*δx**2 + 0.5*δy**2 + 0.5*δz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*xQx1+0x0+Qx0+0x1xQx1+0x0+Qx0+0x1*x1xQ+0x0+Qx0+0x1+1x0+0xQ+0x0+Qx1*x0x1+Qx0+0x0+Qx1x0x1+Qx0+0x0+Qx1*x1x0+0xQ+0x0+Qx1
+n=1: ((0.707106781186548*γt + 0.707106781186548*δt)**2 - (-0.707106781186548*γx - 0.707106781186548*δx)*(0.707106781186548*γx + 0.707106781186548*δx) - (-0.707106781186548*γy - 0.707106781186548*δy)*(0.707106781186548*γy + 0.707106781186548*δy) - (-0.707106781186548*γz - 0.707106781186548*δz)*(0.707106781186548*γz + 0.707106781186548*δz), (0.707106781186548*γt + 0.707106781186548*δt)*(-0.707106781186548*γx - 0.707106781186548*δx) + (0.707106781186548*γt + 0.707106781186548*δt)*(0.707106781186548*γx + 0.707106781186548*δx) + (-0.707106781186548*γy - 0.707106781186548*δy)*(0.707106781186548*γz + 0.707106781186548*δz) - (0.707106781186548*γy + 0.707106781186548*δy)*(-0.707106781186548*γz - 0.707106781186548*δz), (0.707106781186548*γt + 0.707106781186548*δt)*(-0.707106781186548*γy - 0.707106781186548*δy) + (0.707106781186548*γt + 0.707106781186548*δt)*(0.707106781186548*γy + 0.707106781186548*δy) - (-0.707106781186548*γx - 0.707106781186548*δx)*(0.707106781186548*γz + 0.707106781186548*δz) + (0.707106781186548*γx + 0.707106781186548*δx)*(-0.707106781186548*γz - 0.707106781186548*δz), (0.707106781186548*γt + 0.707106781186548*δt)*(-0.707106781186548*γz - 0.707106781186548*δz) + (0.707106781186548*γt + 0.707106781186548*δt)*(0.707106781186548*γz + 0.707106781186548*δz) + (-0.707106781186548*γx - 0.707106781186548*δx)*(0.707106781186548*γy + 0.707106781186548*δy) - (0.707106781186548*γx + 0.707106781186548*δx)*(-0.707106781186548*γy - 0.707106781186548*δy)) +++Qx1+0x0++Qx0+0x1*x+Qx1+0x0++Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0++0x0+Qx1x++Qx1+0x0++Qx0+0x1*x+Qx1+0x0++Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
 equation 2.9.2: &lt;o|L&gt;&lt;L|o&gt; = 1/2 =?
 &lt;o|L&gt;&lt;L|o&gt;
-n=1: (0.5*γt**2 + 0.5*γx**2 + 0.5*γy**2 + 0.5*γz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0x1*x1xQ+0x0+Qx0+0x1
-n=2: (0.5*δt**2 + 0.5*δx**2 + 0.5*δy**2 + 0.5*δz**2, 0, 0, 0) 1x0+0xQ+0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0-0x0+Qx1*x1x0+0xQ+0x0+Qx1
-sum= (0.5*γt**2 + 0.5*γx**2 + 0.5*γy**2 + 0.5*γz**2 + 0.5*δt**2 + 0.5*δx**2 + 0.5*δy**2 + 0.5*δz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0x1*x1xQ+0x0+Qx0+0x1+1x0+0xQ+0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0-0x0+Qx1*x1x0+0xQ+0x0+Qx1
+n=1: ((0.707106781186548*γt - 0.707106781186548*δt)**2 - (-0.707106781186548*γx + 0.707106781186548*δx)*(0.707106781186548*γx - 0.707106781186548*δx) - (-0.707106781186548*γy + 0.707106781186548*δy)*(0.707106781186548*γy - 0.707106781186548*δy) - (-0.707106781186548*γz + 0.707106781186548*δz)*(0.707106781186548*γz - 0.707106781186548*δz), (0.707106781186548*γt - 0.707106781186548*δt)*(-0.707106781186548*γx + 0.707106781186548*δx) + (0.707106781186548*γt - 0.707106781186548*δt)*(0.707106781186548*γx - 0.707106781186548*δx) + (-0.707106781186548*γy + 0.707106781186548*δy)*(0.707106781186548*γz - 0.707106781186548*δz) - (0.707106781186548*γy - 0.707106781186548*δy)*(-0.707106781186548*γz + 0.707106781186548*δz), (0.707106781186548*γt - 0.707106781186548*δt)*(-0.707106781186548*γy + 0.707106781186548*δy) + (0.707106781186548*γt - 0.707106781186548*δt)*(0.707106781186548*γy - 0.707106781186548*δy) - (-0.707106781186548*γx + 0.707106781186548*δx)*(0.707106781186548*γz - 0.707106781186548*δz) + (0.707106781186548*γx - 0.707106781186548*δx)*(-0.707106781186548*γz + 0.707106781186548*δz), (0.707106781186548*γt - 0.707106781186548*δt)*(-0.707106781186548*γz + 0.707106781186548*δz) + (0.707106781186548*γt - 0.707106781186548*δt)*(0.707106781186548*γz - 0.707106781186548*δz) + (-0.707106781186548*γx + 0.707106781186548*δx)*(0.707106781186548*γy - 0.707106781186548*δy) - (0.707106781186548*γx - 0.707106781186548*δx)*(-0.707106781186548*γy + 0.707106781186548*δy)) +++Qx1+0x0++Qx0+0x1*x+Qx1+0x0-+Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0-+0x0+Qx1x++Qx1+0x0-+Qx0+0x1*x+Qx1+0x0++Qx0+0x1++0x1+Qx0-+0x0+Qx1*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
 equation 2.9.3: &lt;i|r&gt;&lt;r|i&gt; = 1/2 =?
 &lt;i|r&gt;&lt;r|i&gt;
-n=1: (0.5*αt**2 + 0.5*αx**2 + 0.5*αy**2 + 0.5*αz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*xQx1+0x0+Qx0+0x1xQx1+0x0+Qx0+0x1*x1xQ+0x0+Qx0+0x1
-n=2: (0.5*βt**2 + 0.5*βx**2 + 0.5*βy**2 + 0.5*βz**2, 0, 0, 0) 1x0+0xQ+0x0+Qx1*x0x1+Qx0+0x0+Qx1x0x1+Qx0+0x0+Qx1*x1x0+0xQ+0x0+Qx1
-sum= (0.5*αt**2 + 0.5*αx**2 + 0.5*αy**2 + 0.5*αz**2 + 0.5*βt**2 + 0.5*βx**2 + 0.5*βy**2 + 0.5*βz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*xQx1+0x0+Qx0+0x1xQx1+0x0+Qx0+0x1*x1xQ+0x0+Qx0+0x1+1x0+0xQ+0x0+Qx1*x0x1+Qx0+0x0+Qx1x0x1+Qx0+0x0+Qx1*x1x0+0xQ+0x0+Qx1
+n=1: ((0.707106781186548*αt + 0.707106781186548*βt)**2 - (-0.707106781186548*αx - 0.707106781186548*βx)*(0.707106781186548*αx + 0.707106781186548*βx) - (-0.707106781186548*αy - 0.707106781186548*βy)*(0.707106781186548*αy + 0.707106781186548*βy) - (-0.707106781186548*αz - 0.707106781186548*βz)*(0.707106781186548*αz + 0.707106781186548*βz), (0.707106781186548*αt + 0.707106781186548*βt)*(-0.707106781186548*αx - 0.707106781186548*βx) + (0.707106781186548*αt + 0.707106781186548*βt)*(0.707106781186548*αx + 0.707106781186548*βx) + (-0.707106781186548*αy - 0.707106781186548*βy)*(0.707106781186548*αz + 0.707106781186548*βz) - (0.707106781186548*αy + 0.707106781186548*βy)*(-0.707106781186548*αz - 0.707106781186548*βz), (0.707106781186548*αt + 0.707106781186548*βt)*(-0.707106781186548*αy - 0.707106781186548*βy) + (0.707106781186548*αt + 0.707106781186548*βt)*(0.707106781186548*αy + 0.707106781186548*βy) - (-0.707106781186548*αx - 0.707106781186548*βx)*(0.707106781186548*αz + 0.707106781186548*βz) + (0.707106781186548*αx + 0.707106781186548*βx)*(-0.707106781186548*αz - 0.707106781186548*βz), (0.707106781186548*αt + 0.707106781186548*βt)*(-0.707106781186548*αz - 0.707106781186548*βz) + (0.707106781186548*αt + 0.707106781186548*βt)*(0.707106781186548*αz + 0.707106781186548*βz) + (-0.707106781186548*αx - 0.707106781186548*βx)*(0.707106781186548*αy + 0.707106781186548*βy) - (0.707106781186548*αx + 0.707106781186548*βx)*(-0.707106781186548*αy - 0.707106781186548*βy)) +++Qx1+0x0++Qx0+0x1*x+Qx1+0x0++Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0++0x0+Qx1x++Qx1+0x0++Qx0+0x1*x+Qx1+0x0++Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
 
 equation 2.9.4: &lt;i|L&gt;&lt;L|i&gt; = 1/2 =?
 &lt;i|L&gt;&lt;L|i&gt;
-n=1: (0.5*αt**2 + 0.5*αx**2 + 0.5*αy**2 + 0.5*αz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0x1*x1xQ+0x0+Qx0+0x1
-n=2: (0.5*βt**2 + 0.5*βx**2 + 0.5*βy**2 + 0.5*βz**2, 0, 0, 0) 1x0+0xQ+0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0-0x0+Qx1*x1x0+0xQ+0x0+Qx1
-sum= (0.5*αt**2 + 0.5*αx**2 + 0.5*αy**2 + 0.5*αz**2 + 0.5*βt**2 + 0.5*βx**2 + 0.5*βy**2 + 0.5*βz**2, 0, 0, 0) 1xQ+0x0+Qx0+0x1*xQx1+0x0-Qx0+0x1xQx1+0x0-Qx0+0x1*x1xQ+0x0+Qx0+0x1+1x0+0xQ+0x0+Qx1*x0x1+Qx0-0x0+Qx1x0x1+Qx0-0x0+Qx1*x1x0+0xQ+0x0+Qx1
+n=1: ((0.707106781186548*αt - 0.707106781186548*βt)**2 - (-0.707106781186548*αx + 0.707106781186548*βx)*(0.707106781186548*αx - 0.707106781186548*βx) - (-0.707106781186548*αy + 0.707106781186548*βy)*(0.707106781186548*αy - 0.707106781186548*βy) - (-0.707106781186548*αz + 0.707106781186548*βz)*(0.707106781186548*αz - 0.707106781186548*βz), (0.707106781186548*αt - 0.707106781186548*βt)*(-0.707106781186548*αx + 0.707106781186548*βx) + (0.707106781186548*αt - 0.707106781186548*βt)*(0.707106781186548*αx - 0.707106781186548*βx) + (-0.707106781186548*αy + 0.707106781186548*βy)*(0.707106781186548*αz - 0.707106781186548*βz) - (0.707106781186548*αy - 0.707106781186548*βy)*(-0.707106781186548*αz + 0.707106781186548*βz), (0.707106781186548*αt - 0.707106781186548*βt)*(-0.707106781186548*αy + 0.707106781186548*βy) + (0.707106781186548*αt - 0.707106781186548*βt)*(0.707106781186548*αy - 0.707106781186548*βy) - (-0.707106781186548*αx + 0.707106781186548*βx)*(0.707106781186548*αz - 0.707106781186548*βz) + (0.707106781186548*αx - 0.707106781186548*βx)*(-0.707106781186548*αz + 0.707106781186548*βz), (0.707106781186548*αt - 0.707106781186548*βt)*(-0.707106781186548*αz + 0.707106781186548*βz) + (0.707106781186548*αt - 0.707106781186548*βt)*(0.707106781186548*αz - 0.707106781186548*βz) + (-0.707106781186548*αx + 0.707106781186548*βx)*(0.707106781186548*αy - 0.707106781186548*βy) - (0.707106781186548*αx - 0.707106781186548*βx)*(-0.707106781186548*αy + 0.707106781186548*βy)) +++Qx1+0x0++Qx0+0x1*x+Qx1+0x0-+Qx0+0x1++0x1+Qx0++0x0+Qx1*x+0x1+Qx0-+0x0+Qx1x++Qx1+0x0-+Qx0+0x1*x+Qx1+0x0++Qx0+0x1++0x1+Qx0-+0x0+Qx1*x+0x1+Qx0++0x0+Qx1
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -13248,7 +13220,7 @@ sum= (0.5*αt**2 + 0.5*αx**2 + 0.5*αy**2 + 0.5*αz**2 + 0.5*βt**2 + 0.5*βx**
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;\begin{align*}</span>
@@ -13293,7 +13265,7 @@ $$\begin{align*}
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;\begin{align*}</span>
@@ -13338,7 +13310,7 @@ $$\begin{align*}
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;\begin{align*} </span>
@@ -13383,7 +13355,7 @@ $$\begin{align*}
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">Math</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;\begin{align*}</span>

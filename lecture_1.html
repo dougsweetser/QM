@@ -12304,7 +12304,7 @@ phase a+a+b:  (1.0 A, 1.9999999999999998 𝜈x, 0.0 𝜈y, 0.0 𝜈z) QxQxQ
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>As a practice, I never think of space or of time, only space-time. An event in space-time is a number with a real time and three imaginary numbers for space that together form a quaternion. Yet one is free to represent a quaternion as a series of quaternions, using one or an infinite number of quaternions in the series. Each and every element of the series will be in space-time. This is an often unspoken aspect of quantum mechanical state spaces: they all exist in space-time. I think of the space-time dimensions as being orthogonal to the state dimensions. There is a relationship between the two, yet there is also an independence. I will try to always use qualifiers for space-time dimensions or state dimensions. For this book, nearly all the discussion will be about the state dimensions.</p>
-<p>Just to get the toes a little wet, here is one quaternion series $A$ which has two states $A1$ and $A2$:</p>
+<p>Just to get the toes a little wet, here is one quaternion series ket $|A&gt;$ which has two states $a1$ and $a2$:</p>
 
 </div>
 </div>
@@ -12314,8 +12314,8 @@ phase a+a+b:  (1.0 A, 1.9999999999999998 𝜈x, 0.0 𝜈y, 0.0 𝜈z) QxQxQ
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;A1&quot;</span><span class="p">),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;A2&quot;</span><span class="p">)])</span>
-<span class="n">A</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;a1&quot;</span><span class="p">),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;a2&quot;</span><span class="p">)],</span> <span class="n">qs_type</span><span class="o">=</span><span class="s2">&quot;ket&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|A&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12332,10 +12332,11 @@ phase a+a+b:  (1.0 A, 1.9999999999999998 𝜈x, 0.0 𝜈y, 0.0 𝜈z) QxQxQ
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>A
-n=1: (0, 1, 2, 3) A1
-n=2: (2, 2, 2, 2) A2
-sum= (2, 3, 4, 5) A1+A2
+<pre>|A&gt;
+n=1: (0, 1, 2, 3) a1
+n=2: (2, 2, 2, 2) a2
+ket: 2/1
+
 </pre>
 </div>
 </div>
@@ -12343,6 +12344,33 @@ sum= (2, 3, 4, 5) A1+A2
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+
+<pre><code>Notation note:
+
+A quaternion series is **not** a quaternion per se. 
+A quaternion series is totally ordered, with each 
+quaternion having one and only one position in a 
+linked list or array. To make a consistent system 
+of multiplicaiton, each series is assigned a pair of 
+integers, commonly called rows and columns. If both rows 
+and columns equals 1, then the series is called a scalar. 
+If only the columns is 1, then the series is called a ket. 
+If only the rows is equal to 1, then it is called a ket. 
+All other cases are called operators.
+
+When the QHStates series is created, one can declare
+"scalar", "bra", "ket", "op"/"operator" with the default
+being "ket". It is often optional to set the values for
+rows and columns, although required for operators that
+are not square.</code></pre>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
@@ -12425,7 +12453,17 @@ sum= (2, 3, 4, 5) A1+A2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>When you write software that has to "do all the math", you get confronted with questions like, what if the dimensions are different? I think they should not be added together because a value of zero is different from being undefined. Of course, some one with more technical skills in these arts may already know that I should treat the phantom third element of the quaternion series $A$ as zero and it is all OK. That would require a skilled math nerd. For now, I will treat it as an illegal move and report it. Let me redefine $B$ to have just two terms, and define a third series $C$ along with a zero.</p>
+<p>When you write software that has to "do all the math", you get confronted with questions like, what if the dimensions are different? I think they should not be added together because a value of zero is different from being undefined. Of course, some one with more technical skills in these arts may already know that I should treat the phantom third element of the quaternion series $A$ as zero and it is all OK. That would require a skilled math nerd. For now, I will treat it as an illegal move and report it.</p>
+<p>Note: after writing this, a Google search showed that my gut instinct was correct: one cannot add vectors of different lengths.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let me redefine $|B&gt;$ to have just two terms, and define a third series $&lt;C|$ .</p>
 
 </div>
 </div>
@@ -12435,9 +12473,8 @@ sum= (2, 3, 4, 5) A1+A2
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">B</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;B1&quot;</span><span class="p">),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mi">6</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;B2&quot;</span><span class="p">)])</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;C1&quot;</span><span class="p">),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;C2&quot;</span><span class="p">)])</span>
-<span class="n">Z</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_0</span><span class="p">(),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_0</span><span class="p">()])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">B</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;b1&quot;</span><span class="p">),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mi">6</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;b2&quot;</span><span class="p">)],</span> <span class="n">qs_type</span><span class="o">=</span><span class="s2">&quot;ket&quot;</span><span class="p">)</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;c1&quot;</span><span class="p">),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;c2&quot;</span><span class="p">)],</span> <span class="n">qs_type</span><span class="o">=</span><span class="s2">&quot;bra&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12450,7 +12487,7 @@ sum= (2, 3, 4, 5) A1+A2
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;|A&gt; + |B&gt; = |New&gt;&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;1. Closure: |A&gt; + |B&gt; = |New&gt;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12467,10 +12504,12 @@ sum= (2, 3, 4, 5) A1+A2
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>|A&gt; + |B&gt; = |New&gt;
-n=1: (-1, 0, 1, 2) A1+B1
-n=2: (0, 0, -2, -4) A2+B2
-sum= (-1, 0, -1, -2) A1+B1+A2+B2
+<pre>1. Closure: |A&gt; + |B&gt; = |New&gt;
+
+n=1: (-1, 0, 1, 2) a1+b1
+n=2: (0, 0, -2, -4) a2+b2
+ket: 2/1
+
 </pre>
 </div>
 </div>
@@ -12511,9 +12550,9 @@ sum= (-1, 0, -1, -2) A1+B1+A2+B2
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2. commutative addition, |A&gt; + |B&gt; = |B&gt; + |A&gt;&quot;</span><span class="p">)</span>
-<span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;|A&gt; + |B&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">B</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;|B&gt; + |A&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2. Addition is commutative, |A&gt; + |B&gt; = |B&gt; + |A&gt;.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|A&gt; + |B&gt;&quot;</span><span class="p">)</span>
+<span class="n">B</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|B&gt; + |A&gt;&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;|A&gt; + |B&gt; = |B&gt; + |A&gt;? &quot;</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">A</span><span class="p">)))</span>
 </pre></div>
 
@@ -12531,16 +12570,17 @@ sum= (-1, 0, -1, -2) A1+B1+A2+B2
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>2. commutative addition, |A&gt; + |B&gt; = |B&gt; + |A&gt;
+<pre>2. Addition is commutative, |A&gt; + |B&gt; = |B&gt; + |A&gt;.
+
 |A&gt; + |B&gt;
-n=1: (-1, 0, 1, 2) A1+B1
-n=2: (0, 0, -2, -4) A2+B2
-sum= (-1, 0, -1, -2) A1+B1+A2+B2
+n=1: (-1, 0, 1, 2) a1+b1
+n=2: (0, 0, -2, -4) a2+b2
+ket: 2/1
 
 |B&gt; + |A&gt;
-n=1: (-1, 0, 1, 2) B1+A1
-n=2: (0, 0, -2, -4) B2+A2
-sum= (-1, 0, -1, -2) B1+A1+B2+A2
+n=1: (-1, 0, 1, 2) b1+a1
+n=2: (0, 0, -2, -4) b2+a2
+ket: 2/1
 
 |A&gt; + |B&gt; = |B&gt; + |A&gt;?  True
 </pre>
@@ -12565,10 +12605,10 @@ sum= (-1, 0, -1, -2) B1+A1+B2+A2
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;3. associative addition, (|A&gt; + |B&gt;) + |C&gt; = |A&gt; + (|B&gt; + |C)&gt;&quot;</span><span class="p">)</span>
-<span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;(|A&gt; + |B&gt;) + |C&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">C</span><span class="p">))</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;|A&gt; + (|B&gt; + |C&gt;)&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(|A&gt; + |B&gt;) + |C&gt; = |A&gt; + (|B&gt; + |C)&gt;? &quot;</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">C</span><span class="p">))))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;3. Addition is associative, (|A&gt; + |B&gt;) + |C&gt; = |A&gt; + (|B&gt; + |C&gt;).</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;(|A&gt; + |B&gt;) + |C&gt;&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">C</span><span class="p">))</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|A&gt; + (|B&gt; + |C&gt;)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(|A&gt; + |B&gt;) + |C&gt; = |A&gt; + (|B&gt; + |C&gt;)? &quot;</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">C</span><span class="p">))))</span>
 </pre></div>
 
 </div>
@@ -12585,18 +12625,19 @@ sum= (-1, 0, -1, -2) B1+A1+B2+A2
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>3. associative addition, (|A&gt; + |B&gt;) + |C&gt; = |A&gt; + (|B&gt; + |C)&gt;
+<pre>3. Addition is associative, (|A&gt; + |B&gt;) + |C&gt; = |A&gt; + (|B&gt; + |C&gt;).
+
 (|A&gt; + |B&gt;) + |C&gt;
-n=1: (-1, 0, 1, 6) A1+B1+C1
-n=2: (0, 0, -2, -14) A2+B2+C2
-sum= (-1, 0, -1, -8) A1+B1+C1+A2+B2+C2
+n=1: (-1, 0, 1, 6) a1+b1+c1
+n=2: (0, 0, -2, -14) a2+b2+c2
+ket: 2/1
 
 |A&gt; + (|B&gt; + |C&gt;)
-n=1: (-1, 0, 1, 6) A1+B1+C1
-n=2: (0, 0, -2, -14) A2+B2+C2
-sum= (-1, 0, -1, -8) A1+B1+C1+A2+B2+C2
+n=1: (-1, 0, 1, 6) a1+b1+c1
+n=2: (0, 0, -2, -14) a2+b2+c2
+ket: 2/1
 
-(|A&gt; + |B&gt;) + |C&gt; = |A&gt; + (|B&gt; + |C)&gt;?  True
+(|A&gt; + |B&gt;) + |C&gt; = |A&gt; + (|B&gt; + |C&gt;)?  True
 </pre>
 </div>
 </div>
@@ -12610,10 +12651,11 @@ sum= (-1, 0, -1, -8) A1+B1+C1+A2+B2+C2
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;4. An additive identity series zero exists&quot;</span><span class="p">)</span>
-<span class="n">A</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;A + Z&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A = A + Z?&quot;</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Z</span><span class="p">)))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;4. An additive identity series zero exists.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">()</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">additive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">Z</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|Z&gt;&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|A&gt; + |Z&gt;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;|A&gt; = |A&gt; + |Z&gt;?&quot;</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Z</span><span class="p">)))</span>
 </pre></div>
 
 </div>
@@ -12630,18 +12672,19 @@ sum= (-1, 0, -1, -8) A1+B1+C1+A2+B2+C2
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>4. An additive identity series zero exists
-A
-n=1: (0, 1, 2, 3) A1
-n=2: (2, 2, 2, 2) A2
-sum= (2, 3, 4, 5) A1+A2
+<pre>4. An additive identity series zero exists.
 
-A + Z
-n=1: (0, 1, 2, 3) A1+0
-n=2: (2, 2, 2, 2) A2+0
-sum= (2, 3, 4, 5) A1+0+A2+0
+|Z&gt;
+n=1: (0, 0, 0, 0) 0
+n=2: (0, 0, 0, 0) 0
+ket: 2/1
 
-A = A + Z? True
+|A&gt; + |Z&gt;
+n=1: (0, 1, 2, 3) a1+0
+n=2: (2, 2, 2, 2) a2+0
+ket: 2/1
+
+|A&gt; = |A&gt; + |Z&gt;? True
 </pre>
 </div>
 </div>
@@ -12655,9 +12698,9 @@ A = A + Z? True
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;5. An additive inverse exists, A + (-A) = 0&quot;</span><span class="p">)</span>
-<span class="n">A</span><span class="o">.</span><span class="n">flip_signs</span><span class="p">()</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;-A&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">flip_signs</span><span class="p">())</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;A + (-A)&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;5. An additive inverse exists, A + (-A) = 0.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">additive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;-A&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">additive</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;A + (-A)&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12674,16 +12717,18 @@ A = A + Z? True
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>5. An additive inverse exists, A + (-A) = 0
+<pre>5. An additive inverse exists, A + (-A) = 0.
+
 -A
-n=1: (0, -1, -2, -3) -A1
-n=2: (-2, -2, -2, -2) -A2
-sum= (-2, -3, -4, -5) -A1+-A2
+n=1: (0, -1, -2, -3) -a1
+n=2: (-2, -2, -2, -2) -a2
+ket: 2/1
 
 A + (-A)
-n=1: (0, 0, 0, 0) A1+-A1
-n=2: (0, 0, 0, 0) A2+-A2
-sum= (0, 0, 0, 0) A1+-A1+A2+-A2
+n=1: (0, 0, 0, 0) a1+-a1
+n=2: (0, 0, 0, 0) a2+-a2
+ket: 2/1
+
 </pre>
 </div>
 </div>
@@ -12697,10 +12742,10 @@ sum= (0, 0, 0, 0) A1+-A1+A2+-A2
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;6. A number times a ket produces a new ket, q|A&gt; = |New&gt;&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;6. A scalar times a ket produces a new ket, q|A&gt; = |New&gt;&quot;</span><span class="p">)</span>
 <span class="n">q</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;q&quot;</span><span class="p">)])</span>
-<span class="n">q</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;q|A&gt; = |New&gt;&quot;</span><span class="p">)</span>
+<span class="n">q</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">q</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;q|A&gt; = |New&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12717,15 +12762,16 @@ sum= (0, 0, 0, 0) A1+-A1+A2+-A2
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>6. A number times a ket produces a new ket, q|A&gt; = |New&gt;
+<pre>6. A scalar times a ket produces a new ket, q|A&gt; = |New&gt;
 q
 n=1: (4, 3, 2, 1) q
-sum= (4, 3, 2, 1) q
+scalar: 1/1
 
 q|A&gt; = |New&gt;
-n=1: (-10, 8, 0, 16) qxA1+0xA2
-n=2: (-4, 16, 8, 12) 0xA1+qxA2
-sum= (-14, 24, 8, 28) qxA1+0xA2+0xA1+qxA2
+n=1: (-10, 8, 0, 16) +qxa1+0xa2
+n=2: (-4, 16, 8, 12) +0xa1+qxa2
+ket: 2/1
+
 </pre>
 </div>
 </div>
@@ -12748,11 +12794,11 @@ sum= (-14, 24, 8, 28) qxA1+0xA2+0xA1+qxA2
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;7a. Distributive property, q(|A&gt; + |B&gt;) = q|A&gt; + q|B&gt;&quot;</span><span class="p">)</span>
-<span class="n">qAB</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
-<span class="n">qAB</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;q(|A&gt; + |B&gt;)&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">qAqB</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">q</span><span class="p">))</span>
-<span class="n">qAqB</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;q|A&gt; + q|B&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;7a. Distributive property, q(|A&gt; + |B&gt;) = q|A&gt; + q|B&gt;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">qAB</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+<span class="n">qAB</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;q(|A&gt; + |B&gt;)&quot;</span><span class="p">)</span>
+<span class="n">qAqB</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+<span class="n">qAqB</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;q|A&gt; + q|B&gt;&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q(|A&gt; + |B&gt;) = q|A&gt; + q|B&gt;? &quot;</span><span class="p">,</span> <span class="n">qAB</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">qAqB</span><span class="p">))</span>
 </pre></div>
 
@@ -12771,15 +12817,16 @@ sum= (-14, 24, 8, 28) qxA1+0xA2+0xA1+qxA2
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>7a. Distributive property, q(|A&gt; + |B&gt;) = q|A&gt; + q|B&gt;
+
 q(|A&gt; + |B&gt;)
-n=1: (-8, 0, -4, 10) qxA1+B1+0xA2+B2
-n=2: (8, -6, 4, -22) 0xA1+B1+qxA2+B2
-sum= (0, -6, 0, -12) qxA1+B1+0xA2+B2+0xA1+B1+qxA2+B2
+n=1: (-8, 0, -4, 10) +qxa1+b1+0xa2+b2
+n=2: (8, -6, 4, -22) +0xa1+b1+qxa2+b2
+ket: 2/1
 
 q|A&gt; + q|B&gt;
-n=1: (-8, 0, -4, 10) qxA1+0xA2+qxB1+0xB2
-n=2: (8, -6, 4, -22) 0xA1+qxA2+0xB1+qxB2
-sum= (0, -6, 0, -12) qxA1+0xA2+qxB1+0xB2+0xA1+qxA2+0xB1+qxB2
+n=1: (-8, 0, -4, 10) +qxa1+0xa2++qxb1+0xb2
+n=2: (8, -6, 4, -22) +0xa1+qxa2++0xb1+qxb2
+ket: 2/1
 
 q(|A&gt; + |B&gt;) = q|A&gt; + q|B&gt;?  True
 </pre>
@@ -12796,11 +12843,11 @@ q(|A&gt; + |B&gt;) = q|A&gt; + q|B&gt;?  True
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">])])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;7b. Distributive property, (q + w)|A&gt; = q|A&gt; + w|A&gt;&quot;</span><span class="p">)</span>
-<span class="n">qwA</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">q</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
-<span class="n">qwA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;(q + w)|A&gt;)&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">qAwA</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">w</span><span class="p">))</span>
-<span class="n">qAwA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;q|A&gt; + w|A&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;7b. Distributive property, (q + w)|A&gt; = q|A&gt; + w|A&gt;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">qwA</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">qwA</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;(q + w)|A&gt;)&quot;</span><span class="p">)</span>
+<span class="n">qAwA</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+<span class="n">qAwA</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;q|A&gt; + w|A&gt;&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(q + w)|A&gt; = q|A&gt; + w|A&gt;? &quot;</span><span class="p">,</span> <span class="n">qwA</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">qAwA</span><span class="p">))</span>
 </pre></div>
 
@@ -12819,15 +12866,16 @@ q(|A&gt; + |B&gt;) = q|A&gt; + q|B&gt;?  True
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>7b. Distributive property, (q + w)|A&gt; = q|A&gt; + w|A&gt;
+
 (q + w)|A&gt;)
-n=1: (-311, -188, 105, 16) q+QxA1+0xA2
-n=2: (-202, -182, 214, 210) 0xA1+q+QxA2
-sum= (-513, -370, 319, 226) q+QxA1+0xA2+0xA1+q+QxA2
+n=1: (-311, -188, 105, 16) +q+Qxa1+0xa2
+n=2: (-202, -182, 214, 210) +0xa1+q+Qxa2
+ket: 2/1
 
 q|A&gt; + w|A&gt;
-n=1: (-311, -188, 105, 16) qxA1+0xA2+QxA1+0xA2
-n=2: (-202, -182, 214, 210) 0xA1+qxA2+0xA1+QxA2
-sum= (-513, -370, 319, 226) qxA1+0xA2+QxA1+0xA2+0xA1+qxA2+0xA1+QxA2
+n=1: (-311, -188, 105, 16) +qxa1+0xa2++Qxa1+0xa2
+n=2: (-202, -182, 214, 210) +0xa1+qxa2++0xa1+Qxa2
+ket: 2/1
 
 (q + w)|A&gt; = q|A&gt; + w|A&gt;?  True
 </pre>
@@ -12843,6 +12891,360 @@ sum= (-513, -370, 319, 226) qxA1+0xA2+QxA1+0xA2+0xA1+qxA2+0xA1+QxA2
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Thus 7 basic properties of state vectors can be replicated using quaternion series. I could say there was an equivalence relationship between the two. That does not mean they are exactly the same in all detail, but that for the operations done so far, both approaches are equivalent.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="BIG-Sidebar:-Multiplication-as-a-Group-Operation-Experiment">BIG Sidebar: Multiplication as a Group Operation Experiment<a class="anchor-link" href="#BIG-Sidebar:-Multiplication-as-a-Group-Operation-Experiment">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For division algebras, both addition and multiplicaiton are group operations. That means there is closure (1 from above), associative (3), an identity exists (4) and and inverse exists (5). The real and complex numbers commute under both addition and multiplication, not so quaternion products.</p>
+<p>For a vector space V, {V, +} is a group due to the work shown above, specifically 1, 3-5. No effort is expended to show the same is true for multiplicaiton because while a ket of exactly the same length can be added to another ket to generate a third ket, the same is not true by the rules of matrix multiplication. The number of rows never equal the number of columns, case closed.</p>
+<p>For quaternion series, the rules for multication are modified in a specific way. If one has a ket of the same dimension, then to form a sensible product, the ket on the left is diagonalized first to form a square matrix. At this point, the rules of matrix multiplication allow a product to be formed.</p>
+<p>Let's make this concrete. Consider a real-valued vector with three state dimensions, $|1 \;2 \;3&gt;$. If we squared each term individual, $|k^2&gt;$, the result is $|1\; 4\; 9&gt;$. If the left ket is made into a diagonal operator with a state dimension of 3 rows by 3 columns, one can form a product with the ket with three rows and a column, so $\rm{diagonal}(k) \times |k&gt; = |1\; 4\; 9&gt;$. Recall how addition of two vectors happens if and only if they are of the same dimensions. This is also the case for multiplicaiton. A similar story is possible for bras, but this time it is the left bra that gets made into a diagonal operator. The result of the multiplaciton is other bra quaternion series of the same dimension.</p>
+<p>Now an experiment can be done. Take the 7 things shown to hold true for the additon operator, and see if they hold for multiplication of quaternion series.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;1x. Closure |A&gt; x |B&gt; = |New&gt;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1x. Closure |A&gt; x |B&gt; = |New&gt;
+
+n=1: (6, 0, -4, -2) +a1xb1+0xb2
+n=2: (20, -12, -4, -20) +0xb1+a2xb2
+ket: 2/1
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2x. Multiplication is NOT commutative, |A&gt; x |B&gt; != |B&gt; x |A&gt;.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|A&gt; x |B&gt;&quot;</span><span class="p">)</span>
+<span class="n">B</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|B&gt; x |A&gt;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;|A&gt; x |B&gt; = |B&gt; x |A&gt;? &quot;</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="p">)))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2x. Multiplication is NOT commutative, |A&gt; x |B&gt; != |B&gt; x |A&gt;.
+
+|A&gt; x |B&gt;
+n=1: (6, 0, -4, -2) +a1xb1+0xb2
+n=2: (20, -12, -4, -20) +0xb1+a2xb2
+ket: 2/1
+
+|B&gt; x |A&gt;
+n=1: (6, -2, 0, -4) +b1xa1+0xa2
+n=2: (20, -4, -20, -12) +0xa1+b2xa2
+ket: 2/1
+
+|A&gt; x |B&gt; = |B&gt; x |A&gt;?  False
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is a well known property of quaternions. I have argued earlier that one could define a rule that when the order of algebraic symbols is swapped, then the odd part of a quaternion product should be subtracted. One can form a variation on communtivity with this rule in place.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2x&#39;. Order-sensitive multiplication is commutative, |A&gt; x |B&gt; = |B&gt; xR |A&gt;.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|A&gt; x |B&gt;&quot;</span><span class="p">)</span>
+<span class="n">B</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|B&gt; xR |A&gt;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;|A&gt; x |B&gt; = |B&gt; xR |A&gt;? &quot;</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2x&#39;. Order-sensitive multiplication is commutative, |A&gt; x |B&gt; = |B&gt; xR |A&gt;.
+
+|A&gt; x |B&gt;
+n=1: (6, 0, -4, -2) +a1xb1+0xb2
+n=2: (20, -12, -4, -20) +0xb1+a2xb2
+ket: 2/1
+
+|B&gt; xR |A&gt;
+n=1: (6, 0, -4, -2) +b1xRa1+0xRa2
+n=2: (20, -12, -4, -20) +0xRa1+b2xRa2
+ket: 2/1
+
+|A&gt; x |B&gt; = |B&gt; xR |A&gt;?  True
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>One could complain that the xR operator means the order of an expression doesn't matter. With real and complex numbers, that is always the case. A similar story applies with quaternions so long as one uses either the sum of the even and odd products, or the difference. More care is required in the quaternion case, but should be easy enough to manage.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;3x. Multiplication is associative, (|A&gt; x |B&gt;) x |C&gt; = |A&gt; x (|B&gt; x |C&gt;).</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">ket</span><span class="p">())</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;(|A&gt; x |B&gt;) x |C&gt;&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">ket</span><span class="p">()))</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|A&gt; x (|B&gt; x |C&gt;)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(|A&gt; x |B&gt;) x |C&gt; = |A&gt; x (|B&gt; x |C&gt;)? &quot;</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">set_qs_type</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">set_qs_type</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">)))))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>3x. Multiplication is associative, (|A&gt; x |B&gt;) x |C&gt; = |A&gt; x (|B&gt; x |C&gt;).
+
+(|A&gt; x |B&gt;) x |C&gt;
+n=1: (8, -16, 0, 24) ++a1xb1+0xb2xc1+0xc2
+n=2: (-200, 40, -120, -200) +0xc1++0xb1+a2xb2xc2
+ket: 2/1
+
+|A&gt; x (|B&gt; x |C&gt;)
+n=1: (8, -16, 0, 24) +a1x+b1xc1+0xc2+0x+0xc1+b2xc2
+n=2: (-200, 40, -120, -200) +0x+b1xc1+0xc2+a2x+0xc1+b2xc2
+ket: 2/1
+
+(|A&gt; x |B&gt;) x |C&gt; = |A&gt; x (|B&gt; x |C&gt;)?  True
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;4x. An multiplicative identity series identity operator exists.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">I</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">()</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">additive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">I</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">)</span>
+<span class="n">I</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;I x |A&gt;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;|A&gt; = I x |A&gt;?&quot;</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">I</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="p">)))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>4x. An multiplicative identity series identity operator exists.
+
+I
+n=1: (1, 0, 0, 0) 1
+n=2: (0, 0, 0, 0) 0
+n=3: (0, 0, 0, 0) 0
+n=4: (1, 0, 0, 0) 1
+op: 2/2
+
+I x |A&gt;
+n=1: (0, 1, 2, 3) +1xa1+0xa2
+n=2: (2, 2, 2, 2) +0xa1+1xa2
+ket: 2/1
+
+|A&gt; = I x |A&gt;? True
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;5x. A multiplicative inverse exists, A A^-1 = 1.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">additive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;A^-1&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">additive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;A A^-1&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>5x. A multiplicative inverse exists, A A^-1 = 1.
+
+A^-1
+n=1: (0.0, -0.07142857142857142, -0.14285714285714285, -0.21428571428571427) a1^-1
+n=2: (0.125, -0.125, -0.125, -0.125) a2^-1
+ket: 2/1
+
+A A^-1
+n=1: (0.9999999999999999, 0.0, 0.0, 0.0) +a1xa1^-1+0xa2^-1
+n=2: (1.0, 0.0, 0.0, 0.0) +0xa1^-1+a2xa2^-1
+ket: 2/1
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Except for a little rounding error, a pair of real-valued ones make up the two state ket. Mutliplying bra and ket quaternion series involves diagonal operators. A ket diagonalized and multiplied by $|1\;1&gt;$ would be the ket for of the diagonal.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The results of 6 and 7 involve both addition and multiplication, so don't change.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+
+<pre><code>The take home message is that quaternion series form a group with the multiplication operator
+because multiplication has the same required properties (1x, 3x, 4x, and 5x). All that was
+needed was a clear rule for multiplying kets with kets (make the first a diagonal operator).</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It should be noted that we have not discovered a new division algebra over the real numbers like the real numbers, complex number or quaternions. Quaternion series have a different structure because of the ordered array of quaternions, and the rows and columns integers used for multiplication only. Part of that structure is that quaternion series behave like a division algebra.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>End of sidebar on multipying quaternion series.</strong></p>
 
 </div>
 </div>
@@ -12867,10 +13269,10 @@ sum= (-513, -370, 319, 226) qxA1+0xA2+QxA1+0xA2+0xA1+qxA2+0xA1+QxA2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;A*&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;A*&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12888,9 +13290,10 @@ sum= (-513, -370, 319, 226) qxA1+0xA2+QxA1+0xA2+0xA1+qxA2+0xA1+QxA2
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>A*
-n=1: (0, -1, -2, -3) A1*
-n=2: (2, -2, -2, -2) A2*
-sum= (2, -3, -4, -5) A1*+A2*
+n=1: (0, -1, -2, -3) a1*
+n=2: (2, -2, -2, -2) a2*
+ket: 2/1
+
 </pre>
 </div>
 </div>
@@ -12936,16 +13339,17 @@ sum= (2, -3, -4, -5) A1*+A2*
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;z|A&gt; ? &lt;A|z*&quot;</span><span class="p">)</span>
-<span class="n">Ac</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;A1i&quot;</span><span class="p">),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;A2i&quot;</span><span class="p">)])</span>
-<span class="n">i3</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;13i&quot;</span><span class="p">)])</span>
-<span class="n">zA</span> <span class="o">=</span> <span class="n">Ac</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">i3</span><span class="p">)</span>
-<span class="n">zA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;zA&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">Azc</span> <span class="o">=</span> <span class="n">Ac</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">i3</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
-<span class="n">Azc</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;Az*&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;z|Ac&gt; = &lt;Ac|z* ?</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">Ac</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;b2i&quot;</span><span class="p">),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;b4i&quot;</span><span class="p">)],</span> <span class="s2">&quot;ket&quot;</span><span class="p">)</span>
+<span class="n">zi3</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">qtype</span><span class="o">=</span><span class="s2">&quot;13i&quot;</span><span class="p">)],</span> <span class="n">qs_type</span><span class="o">=</span><span class="s2">&quot;op&quot;</span><span class="p">)</span>
+<span class="n">zAc</span> <span class="o">=</span> <span class="n">zi3</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">Ac</span><span class="p">)</span>
+<span class="n">zAc</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;z|Ac&gt;&quot;</span><span class="p">)</span>
+<span class="n">Acz</span> <span class="o">=</span> <span class="n">Ac</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">zi3</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
+<span class="n">Acz</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;Ac|z*&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;z|Ac&gt; = &lt;Ac|z* ?&quot;</span><span class="p">,</span> <span class="n">zAc</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">Acz</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12962,16 +13366,19 @@ sum= (2, -3, -4, -5) A1*+A2*
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>z|A&gt; ? &lt;A|z*
-zA
-n=1: (-5, 5, 0, 0) 13ixA1i+0xA2i
-n=2: (-9, 13, 0, 0) 0xA1i+13ixA2i
-sum= (-14, 18, 0, 0) 13ixA1i+0xA2i+0xA1i+13ixA2i
+<pre>z|Ac&gt; = &lt;Ac|z* ?
 
-Az*
-n=1: (-5, -5, 0, 0) A1i*x13i*+A2i*x0
-n=2: (-9, -13, 0, 0) A1i*x0+A2i*x13i*
-sum= (-14, -18, 0, 0) A1i*x13i*+A2i*x0+A1i*x0+A2i*x13i*
+z|Ac&gt;
+n=1: (-5, 5, 0, 0) +13ixb2i+0xb4i
+n=2: (-9, 13, 0, 0) +0xb2i+13ixb4i
+ket: 2/1
+
+&lt;Ac|z*
+n=1: (-5, -5, 0, 0) +b2i*x13i*+b4i*x0
+n=2: (-9, -13, 0, 0) +b2i*x0+b4i*x13i*
+ket: 1/2
+
+z|Ac&gt; = &lt;Ac|z* ? False
 </pre>
 </div>
 </div>
@@ -12984,17 +13391,17 @@ sum= (-14, -18, 0, 0) A1i*x13i*+A2i*x0+A1i*x0+A2i*x13i*
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The "correspondence" is that the two need one more conjugate operation to be equal, like so:</p>
+<p>Almost, but not quite, off by a conjugate. One more conjugate operation is needed to be equal:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;z|A&gt; = (&lt;A|z*)* ?&quot;</span><span class="p">,</span> <span class="n">zA</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">Azc</span><span class="o">.</span><span class="n">conj</span><span class="p">()))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;z|Ac&gt; = (&lt;Ac|z*)* ?&quot;</span><span class="p">,</span> <span class="n">zAc</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">Acz</span><span class="o">.</span><span class="n">conj</span><span class="p">()))</span>
 </pre></div>
 
 </div>
@@ -13011,7 +13418,7 @@ sum= (-14, -18, 0, 0) A1i*x13i*+A2i*x0+A1i*x0+A2i*x13i*
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>z|A&gt; = (&lt;A|z*)* ? True
+<pre>z|Ac&gt; = (&lt;Ac|z*)* ? True
 </pre>
 </div>
 </div>
@@ -13031,14 +13438,15 @@ sum= (-14, -18, 0, 0) A1i*x13i*+A2i*x0+A1i*x0+A2i*x13i*
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">qA</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
-<span class="n">qA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;q|A&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">Aqc</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">q</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
-<span class="n">Aqc</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;A|q*&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q|A&gt; = (&lt;A|q*)* ?&quot;</span><span class="p">,</span> <span class="n">qA</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">Aqc</span><span class="o">.</span><span class="n">conj</span><span class="p">()))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;q|A&gt; = (&lt;A|q*)* ?</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">qA</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">qA</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;q|A&gt;&quot;</span><span class="p">)</span>
+<span class="n">Aq</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
+<span class="n">Aq</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;A|q*&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;z|A&gt; = (&lt;A|q*)* ?&quot;</span><span class="p">,</span> <span class="n">qA</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">Aq</span><span class="o">.</span><span class="n">conj</span><span class="p">()))</span>
 </pre></div>
 
 </div>
@@ -13055,17 +13463,19 @@ sum= (-14, -18, 0, 0) A1i*x13i*+A2i*x0+A1i*x0+A2i*x13i*
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>q|A&gt;
-n=1: (-10, 8, 0, 16) qxA1+0xA2
-n=2: (-4, 16, 8, 12) 0xA1+qxA2
-sum= (-14, 24, 8, 28) qxA1+0xA2+0xA1+qxA2
+<pre>q|A&gt; = (&lt;A|q*)* ?
+
+q|A&gt;
+n=1: (-10, 8, 0, 16) +qxa1+0xa2
+n=2: (-4, 16, 8, 12) +0xa1+qxa2
+ket: 2/1
 
 &lt;A|q*
-n=1: (-10, -8, 0, -16) A1*xq*+A2*x0
-n=2: (-4, -16, -8, -12) A1*x0+A2*xq*
-sum= (-14, -24, -8, -28) A1*xq*+A2*x0+A1*x0+A2*xq*
+n=1: (-10, -8, 0, -16) +a1*xq*+a2*x0
+n=2: (-4, -16, -8, -12) +a1*x0+a2*xq*
+ket: 1/2
 
-q|A&gt; = (&lt;A|q*)* ? True
+z|A&gt; = (&lt;A|q*)* ? True
 </pre>
 </div>
 </div>
@@ -13122,14 +13532,14 @@ $$\rm{Odd}(A, B) = (AB - BA)/2 $$</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. linear inner product, &lt;C|(|A&gt; + |B&gt;) = &lt;C|A&gt; + &lt;C|B&gt;&quot;</span><span class="p">)</span>
-<span class="n">CAB</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
-<span class="n">CAB</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;C|(|A&gt; + |B&gt;)&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">CABA</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">B</span><span class="p">))</span>
-<span class="n">CABA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;C|A&gt; + &lt;C|B&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. linear inner product, &lt;C|(|A&gt; + |B&gt;) = &lt;C|A&gt; + &lt;C|B&gt;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">CAB</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+<span class="n">CAB</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;C|(|A&gt; + |B&gt;)&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">CABA</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+<span class="n">CABA</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;C|A&gt; + &lt;C|B&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&lt;C|(|A&gt; + |B&gt;) = &lt;C|A&gt; + &lt;C|B&gt;? &quot;</span><span class="p">,</span> <span class="n">CAB</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">CABA</span><span class="p">))</span>
 </pre></div>
 
@@ -13148,15 +13558,14 @@ $$\rm{Odd}(A, B) = (AB - BA)/2 $$</p>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>1. linear inner product, &lt;C|(|A&gt; + |B&gt;) = &lt;C|A&gt; + &lt;C|B&gt;
+
 &lt;C|(|A&gt; + |B&gt;)
-n=1: (8, 4, 0, 4) C1*xA1+B1
-n=2: (40, 20, 0, 0) C2*xA2+B2
-sum= (48, 24, 0, 4) C1*xA1+B1+C2*xA2+B2
+n=1: (48, 24, 0, 4) +c1*xa1+b1+c2*xa2+b2
+scalar: 1/1
 
 &lt;C|A&gt; + &lt;C|B&gt;
-n=1: (8, 4, 0, 4) C1*xA1+C1*xB1
-n=2: (40, 20, 0, 0) C2*xA2+C2*xB2
-sum= (48, 24, 0, 4) C1*xA1+C1*xB1+C2*xA2+C2*xB2
+n=1: (48, 24, 0, 4) +c1*xa1+c2*xa2++c1*xb1+c2*xb2
+scalar: 1/1
 
 &lt;C|(|A&gt; + |B&gt;) = &lt;C|A&gt; + &lt;C|B&gt;?  True
 </pre>
@@ -13187,14 +13596,14 @@ sum= (48, 24, 0, 4) C1*xA1+C1*xB1+C2*xA2+C2*xB2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2. For inner product, change order AND conjugate, &lt;B|A&gt; = &lt;A|B&gt;*&quot;</span><span class="p">)</span>
-<span class="n">BdotA</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">A</span><span class="p">)</span>
-<span class="n">BdotA</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;B|A&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">AdotBc</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
-<span class="n">AdotBc</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;A|B&gt;*&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2. For inner product, change order AND conjugate, &lt;B|A&gt; = &lt;A|B&gt;*</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">BdotA</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">BdotA</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;B|A&gt;&quot;</span><span class="p">)</span>
+<span class="n">AdotBc</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span>
+<span class="n">AdotBc</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;A|B&gt;*&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&lt;B|A&gt; = &lt;A|B&gt;* ?&quot;</span><span class="p">,</span> <span class="n">BdotA</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">AdotBc</span><span class="p">))</span>
 </pre></div>
 
@@ -13213,15 +13622,14 @@ sum= (48, 24, 0, 4) C1*xA1+C1*xB1+C2*xA2+C2*xB2
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>2. For inner product, change order AND conjugate, &lt;B|A&gt; = &lt;A|B&gt;*
+
 &lt;B|A&gt;
-n=1: (-6, 0, -4, -2) B1*xA1
-n=2: (-28, -4, 12, 4) B2*xA2
-sum= (-34, -4, 8, 2) B1*xA1+B2*xA2
+n=1: (-34, -4, 8, 2) +b1*xa1+b2*xa2
+scalar: 1/1
 
 &lt;A|B&gt;*
-n=1: (-6, 0, -4, -2) A1*xB1*
-n=2: (-28, -4, 12, 4) A2*xB2*
-sum= (-34, -4, 8, 2) A1*xB1*+A2*xB2*
+n=1: (-34, -4, 8, 2) +a1*xb1+a2*xb2*
+scalar: 1/1
 
 &lt;B|A&gt; = &lt;A|B&gt;* ? True
 </pre>
@@ -13261,14 +13669,14 @@ sum= (-34, -4, 8, 2) A1*xB1*+A2*xB2*
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exercise 1.1: A) linear inner products, (&lt;A| + &lt;B|)|C&gt; = &lt;A|C&gt; + &lt;B|C&gt;&quot;</span><span class="p">)</span>
-<span class="n">ABC</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">C</span><span class="p">)</span>
-<span class="n">ABC</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;(&lt;A| + &lt;B|)|C&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">ACBC</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">C</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">C</span><span class="p">))</span>
-<span class="n">ACBC</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;A|C&gt; + &lt;B|C&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exercise 1.1: A) linear inner products, (&lt;A| + &lt;B|)|C&gt; = &lt;A|C&gt; + &lt;B|C&gt; ?</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">ABC</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">bra</span><span class="p">())</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">ket</span><span class="p">())</span>
+<span class="n">ABC</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;(&lt;A| + &lt;B|)|C&gt;&quot;</span><span class="p">)</span>
+<span class="n">ACBC</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">ket</span><span class="p">())</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">C</span><span class="o">.</span><span class="n">ket</span><span class="p">()))</span>
+<span class="n">ACBC</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;A|C&gt; + &lt;B|C&gt;&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&lt;C|(|A&gt; + |B&gt;) = &lt;C|A&gt; + &lt;C|B&gt;? &quot;</span><span class="p">,</span> <span class="n">CAB</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">CABA</span><span class="p">))</span>
 </pre></div>
 
@@ -13286,16 +13694,15 @@ sum= (-34, -4, 8, 2) A1*xB1*+A2*xB2*
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Exercise 1.1: A) linear inner products, (&lt;A| + &lt;B|)|C&gt; = &lt;A|C&gt; + &lt;B|C&gt;
+<pre>Exercise 1.1: A) linear inner products, (&lt;A| + &lt;B|)|C&gt; = &lt;A|C&gt; + &lt;B|C&gt; ?
+
 (&lt;A| + &lt;B|)|C&gt;
-n=1: (8, -4, 0, -4) A1+B1*xC1
-n=2: (40, -20, 0, 0) A2+B2*xC2
-sum= (48, -24, 0, -4) A1+B1*xC1+A2+B2*xC2
+n=1: (48, -24, 0, -4) +a1+b1*xc1+a2+b2*xc2
+scalar: 1/1
 
 &lt;A|C&gt; + &lt;B|C&gt;
-n=1: (8, -4, 0, -4) A1*xC1+B1*xC1
-n=2: (40, -20, 0, 0) A2*xC2+B2*xC2
-sum= (48, -24, 0, -4) A1*xC1+B1*xC1+A2*xC2+B2*xC2
+n=1: (48, -24, 0, -4) +a1*xc1+a2*xc2++b1*xc1+b2*xc2
+scalar: 1/1
 
 &lt;C|(|A&gt; + |B&gt;) = &lt;C|A&gt; + &lt;C|B&gt;?  True
 </pre>
@@ -13317,12 +13724,13 @@ sum= (48, -24, 0, -4) A1*xC1+B1*xC1+A2*xC2+B2*xC2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;A|A&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">B</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;B|B&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">C</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">C</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;C|C&gt;&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&lt;q|q&gt; = real scalar?</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">A</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;A|A&gt;&quot;</span><span class="p">)</span>
+<span class="n">B</span><span class="o">.</span><span class="n">norm_squared</span><span class="p">()</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;B|B&gt;&quot;</span><span class="p">)</span>
+<span class="n">C</span><span class="o">.</span><span class="n">norm_squared</span><span class="p">()</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;C|C&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13339,20 +13747,20 @@ sum= (48, -24, 0, -4) A1*xC1+B1*xC1+A2*xC2+B2*xC2
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;A|A&gt;
-n=1: (14, 0, 0, 0) A1*xA1
-n=2: (16, 0, 0, 0) A2*xA2
-sum= (30, 0, 0, 0) A1*xA1+A2*xA2
+<pre>&lt;q|q&gt; = real scalar?
+
+&lt;A|A&gt;
+n=1: (30, 0, 0, 0) +a1*xa1+a2*xa2
+scalar: 1/1
 
 &lt;B|B&gt;
-n=1: (4, 0, 0, 0) B1*xB1
-n=2: (60, 0, 0, 0) B2*xB2
-sum= (64, 0, 0, 0) B1*xB1+B2*xB2
+n=1: (64, 0, 0, 0) +b1*xb1+b2*xb2
+scalar: 1/1
 
 &lt;C|C&gt;
-n=1: (16, 0, 0, 0) C1*xC1
-n=2: (100, 0, 0, 0) C2*xC2
-sum= (116, 0, 0, 0) C1*xC1+C2*xC2
+n=1: (116, 0, 0, 0) +c1*xc1+c2*xc2
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -13381,7 +13789,7 @@ sum= (116, 0, 0, 0) C1*xC1+C2*xC2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">q_0</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_0</span><span class="p">()</span>
@@ -13390,9 +13798,13 @@ sum= (116, 0, 0, 0) C1*xC1+C2*xC2
 <span class="n">q_j</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_j</span><span class="p">()</span>
 <span class="n">q_k</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">()</span><span class="o">.</span><span class="n">q_k</span><span class="p">()</span>
 
-<span class="n">B5</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_0</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_i</span><span class="p">,</span> <span class="n">q_j</span><span class="p">,</span> <span class="n">q_k</span><span class="p">])</span>
-<span class="n">A5</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_1</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_1</span><span class="p">,</span> <span class="n">q_1</span><span class="p">])</span>
-<span class="n">B5</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">A5</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;B5|A5&gt;&quot;</span><span class="p">)</span>
+<span class="n">α1</span><span class="p">,</span> <span class="n">α2</span><span class="p">,</span> <span class="n">α3</span><span class="p">,</span> <span class="n">α4</span><span class="p">,</span> <span class="n">α5</span>  <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;α1 α2 α3 α4 α5&quot;</span><span class="p">)</span>
+<span class="n">β1</span><span class="p">,</span> <span class="n">β2</span><span class="p">,</span> <span class="n">β3</span><span class="p">,</span> <span class="n">β4</span><span class="p">,</span> <span class="n">β5</span>  <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;β1 β2 β3 β4 β5&quot;</span><span class="p">)</span>
+
+
+<span class="n">B5</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">β1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="n">β2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">β3</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">β4</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">β5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])],</span> <span class="n">qs_type</span><span class="o">=</span><span class="s2">&quot;bra&quot;</span><span class="p">)</span>
+<span class="n">A5</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">α1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">α2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">α3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">α4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="n">α5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])],</span> <span class="n">qs_type</span><span class="o">=</span><span class="s2">&quot;ket&quot;</span><span class="p">)</span>
+<span class="n">B5</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">A5</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;B5|A5&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13410,12 +13822,9 @@ sum= (116, 0, 0, 0) C1*xC1+C2*xC2
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>&lt;B5|A5&gt;
-n=1: (0, 0, 0, 0) 0*x1
-n=2: (1, 0, 0, 0) 1*x1
-n=3: (0, -1, 0, 0) i*x1
-n=4: (0, 0, -1, 0) j*x1
-n=5: (0, 0, 0, -1) k*x1
-sum= (1, -1, -1, -1) 0*x1+1*x1+i*x1+j*x1+k*x1
+n=1: (α1*β1 + α5*β5, -α2*β2, -α3*β3, -α4*β4) +Q*xQ+Q*xQ+Q*xQ+Q*xQ+Q*xQ
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -13444,14 +13853,14 @@ sum= (1, -1, -1, -1) 0*x1+1*x1+i*x1+j*x1+k*x1
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Ai</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_i</span><span class="p">,</span> <span class="n">q_i</span><span class="p">,</span> <span class="n">q_i</span><span class="p">,</span> <span class="n">q_i</span><span class="p">])</span>
-<span class="n">Bi</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_i</span><span class="p">,</span> <span class="n">q_i</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span> <span class="n">q_i</span><span class="p">,</span> <span class="n">q_i</span><span class="o">.</span><span class="n">conj</span><span class="p">()])</span>
-<span class="n">Ai</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">Ai</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;Ai|Ai&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">Bi</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">Bi</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;Bi|Bi&gt;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">Bi</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;bra&quot;</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="n">Ai</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;Bi|Ai&gt;&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Ai</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_i</span><span class="p">,</span> <span class="n">q_i</span><span class="p">,</span> <span class="n">q_i</span><span class="p">,</span> <span class="n">q_i</span><span class="p">])</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+<span class="n">Bi</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">q_i</span><span class="p">,</span> <span class="n">q_i</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span> <span class="n">q_i</span><span class="p">,</span> <span class="n">q_i</span><span class="o">.</span><span class="n">conj</span><span class="p">()])</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+<span class="n">Ai</span><span class="o">.</span><span class="n">norm_squared</span><span class="p">()</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;Ai|Ai&gt;&quot;</span><span class="p">)</span>
+<span class="n">Bi</span><span class="o">.</span><span class="n">norm_squared</span><span class="p">()</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;Bi|Bi&gt;&quot;</span><span class="p">)</span>
+<span class="n">Bi</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">Ai</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;Bi|Ai&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13469,25 +13878,17 @@ sum= (1, -1, -1, -1) 0*x1+1*x1+i*x1+j*x1+k*x1
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>&lt;Ai|Ai&gt;
-n=1: (1, 0, 0, 0) i*xi
-n=2: (1, 0, 0, 0) i*xi
-n=3: (1, 0, 0, 0) i*xi
-n=4: (1, 0, 0, 0) i*xi
-sum= (4, 0, 0, 0) i*xi+i*xi+i*xi+i*xi
+n=1: (1.0, 0.0, 0.0, 0.0) +iUxQ*xiUxQ+iUxQ*xiUxQ+iUxQ*xiUxQ+iUxQ*xiUxQ
+scalar: 1/1
 
 &lt;Bi|Bi&gt;
-n=1: (1, 0, 0, 0) i*xi
-n=2: (1, 0, 0, 0) i**xi*
-n=3: (1, 0, 0, 0) i*xi
-n=4: (1, 0, 0, 0) i**xi*
-sum= (4, 0, 0, 0) i*xi+i**xi*+i*xi+i**xi*
+n=1: (1.0, 0.0, 0.0, 0.0) +iUxQ*xiUxQ+i*UxQ*xi*UxQ+iUxQ*xiUxQ+i*UxQ*xi*UxQ
+scalar: 1/1
 
 &lt;Bi|Ai&gt;
-n=1: (1, 0, 0, 0) i*xi
-n=2: (-1, 0, 0, 0) i**xi
-n=3: (1, 0, 0, 0) i*xi
-n=4: (-1, 0, 0, 0) i**xi
-sum= (0, 0, 0, 0) i*xi+i**xi+i*xi+i**xi
+n=1: (0.0, 0.0, 0.0, 0.0) +iUxQ*xiUxQ+i*UxQ*xiUxQ+iUxQ*xiUxQ+i*UxQ*xiUxQ
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -13500,7 +13901,7 @@ sum= (0, 0, 0, 0) i*xi+i**xi+i*xi+i**xi
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>None of the elements in the series are equal to zero, but the sum of the series is zero. There should be about an infinite number of ways to make orthogonal states, give or take.</p>
+<p>None of the elements in the series are equal to zero. There should be about an infinite number of ways to make orthogonal states, give or take.</p>
 
 </div>
 </div>
@@ -13525,12 +13926,13 @@ sum= (0, 0, 0, 0) i*xi+i**xi+i*xi+i**xi
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">αi</span> <span class="o">=</span> <span class="n">qt</span><span class="o">.</span><span class="n">QHStates</span><span class="p">([</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span><span class="n">qt</span><span class="o">.</span><span class="n">QH</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">])])</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">αi</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;αi&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">Ai</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">αi</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;|A&gt; = Sum αi|Ai&gt;&quot;</span><span class="p">)</span>
+<span class="n">αi</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;αi&quot;</span><span class="p">)</span>
+<span class="n">Asum</span> <span class="o">=</span> <span class="n">αi</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">Ai</span><span class="p">)</span>
+<span class="n">Asum</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|A&gt; = Sum αi|Ai&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13564,14 +13966,15 @@ n=13: (0, 0, 0, 0) 0
 n=14: (0, 0, 0, 0) 0
 n=15: (0, 0, 0, 0) 0
 n=16: (4, 0, 0, 4) Q
-sum= (10, 2, 5, 4) Q+0+0+0+0+Q+0+0+0+0+Q+0+0+0+0+Q
+op: 4/4
 
 |A&gt; = Sum αi|Ai&gt;
-n=1: (-1, 1, 0, 0) Qxi+0xi+0xi+0xi
-n=2: (0, 2, 0, -2) 0xi+Qxi+0xi+0xi
-n=3: (-1, 3, 0, -3) 0xi+0xi+Qxi+0xi
-n=4: (0, 4, 4, 0) 0xi+0xi+0xi+Qxi
-sum= (-2, 10, 4, -5) Qxi+0xi+0xi+0xi+0xi+Qxi+0xi+0xi+0xi+0xi+Qxi+0xi+0xi+0xi+0xi+Qxi
+n=1: (-0.5, 0.5, 0.0, 0.0) +QxiUxQ+0xiUxQ+0xiUxQ+0xiUxQ
+n=2: (0.0, 1.0, 0.0, -1.0) +0xiUxQ+QxiUxQ+0xiUxQ+0xiUxQ
+n=3: (-0.5, 1.5, 0.0, -1.5) +0xiUxQ+0xiUxQ+QxiUxQ+0xiUxQ
+n=4: (0.0, 2.0, 2.0, 0.0) +0xiUxQ+0xiUxQ+0xiUxQ+QxiUxQ
+ket: 4/1
+
 </pre>
 </div>
 </div>
@@ -13591,10 +13994,10 @@ sum= (-2, 10, 4, -5) Qxi+0xi+0xi+0xi+0xi+Qxi+0xi+0xi+0xi+0xi+Qxi+0xi+0xi+0xi+0xi
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Ai</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="s2">&quot;ket&quot;</span><span class="p">,</span> <span class="n">bra</span><span class="o">=</span><span class="n">Bi</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">αi</span><span class="p">)</span><span class="o">.</span><span class="n">print_states</span><span class="p">(</span><span class="s2">&quot;&lt;j|A&gt;&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Bi</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">Euclidean_product</span><span class="p">(</span><span class="n">αi</span><span class="p">)</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">Ai</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;&lt;B|αi|A&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13611,12 +14014,10 @@ sum= (-2, 10, 4, -5) Qxi+0xi+0xi+0xi+0xi+Qxi+0xi+0xi+0xi+0xi+Qxi+0xi+0xi+0xi+0xi
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;j|A&gt;
-n=1: (1, 1, 0, 0) i*xQxi+0xi+0xi+0xi
-n=2: (-2, 0, 2, 0) i**x0xi+Qxi+0xi+0xi
-n=3: (3, 1, -3, 0) i*x0xi+0xi+Qxi+0xi
-n=4: (-4, 0, 0, 4) i**x0xi+0xi+0xi+Qxi
-sum= (-2, 2, -1, 4) i*xQxi+0xi+0xi+0xi+i**x0xi+Qxi+0xi+0xi+i*x0xi+0xi+Qxi+0xi+i**x0xi+0xi+0xi+Qxi
+<pre>&lt;B|αi|A&gt;
+n=1: (-0.5, 0.5, -0.25, 1.0) ++iUxQ*xQ+i*UxQ*x0+iUxQ*x0+i*UxQ*x0xiUxQ++iUxQ*x0+i*UxQ*xQ+iUxQ*x0+i*UxQ*x0xiUxQ++iUxQ*x0+i*UxQ*x0+iUxQ*xQ+i*UxQ*x0xiUxQ++iUxQ*x0+i*UxQ*x0+iUxQ*x0+i*UxQ*xQxiUxQ
+scalar: 1/1
+
 </pre>
 </div>
 </div>
@@ -13651,6 +14052,93 @@ sum= (-2, 2, -1, 4) i*xQxi+0xi+0xi+0xi+i**x0xi+Qxi+0xi+0xi+i*x0xi+0xi+Qxi+0xi+i*
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ii_projector</span> <span class="o">=</span> <span class="n">Ai</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">Ai</span><span class="o">.</span><span class="n">bra</span><span class="p">()</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
+<span class="n">ii_projector</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;projection operator: |i&gt;&lt;i|&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>projection operator: |i&gt;&lt;i|
+n=1: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=2: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=3: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=4: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=5: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=6: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=7: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=8: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=9: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=10: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=11: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=12: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=13: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=14: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=15: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+n=16: (0.25, 0.0, 0.0, 0.0) +iUxQxiUxQ*
+ket: 4/4
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ii_projector</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">Asum</span><span class="p">)</span><span class="o">.</span><span class="n">print_state</span><span class="p">(</span><span class="s2">&quot;|i&gt;&lt;i|A&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>|i&gt;&lt;i|A
+n=1: (-0.25, 1.25, 0.5, -0.625) ++iUxQxiUxQ*x+QxiUxQ+0xiUxQ+0xiUxQ+0xiUxQ++iUxQxiUxQ*x+0xiUxQ+QxiUxQ+0xiUxQ+0xiUxQ++iUxQxiUxQ*x+0xiUxQ+0xiUxQ+QxiUxQ+0xiUxQ++iUxQxiUxQ*x+0xiUxQ+0xiUxQ+0xiUxQ+QxiUxQ
+n=2: (-0.25, 1.25, 0.5, -0.625) ++iUxQxiUxQ*x+QxiUxQ+0xiUxQ+0xiUxQ+0xiUxQ++iUxQxiUxQ*x+0xiUxQ+QxiUxQ+0xiUxQ+0xiUxQ++iUxQxiUxQ*x+0xiUxQ+0xiUxQ+QxiUxQ+0xiUxQ++iUxQxiUxQ*x+0xiUxQ+0xiUxQ+0xiUxQ+QxiUxQ
+n=3: (-0.25, 1.25, 0.5, -0.625) ++iUxQxiUxQ*x+QxiUxQ+0xiUxQ+0xiUxQ+0xiUxQ++iUxQxiUxQ*x+0xiUxQ+QxiUxQ+0xiUxQ+0xiUxQ++iUxQxiUxQ*x+0xiUxQ+0xiUxQ+QxiUxQ+0xiUxQ++iUxQxiUxQ*x+0xiUxQ+0xiUxQ+0xiUxQ+QxiUxQ
+n=4: (-0.25, 1.25, 0.5, -0.625) ++iUxQxiUxQ*x+QxiUxQ+0xiUxQ+0xiUxQ+0xiUxQ++iUxQxiUxQ*x+0xiUxQ+QxiUxQ+0xiUxQ+0xiUxQ++iUxQxiUxQ*x+0xiUxQ+0xiUxQ+QxiUxQ+0xiUxQ++iUxQxiUxQ*x+0xiUxQ+0xiUxQ+0xiUxQ+QxiUxQ
+ket: 4/1
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     </div>
   </div>

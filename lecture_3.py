@@ -19,19 +19,17 @@ get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as
 
 # ![](images/lecture_3/c3_p52_q3.jpg)
 
-# 
-# 
-# In the first chapter of these companion notebooks, it was shown that for a quaternion series operator $M$ and bra quaternion series $|A>$ and $|B>$, this was the case. One thing not stated explicitly here is that both $|A>$ and $|B>$ have to have the same number of state dimensions or the expression does not make sense. In the quaternion series approach, the number of states in operator $M$ has to be a multiple of the states in the bras.
+# In the first chapter of these companion notebooks, it was shown that for a quaternion series operator $M$ and bra quaternion series $|A>$ and $|B>$, this was the case. One thing not stated explicitly here is that both $|A>$ and $|B>$ have to have the same number of state dimensions or the expression does not make sense. In the quaternion series approach, the number of states in operator $M$ has to be a integer multiple of the states in the bras. For the full bra, operator ket expression, the product of the bra and ket dimensions must equal the operator. These rules will need to be revisited when systems of infinite dimensions are used.
 
 # ![](images/lecture_3/c3_p53_q1.jpg)
 
-# If all I can ever do is multiply quaternion series together, this will always be the case because numbers are nice in that way.
+# If all that can ever done is multiply quaternion series together, there will always be one output because numbers are nice in that way.
 
 # ![](images/lecture_3/c3_p53_q2.jpg)
 
 # This looks like a simple statement, but look at what it presumes. The matrix $M$ has complex values, so $z$ will commute, or $M z = z M$. Now switch to quaternions... does this mean an end to this project because quaternions do not commute? I do think the knee-jerk reaction is to say "yes".
 
-# Careful reflection takes time, so please indulge me. The above in an algebraic expression. Each term has been given a name, $M$ and $z$, and been assigned a specific order at the table. A quaternion product can always be broken into two parts: the even part that commutes, and the odd part or cross product that anti-commutes.
+# Careful reflection takes time, so please indulge me. The above is an algebraic expression. Each term has been given a name, $M$ and $z$, and been assigned a specific order at the table. A quaternion product can always be broken into two parts: the even part that commutes, and the odd part or cross product that anti-commutes.
 # 
 # First define a bunch of quaternions.
 
@@ -42,8 +40,8 @@ At1, Ax1, Ay1, Az1 = sp.symbols("At1 Ax1 Ay1 Az1")
 At2, Ax2, Ay2, Az2 = sp.symbols("At2 Ax2 Ay2 Az2")
 Aq1 = qt.QH([At1, Ax1, Ay1, Az1], qtype="a₁")
 Aq2 = qt.QH([At2, Ax2, Ay2, Az2], qtype="a₂")
-A = qt.QHStates([Aq1, Aq2])
-A.print_states("A", 1)
+A = qt.QHStates([Aq1, Aq2], "ket")
+A.print_state("A")
 
 Mt1, Mx1, My1, Mz1 = sp.symbols("Mt1 Mx1 My1 Mz1")
 Mt2, Mx2, My2, Mz2 = sp.symbols("Mt2 Mx2 My2 Mz2")
@@ -54,26 +52,26 @@ Mq2 = qt.QH([Mt2, Mx2, My2, Mz2], qtype="m₂")
 Mq3 = qt.QH([Mt3, Mx3, My3, Mz3], qtype="m₃")
 Mq4 = qt.QH([Mt4, Mx4, My4, Mz4], qtype="m₄")
 
-M = qt.QHStates([Mq1, Mq2, Mq3, Mq4])
-M.print_states("M", 1)
+M = qt.QHStates([Mq1, Mq2, Mq3, Mq4], "op")
+M.print_state("M")
 
 zt, zx, zy, zz = sp.symbols("zt zx zy zz")
 zq = qt.QH([zt, zx, zy, zz], qtype="z")
 zqs = qt.QHStates([zq])
 z_op = zqs.diagonal(2)
-z_op.print_states("z")
+z_op.print_state("z")
 
 
-# Before trying to understand quaternion series, let's just understand the product of two quaternions. We wish to have an algebraic rule about what exactly it means to reverse two named symbols. When the reversal happens, it means the product of the two reverse quaternions is the difference between the even and odd products. This makes no difference for real and complex numbers since the odd part is always exactly zero. For quaternions, this flips the signs of the thing that flip signs under reversal, so no net change results.
+# Before trying to understand quaternion series, let's just look at the product of two quaternions. We wish to have an algebraic rule about what **exactly** it means to reverse two named symbols. We can create a rule such that reversing symbols does not change the result. Thus when one writes a reversal of symbols, we mean that the product of the two reverse quaternions is the difference between the even and odd products. This makes no difference for real and complex numbers since the odd part is always exactly zero. For quaternions, this flips the signs of the thing that flip signs under reversal, so no net change results.
 
 # In[3]:
 
 
 Mq1z = Mq1.product(zq)
 zMq1 = zq.product(Mq1, reverse=True)
-print("M, then z, even + odd: ", Mq1z)
-print("z, then M, even - odd: ", zMq1)
-print("difference: ", Mq1z.dif(zMq1))
+Mq1z.print_state("M, then z, even + odd: ", 1)
+zMq1.print_state("z, then M, even - odd: ", 1)
+Mq1z.dif(zMq1).print_state("difference ")
 
 
 # The precise rule about the impact of reversing positions of named terms in algebraic expressions can and will be applied consistently from now on. Am I cheating on the non-commutative nature of quaternions? I think the answer is "no" as demonstrated by the qtype of the difference above, 'm₁xz-zxRm₁'. This says, from left to right, form the product - even plus odd - of m₁ times z, then subtract z "xR" m₁, where xR is the reverse product which is the difference of the even and odd products. The difference of those is exactly zero, always, even though the qtypes are distinct.
@@ -82,7 +80,7 @@ print("difference: ", Mq1z.dif(zMq1))
 # 
 # $$ \frac{d f(q)}{dq} = \lim_{dq \rightarrow 0} (f(q + dq) - f(q)) \;x \;dq^{-1} $$
 # 
-# I would have to consult the literature to find out if this was called a left- or right-derivative. Whatever it is called does not matter with this new rule for reversal in place. Yes, the differential can now be moved to the left so long as one uses the reversal product:
+# I would have to consult the literature to find out if this was called a left- or right-derivative. Whatever it is called does not matter with this new rule for reversal in place. Yes, the differential can now be moved to the left so long as one uses the reverse product:
 # $$\lim_{dq \rightarrow 0} (f(q + dq) - f(q)) \; x \; dq^{-1} = \lim_{dq \rightarrow 0} dq^{-1} \; xR \;(f(q + dq) - f(q)) $$
 # Getting one consistent definition for a quaternion derivative may be just as important as anything else in this collection of work, so I think it was worth the digression.
 
@@ -95,15 +93,15 @@ Mq1z = Mq1.product(zq)
 Mq2z = Mq2.product(zq)
 Mq3z = Mq3.product(zq)
 Mq4z = Mq4.product(zq)
-Mz = qt.QHStates([Mq1z, Mq2z, Mq3z, Mq4z])
-Mz.print_states("Mz", 1)
+Mz = qt.QHStates([Mq1z, Mq2z, Mq3z, Mq4z], "op")
+Mz.print_state("Mz")
 
 zMq1 = zq.product(Mq1, reverse=True)
 zMq2 = zq.product(Mq2, reverse=True)
 zMq3 = zq.product(Mq3, reverse=True)
 zMq4 = zq.product(Mq4, reverse=True)
-zM = qt.QHStates([zMq1, zMq2, zMq3, zMq4])
-zM.print_states("zM")
+zM = qt.QHStates([zMq1, zMq2, zMq3, zMq4],"op")
+zM.print_state("zM")
 
 
 # If you stare at these long enough, they do look identical. Prove it.
@@ -111,10 +109,12 @@ zM.print_states("zM")
 # In[5]:
 
 
-MzA = A.product("ket", operator=Mz)
-zMA = A.product("ket", operator=zM)
+MzA = Mz.product(A)
+zMA = zM.product(A)
 print(MzA.dif(zMA))
 
+
+# Again, the qtypes indicated that different roads were taken to get to the same result.
 
 # ![](images/lecture_3/c3_p54_q1.jpg)
 
@@ -124,16 +124,16 @@ print(MzA.dif(zMA))
 
 
 At3, Ax3, Ay3, Az3 = sp.symbols("At3 Ax3 Ay3 Az3")
-Aq3 = qt.QH([At3, Ax3, Ay3, Az3], qtype="a")
+Aq3 = qt.QH([At3, Ax3, Ay3, Az3], "ket")
 aj = qt.QHStates([Aq1, Aq2, Aq3]).diagonal(3)
 jj = qt.QHStates([qt.QH().q_1(), qt.QH().q_j(), qt.QH().q_j()])
-A = jj.product("ket", operator=aj)
-A.print_states("A", 1)
+A = aj.Euclidean_product(jj)
+A.print_state("A")
 
 
 # ![](images/lecture_3/c3_p55_q1.jpg)
 
-# Just make M bigger.
+# Make M bigger, $3^2$.
 
 # In[7]:
 
@@ -150,8 +150,8 @@ Mq7 = qt.QH([Mt7, Mx7, My7, Mz7], qtype="m₇")
 Mq8 = qt.QH([Mt8, Mx8, My8, Mz8], qtype="m₈")
 Mq9 = qt.QH([Mt9, Mx9, My9, Mz9], qtype="m₉")
 
-M = qt.QHStates([Mq1, Mq2, Mq3, Mq4, Mq5, Mq6, Mq7, Mq8, Mq9])
-M.print_states("M")
+M = qt.QHStates([Mq1, Mq2, Mq3, Mq4, Mq5, Mq6, Mq7, Mq8, Mq9], "op")
+M.print_state("M")
 
 
 # ![](images/lecture_3/c3_p55_q2.jpg)
@@ -161,8 +161,8 @@ M.print_states("M")
 # In[8]:
 
 
-MA = A.Euclidean_product("ket", operator=M)
-MA.print_states("MA", quiet=True)
+MA = M.product(A)
+MA.print_state("M|A>", quiet=True)
 
 
 # This simple result is crazy complex. Every term has 4 space-time dimensions. There are three state dimensions, so that makes 12 terms for the ket A. The operator M has nine state dimensions so has 36 spots to fill. All in all the ket $\beta$ is composed of the sum of $3 * 4 * 4 * 3 = 12 * 12 = 144$ terms. Quantum mechanics done over the field of complex numbers would have half this number, or 72, so it is still complicated.
@@ -174,15 +174,15 @@ MA.print_states("MA", quiet=True)
 # With quaternion series quantum mechanics, the accounting system changes, but the products remain the same. There are no matrices. Take the square matrix and stack them all in a line:
 # $$m_{11}\,m_{12}\,m_{13}\,m_{21}\,m_{22}\,m_{23}\,m_{31}\,m_{32}\,m_{33}$$
 # $$= (m_{1}\,m_{2}\,m_{3})(m_{4}\,m_{5}\,m_{6})(m_{7}\,m_{8}\,m_{9})$$
-# The quaternion series is being treated in the algebraic operations as three sets of three, just like matrix.
+# The quaternion series is being treated in the algebraic operations as three sets of three, just like a matrix.
 
 # ![](images/lecture_3/c3_p56_q2.jpg)
 
-# With quaternion series, there are two types of representations going on dealing separately with space-time dimensions and with state dimensions. Space-time information can be written in Euclidean coordinates, polar coordinates, spherical coordinates, etc. The state dimensions can be written with an endless variety of basis vectors. There certainly is nothing special about the 1jj basis vector used to express the ket A.
+# With quaternion series, there are two types of representations going on dealing separately with space-time dimensions and with state dimensions. Space-time information can be written in Euclidean coordinates, polar coordinates, spherical coordinates, etc. The state dimensions can be written with an endless variety of basis vectors. There certainly is nothing special about the 1jj basis vector used to express the ket $|A>$.
 
 # ![](images/lecture_3/c3_p57_q1.jpg)
 
-# We have a matching pair: an Eigen-value which is a diagonal quaternion series operator and the Eigen-ket. What is impressive about this pair is how simple it is compared to the general case (the one with 144 terms). The Eigen-ket can be whatever. As usual, it has 4 space-time dimensions, but can from one to infinite number of state dimensions. The Eigen-value will not change the "directon" of its Eigen-ket. I put "direction" in quotes because it is important to recall everything lives in space-time. The time part of space-time is not a direction. Much of the sport of quantum mechanics happens by characterizing the order found in these special pairs of Eigen-values and Eigen-kets in a sea of natural chaos. 
+# We have a matching pair: an Eigen-value which is a diagonal quaternion series operator and the Eigen-ket. What is impressive about this pair is how simple it is compared to the general case (the one with 144 terms). The Eigen-ket can be whatever. As usual, it has 4 space-time dimensions, but can have from one to an infinite number of state dimensions. The Eigen-value will not change the "direction" of its Eigen-ket. I put "direction" in quotes because it is important to recall everything lives in space-time. The time part of space-time is not a direction. Much of the sport of quantum mechanics happens by characterizing the order found in these special pairs of Eigen-values and Eigen-kets in a sea of natural chaos. 
 
 # ![](images/lecture_3/c3_p57_q2.jpg)
 
@@ -193,10 +193,10 @@ MA.print_states("MA", quiet=True)
 
 q_1 = qt.QH([1, 0, 0, 0])
 q_2 = qt.QH([2, 0, 0, 0])
-M12 = qt.QHStates([q_1, q_2, q_2, q_1])
+M12 = qt.QHStates([q_1, q_2, q_2, q_1], "op")
 k11 = qt.QHStates([q_1, q_1])
-M12k11 = k11.product("ket", operator=M12)
-M12k11.print_states("M12 k11, an eigen pair?: ")
+M12k11 = M12.product(k11)
+M12k11.print_state("M12 k11, an eigen pair?: ")
 
 
 # The matrix $M$ has an Eigen-value of $3$ and and Eigen-ket of $|1 1>$.
@@ -208,8 +208,8 @@ M12k11.print_states("M12 k11, an eigen pair?: ")
 
 q_n1 = qt.QH([-1, 0, 0, 0])
 k1n1 = qt.QHStates([q_1, q_n1])
-M12k1n1 = k1n1.product("ket", operator=M12)
-M12k11.print_states("M12 k1n1, an eigen pair?: ")
+M12k1n1 = M12.product(k1n1)
+M12k11.print_state("M12 k1n1, an eigen pair?: ")
 
 
 # Nice, same Eigen-value, different Eigen-ket.
@@ -221,8 +221,8 @@ M12k11.print_states("M12 k1n1, an eigen pair?: ")
 
 q_0 = qt.QH()
 k10 = qt.QHStates([q_1, q_0])
-M12k10 = k10.product("ket", operator=M12)
-M12k10.print_states("M12 k10, an eigen pair?: ")
+M12k10 = M12.product(k10)
+M12k10.print_state("M12 k10, an eigen pair?: ")
 
 
 # Just not the same. So k10 is not an Eigen-ket for the operator $M$. Most kets are not. Being an Eigen-ket for an operator is a rare thing.
@@ -233,21 +233,21 @@ M12k10.print_states("M12 k10, an eigen pair?: ")
 
 
 q_i = qt.QH([0, 1, 0, 0])
-Mn11 = qt.QHStates([q_0, q_n1, q_1, q_0])
+Mn11 = qt.QHStates([q_0, q_n1, q_1, q_0], "op")
 k1i = qt.QHStates([q_1, q_i])
-Mn11_k1i = k1i.product("ket", operator=Mn11)
-Mn11_k1i.print_states("Mn11 k1i, an eigen pair?: ")
+Mn11_k1i = Mn11.product(k1i)
+Mn11_k1i.print_state("Mn11 k1i, an eigen pair?: ")
 
 
-# What? This doesn't look like the first Eigen-value, Eigen-ket pair with repeated values. That "easy to spot" quality arose from the fact that both Eigen-values were real number.
+# What? This doesn't look like the first Eigen-value/Eigen-ket pair with repeated values. That "easy to spot" quality arose from the fact that both Eigen-values were real numbers.
 
 # In[13]:
 
 
 q_ni = qt.QH([0, -1, 0, 0])
 op_ni = qt.QHStates([q_ni])
-op_ni_k1i = k1i.product("ket", operator=op_ni)
-op_ni_k1i.print_states("op_ni_k1i eigen pair?: ")
+op_ni_k1i = op_ni.product(k1i)
+op_ni_k1i.print_state("op_ni_k1i eigen pair?: ")
 
 
 # This is the same result as above, so for operator $Mn11$, the Eigen-value is $-i$ for Eigen-ket $|1 i>$. This three-way relationship between operator, Eigen-value, and Eigen-ket is tricky, making the study of quantum mechanics every bit as hard as expected.
@@ -261,30 +261,32 @@ op_ni_k1i.print_states("op_ni_k1i eigen pair?: ")
 # In[14]:
 
 
-M.print_states("M", 1)
-M.dagger().print_states("M†")
+M.print_state("M")
+M.dagger().print_state("M†")
 
 
 # Three of the nine states "stay in place", those being n=1, n=5, and n=9. A little game can be made of spotting how the other states shuffle. Every term gets conjugated, no exceptions.
 
 # ![](images/lecture_3/c3_p61_q2.jpg)
 
-# I really am doing an experiment with these notebooks. I have already calculated $MA$, that was the expression with 144 terms cited earlier. Now I need to calculate AM†. Will the conjugated be equal?
+# I really am doing an experiment with these notebooks. I have already calculated $MA$, that was the expression with 144 terms cited earlier. Now I need to calculate AM†. Will the conjugate be equal?
 # 
-# Here's how I _know_ I am doing experiments: the first try did not work. The function Euclidean_product() is quite simple: all it does in the back end is take the conjugate of the bra vector (if there is one) and feeds it into the function product(). The function product() is not simple. It was written to handle all the varieties of bracket operations. It got a detail of how to multiply the operator by the bra vector incorrect. Now let's proceed.
+# Here's how I _know_ I am doing experiments: the first try did not work. The function Euclidean_product() is quite simple: all it does in the back end is take the conjugate of the bra vector (if there is one) and feeds it into the function product(). The function product() is not simple. It was written to handle all the varieties of bracket operations. It got a detail of how to multiply the operator by the bra vector incorrect. It took several days to debug that issue. Now we can proceed.
 
 # In[15]:
 
 
-AMd_conj = A.Euclidean_product("bra", operator=M.dagger()).conj()
-MA.print_states("MA", 1, quiet=True)
-AMd_conj.print_states("AM†*", 1, quiet=True)
-MA.dif(AMd_conj).print_states("M|A> - <A|M†", quiet=True)
+AMd_conj = A.bra().Euclidean_product(M.dagger()).conj()
+MA.print_state("MA", quiet=True)
+AMd_conj.print_state("AM†*", quiet=True)
+MA.dif(AMd_conj).print_state("M|A> - <A|M†", quiet=True)
 
 
 # Bingo, bingo. But _why_ is it true, particularly since quaternion series do not commute?
 # 
-# That change I needed to impose to calculate $<A|M$ correctly was to transpose the operator. The transpose of a transpose is the operator unchanged. There are no conjugates involved in $M|A>$. There are three for $<A|M†*$: one for the bra vector $<A|$, one for the operator $M$, and finally the product of these two. Then there are three parts to analyze in this product: the scalar terms, the even 3-vector terms, and the odd 3-vector terms. One scalar term gets no changes in sign what-so-ever. Three of the scalar terms flip signs twice, so no net change. The even 3-vector term is composed of a scalar and a 3-vector, so it flips signs once as a product, and once more with the final conjugate, so ends up unchanged. The odd 3-vector is the cross of two 3-vector terms, so the conjugates will change signs twice. There is a third sign change brought about by the change in the order of multiplication. The final conjugate levels the odd 3-vector unchanged. Since the scalar, even and odd 3-vectors are unchanged, the two are equal. It is fun to see how all the parts shift under these changes in a way the preserves the final result.
+# The debugging I needed to calculate $<A|M$ correctly was a transpose the operator $M$. The transpose of a transpose is the operator $M$ unchanged. There are no conjugates involved in $M|A>$. There are three for $<A|M†*$: one for the bra vector $<A|$, one for the operator $M$, and finally the product of these two. Then there are three parts to analyze in the product of bra $<A|$ and operator $M$: the scalar terms, the even 3-vector terms, and the odd 3-vector terms. One scalar term gets no changes in sign what-so-ever. Three of the scalar terms flip signs twice, so no net change. The even 3-vector term is composed of a scalar and a 3-vector, so it flips signs once as a product, and once more with the final conjugate, so ends up unchanged. The odd 3-vector is the cross of two 3-vector terms, so the conjugates will change signs twice. There is a third sign change brought about by the change in the order of multiplication. The final conjugate leaves the odd 3-vector unchanged. Since the scalar, even and odd 3-vectors are unchanged, the two are equal. It is fun to see how all the parts shift under these changes in a way the preserves the final result.
+
+# ## Hermitian Operators
 
 # ![](images/lecture_3/c3_p61_q3.jpg)
 
@@ -299,28 +301,32 @@ MA.dif(AMd_conj).print_states("M|A> - <A|M†", quiet=True)
 
 MD = M.dagger()
 MMD = M.dif(MD)
-MMD.print_states("Is M† + M?", quiet=True)
+MMD.print_state("What is M† + M?", quiet=True)
 
 
-# Notice how the diagonal terms **are** the same? That is kind of fascinating. The goal is to find observables where all those other terms drop out.
+# Notice how the real part of the diagonal terms **are** the same? That is kind of fascinating. The goal is to find observables where all those other terms drop out.
 
 # ![](images/lecture_3/c3_p63_q1.jpg)
 
-# The conjugate operator flips ths sign of the imaginaries. If $\lamda = \lamba^*$, that can only be the case if the imaginaries are zero. For quaternion series quantum mechanics, that means eigenvalues are time-ish quantities.
+# The conjugate operator flips ths sign of the imaginaries. If $ \lambda = \lambda^* $, that can only be the case if the imaginaries are zero. For quaternion series quantum mechanics, that means eigenvalues are time-ish quantities.
+
+# ## The Fundamental Theorem
 
 # ![](images/lecture_3/c3_p64_q1.jpg)
 
 # ![](images/lecture_3/c3_p64_q2.jpg)
 
-# Most of what goes on in quantum mechanics is fleshing out the details of this fundamental theorem. Recall the three players: a Hermitian series with $N^2$ state dimensions, an Eigen-ket of N state dimensions and N Eigen-values. As discussed earlier, all N Eigen-values are real-valued with all spatial terms equal to zero. 
+# Most of what goes on in quantum mechanics is fleshing out the details of this fundamental theorem. Recall the three players: a Hermitian operator with $n^2$ state dimensions, an Eigen-ket of $n$ state dimensions and $n$ Eigen-values which can be degenerate. As discussed earlier, all $n$ Eigen-values are real-valued with all spatial terms equal to zero. 
 
 # ![](images/lecture_3/c3_p64_q3.jpg)
 
 # ![](images/lecture_3/c3_p67_q1.jpg)
 
-# Making a basis quaternion series is trivial - just find the right number to normalize by and one is done with that part. It sounds like a bigger deal to be able to construct a collection of vectors that are all orthogonal. This turns out to be straight forward. It is discussed in the next section which covers the Gram-Schmidt procedure. Recall that a Hermitian operator is quite a special animal. All the Eigen-values are real-valued. One implication of this is that a real-value always necessarily commutes with any other quaternion. What does this mean for the corresponding Eigen-kets? They must be orthogonal to each other or else the Eigen-values could mix.
+# Normalizing a basis quaternion series is trivial - just find the right number to normalize by and one is done with that part. It sounds like a bigger deal to be able to construct a collection of vectors that are all orthogonal. This turns out to be straight forward. It is discussed in the next section which covers the Gram-Schmidt procedure. Recall that a Hermitian operator is quite a special animal. All the Eigen-values are real-valued. One implication of this is that a real-value always necessarily commutes with any other quaternion. What does this mean for the corresponding Eigen-kets? They must be orthogonal to each other or else the Eigen-values could mix.
 # 
-# The proper way to prove this is to start with one Eigen-value and create an normalized Eigen-ket basis. Then use the Gram-Schmidt procedure to get N-1 other basis quaternions.
+# The proper way to prove this is to start with one Eigen-value and create an normalized Eigen-ket basis. Then use the Gram-Schmidt procedure to get the other $n-1$ other basis quaternions.
+
+# ## The Gram-Schmidt Process to Create an Orthonormal Basis
 
 # ![](images/lecture_3/c3_p68_q1.jpg)
 
@@ -350,26 +356,26 @@ def orthonormalize(qh):
 qa, qb, qc = qt.QH([0, 1, 2, 3]), qt.QH([1, 1, 3, 2]), qt.QH([2, 1, -2, 3])
 qabc = qt.QHStates([qa, qb, qc])
 qabc_on = orthonormalize(qabc)
-qabc_on.print_states("qabc_orthonormalized", quiet=True)
+qabc_on.print_state("qabc_orthonormalized", quiet=True)
 
 
 # In[19]:
 
 
-qabc_on.norm_squared().print_states("square it up")
+qabc_on.norm_squared().print_state("square it up")
 
 
-# The orthonormalization process can just "always work" because it only involves forming a product, subtraction, and normalization, which will always be legal operations for quaternion series. 
+# The orthonormalization process will always work because it only involves forming a product, subtraction, and normalization, which will always be legal operations for quaternion series. 
 
 # ![](images/lecture_3/c3_p71_q1.jpg)
 
-# Energy, momentum in the x, y, and z directions, all have familiar examples in the classical world. Yet why are the measurements of quantum mechanics different? Quantum mechanics always, necessarily uses a spatial mirror as part of the accounting process. What this does is assure that for any quaternion series $A$, the value of $<A|A>$ will be zero only if $A$ is zero, otherwise it will be positive definite. When physicists do the work of describing thing with almost nothing, they need a math that handles almost nothing correctly. Nothing is a hard lower bound. Notice how zero is a hard lower bound for $<A|A>$  but __not__ $A^2$.
+# Energy, momentum in the x, y, and z directions, all have familiar examples in the classical world. Yet why are the measurements of quantum mechanics different? Quantum mechanics always, necessarily uses a spatial mirror as part of the accounting process. What this does is assure that for any quaternion series $A$, the value of $<A|A>$ will be zero only if $A$ is zero, otherwise it will be positive definite. When physicists do the work of describing things with almost nothing, they need a math that handles almost nothing correctly. Nothing is a hard lower bound. Notice how zero is a hard lower bound for $<A|A>$  but __not__ $A^2$.
 # 
 # A quaternion series that has an orthonormal basis means just that: state dimensions are orthogonal, and the sum of all states adds up to unity. 
 
 # ![](images/lecture_3/c3_p72_q1.jpg)
 
-# In lecture 2, a way was worked out to represent $|u>$, $|d>$, $|L>$, and $|r>$. It is repeated here, but notice two things: how $|L>$ and $|r>$ come from  $|u>$ and $|d>$, and there are an arbitrary number of other ways this could have been done - there is no "correct" way to do this.
+# In lecture 2, a way was worked out to represent $|u>$, $|d>$, $|L>$, and $|r>$. It is repeated here. Notice a few things: how $|L>$ and $|r>$ come from  $|u>$ and $|d>$, and there are an arbitrary number of other ways this could have been done - there is no "correct" way to do this. The kets all involve real-values which a time-ish, and don't use any of the three spatial dimensions.
 
 # In[20]:
 
@@ -381,17 +387,17 @@ d = qt.QHStates([q_0, q_1])
 
 sqrt_2op = qt.QHStates([qt.QH([sp.sqrt(1/2), 0, 0, 0])])
 
-u2 = u.Euclidean_product('ket', operator=sqrt_2op)
-d2 = d.Euclidean_product('ket', operator=sqrt_2op)
+u2 = sqrt_2op.Euclidean_product(u)
+d2 = sqrt_2op.Euclidean_product(d)
 
 r = u2.add(d2)
 L = u2.dif(d2)
 
-u.print_states("u", 1)
-d.print_states("d", 1)
+u.print_state("|u>")
+d.print_state("|d>")
 
-r.print_states("r", 1)
-L.print_states("L")
+r.print_state("|r>")
+L.print_state("|L>")
 
 
 # ![](images/lecture_3/c3_p72_q2.jpg)
@@ -401,8 +407,8 @@ L.print_states("L")
 # In[21]:
 
 
-u.Euclidean_product("bra", ket=d).print_states("<u|d> - orthonormal", 1)
-u.Euclidean_product("bra", ket=r).print_states("<u|r> - not orthonormal")
+u.bra().Euclidean_product(d).print_state("<u|d> - orthonormal", 1)
+u.bra().Euclidean_product(r).print_state("<u|r> - not orthonormal")
 
 
 # ![](images/lecture_3/c3_p73_q1.jpg)
@@ -411,29 +417,29 @@ u.Euclidean_product("bra", ket=r).print_states("<u|r> - not orthonormal")
 
 # ![](images/lecture_3/c3_p73_q2.jpg)
 
-# In fact, the Euclidean product of two quaternion series is just another quaternion series. Getting a real number out of the system is a special thing. If the only in the above expression were to interchange an $A4$ with a $\lambda_i$, then it breaks: 
+# In fact, the Euclidean product of two quaternion series is just another quaternion series. Getting a real number out of the system is a special thing. If the only change in the above expression were to interchange an $A$ with a $\lambda_i$, then it breaks: 
 # $$ <A|\lambda_i><A|\lambda_i> \ne P(\lambda_i)$$ 
 # Instead this is the square of a probability amplitude. Note, as the square, the first term will be invariant under a Lorentz transformation, and the other three will be Lorentz variant. Small changes have big consequences.
 
 # ![](images/lecture_3/c3_p74_q1.jpg)
 
-# This is "fingernails on the blackboard" writing to me. Nature works with 3D space-time. A space without a time I believe is technical gibberish. It is impressively common gibberish, for any measure is space happened at a time, and there never was an exception to than, nor will there ever be an exception to the necessity of time for spatial measurements. Three-vectors are poor, numbers are rich beyond measure.
+# This is "fingernails on the blackboard" writing to for my ears. Nature works with 3D space-time. A space without a time I believe is technical gibberish. It is impressively common gibberish, for any measure is space happened at a time, and there never was an exception to than, nor will there ever be an exception to the necessity of time for spatial measurements. Three-vectors are poor, numbers are rich beyond measure.
 
 # ![](images/lecture_3/c3_p75_q1.jpg)
 
-# This sounds to my ear like an admission that things are muddled between space-time dimensions and state dimensions. These two quality are orthogonal to each other. Everything we can do is in 3D space-time, no exceptions ever. The number of state dimensions can range from one to infinite. The number depends on what exactly is being studied and the details of that study. In the case of spin, there are only two state dimensions. How we decide to study the two  state dimensions in 3D space-time is up to us, and yes, we have many choices there. Once a choice for how the measurement is to be made in 3D space-time, then we are studying a two state dimension system.
+# This sounds to my ear like an admission that things are muddled between space-time dimensions and state dimensions. These two qualities are orthogonal to each other. Everything we can do is in 3D space-time, no exceptions ever. The number of state dimensions can range from one to infinite. The number depends on what exactly is being studied and the details of that study. In the case of spin, there are only two state dimensions. How we decide to study the two  state dimensions in 3D space-time is up to us, and yes, we have many choices there. Once a choice for how the measurement is to be made in 3D space-time, then we are studying a two state dimension system.
 
 # ![](images/lecture_3/c3_p76_q1.jpg)
 
-# This is a math problem. Principle 3 has already been demonstrated by direct calculation. The only work is to find an operator $\sigma_z$ that has an Eigenvalue of +1 for ket $|u>$ and -1 for ket $|d>$. Since those kets are both real, it is about the easy operator to guess.
+# This is a math problem. Principle 3 has already been demonstrated by direct calculation. The only work is to find an operator $\sigma_z$ that has an Eigenvalue of +1 for ket $|u>$ and -1 for ket $|d>$. Since those kets are both real, it is about the easiest operator to guess.
 
 # In[22]:
 
 
-σz = qt.QHStates([q_1, q_0, q_0, q_n1])
-σz.print_states("σz operator", 1)
-u.product("ket", operator=σz).print_states("σz|u>", 1)
-d.product("ket", operator=σz).print_states("σz|d>")
+σz = qt.QHStates([q_1, q_0, q_0, q_n1], "op")
+σz.print_state("σz operator")
+σz.product(u).print_state("σz|u>", 1)
+σz.product(d).print_state("σz|d>")
 
 
 # Bingo, bingo.
@@ -441,7 +447,7 @@ d.product("ket", operator=σz).print_states("σz|d>")
 # ![](images/lecture_3/c3_p76_q2.jpg)
 # ![](images/lecture_3/c3_p77_q1.jpg)
 
-# Oops, this was just done. But why should the result be unique? Quaternions are numbers. If two are multiplied together like the operator sigma and the kets u and d, then the result is unique. This is a defining property of number and of number series.
+# Oops, this was just done. But why should the result be unique? Quaternions are numbers. If two are multiplied together like the operator sigma and the kets $|u>$ and $|d>$, then the result is unique. This is a defining property of numbers and of number series.
 
 # ![](images/lecture_3/c3_p78_q1.jpg)
 
@@ -452,28 +458,28 @@ d.product("ket", operator=σz).print_states("σz|d>")
 # In[23]:
 
 
-σx = qt.QHStates([q_0, q_1, q_1, q_0])
-σx.print_states("σx operator", 1)
-r.product("ket", operator=σx).print_states("σx|r>", 1)
-L.product("ket", operator=σx).print_states("σx|L>")
+σx = qt.QHStates([q_0, q_1, q_1, q_0], "op")
+σx.print_state("σx operator")
+σx.product(r).print_state("σx|r>", 1)
+σx.product(L).print_state("σx|L>")
 
 
 # ![](images/lecture_3/c3_p80_q1.jpg)
 
-# Detail was not provided for this one in the book because the factors of $i$ are just going to make the case look more confusing.
+# Details for this calculation was not provided in the book because the factors of $i$ make the case confusing.
 
 # In[24]:
 
 
 one_root_two = sp.sqrt(1/2)
-q_2 = qt.QHStates( [ qt.QH([sp.sqrt(1/2), 0, 0, 0]) ] )
+q_2 = qt.QHStates([qt.QH([sp.sqrt(1/2), 0, 0, 0])])
 q_2i = qt.QHStates([qt.QH([0, sp.sqrt(1/2), 0, 0])])
 
-i = u.product("ket", operator=q_2).add(d.product("ket", operator=q_2i))
-o = u.product("ket", operator=q_2).dif(d.product("ket", operator=q_2i))
+i = q_2i.product(u).add(q_2i.product(d))
+o = q_2i.product(u).dif(q_2i.product(d))
 
-i.print_states("i", 1)
-o.print_states("o", 1)
+i.print_state("i")
+o.print_state("o")
 
 
 # Show they are orthonormal.
@@ -481,9 +487,9 @@ o.print_states("o", 1)
 # In[25]:
 
 
-i.Euclidean_product("bra", ket=i).print_states("<i|i>", 1)
-o.Euclidean_product("bra", ket=o).print_states("<o|o>", 1)
-i.Euclidean_product("bra", ket=o).print_states("<i|o>")
+i.norm_squared().print_state("<i|i>")
+o.norm_squared().print_state("<o|o>")
+i.bra().Euclidean_product(o).print_state("<i|o>")
 
 
 # Define σy and put it to work.
@@ -491,13 +497,13 @@ i.Euclidean_product("bra", ket=o).print_states("<i|o>")
 # In[26]:
 
 
-σy = qt.QHStates([q_0, q_ni, q_i, q_0])
-σy.print_states("σy operator", 1)
-i.product("ket", operator=σy).print_states("σy|i>", 1)
-o.product("ket", operator=σx).print_states("σy|o>")
+σy = qt.QHStates([q_0, q_ni, q_i, q_0], "op")
+σy.print_state("σy operator")
+σy.product(i).print_state("σy|i>")
+σy.product(o).print_state("σy|o>")
 
 
-# I will need to put some effort into this to make the result look more "obvious". The problem will only become more acute as the terms get more complicated.
+# I will need to put some effort into this to make the result look more "obvious". The problem will only become more acute as operators get more longer.
 
 # ![](images/lecture_3/c3_p80_p3.jpg)
 
@@ -505,11 +511,11 @@ o.product("ket", operator=σx).print_states("σy|o>")
 
 # ![](images/lecture_3/c3_p80_q2.jpg)
 
-# The Pauli matrices plus the identity matrix does not make a representation of the quaternions. An essential aspect of quaternions is they form a division algebra. That is not the case for the Pauli matrices with an identity. There is another factor of $i$ that makes much of the math simpler to do, but also breaks the reversibility of multiplication. Why should anyone care if multiplication is always reversible? Please read the first chapter of the first book of this series which explained why physical processes are reversible. Make the physical abstract, and the same should apply to to mathematical processes used to describe the physical ones.
+# The Pauli matrices plus the identity matrix does not make a representation of the quaternions. An essential aspect of quaternions is they form a division algebra. That is not the case for the Pauli matrices with an identity. There is another factor of $i$ that makes much of the math simpler to do, but also breaks the reversibility of multiplication. Why should anyone care if multiplication is always reversible? Please read the first chapter of the first book of this series which explained why physical processes are reversible. Make the physical abstract, and the same should apply to mathematical processes used to describe the physical ones.
 
 # ![](images/lecture_3/c3_p83_q1.jpg)
 
-# I do not feel this way. Spin is a system that can be completely described by two quantum variables. There are an arbitrary number of different ways one can do that exercise using an n=2 quaternion series. In this chapter, we came up with three, but could have done thirteen. With the choice of three representations, we stabled on the labels "x", "y", and "z". Spatial dimensions have relationships with each other, namely the cross product. One can take advantage of the orthonormal relationship between x, y, and z to do the same for the three sigmas.
+# I do not feel this way. Spin is a system that can be completely described by two quantum states. There are an arbitrary number of different ways one can do that exercise using an n=2 quaternion series. In this chapter, we came up with three, but could have done thirteen. With the choice of three representations, we choose on the labels "x", "y", and "z". Spatial dimensions have relationships with each other, namely the cross product. One can take advantage of the orthonormal relationship between x, y, and z to do the same for the three sigmas.
 # 
 # I never use 3-vectors, so it is not my cup of tea.
 
@@ -517,7 +523,7 @@ o.product("ket", operator=σx).print_states("σy|o>")
 
 # ![](images/lecture_3/c3_p84_q1.jpg)
 
-#  I have tried to construct a general as possible operator.
+#  I have tried to construct a general as possible operator for spin.
 
 # In[27]:
 
@@ -548,14 +554,14 @@ def sigma(kind, theta=None, phi=None):
 
         # Create all possibilities.
         sigmas = {}
-        sigmas['x'] = qt.QHStates([q0, x_factor, x_factor, q0]).normalize()
-        sigmas['y'] = qt.QHStates([q0, y_factor, y_factor.flip_signs(), q0]).normalize() 
-        sigmas['z'] = qt.QHStates([z_factor, q0, q0, z_factor.flip_signs()]).normalize()
+        sigmas['x'] = qt.QHStates([q0, x_factor, x_factor, q0], "op").normalize()
+        sigmas['y'] = qt.QHStates([q0, y_factor, y_factor.flip_signs(), q0], "op").normalize() 
+        sigmas['z'] = qt.QHStates([z_factor, q0, q0, z_factor.flip_signs()], "op").normalize()
   
         sigmas['xy'] = sigmas['x'].add(sigmas['y']).normalize()
         sigmas['xz'] = sigmas['x'].add(sigmas['z']).normalize()
         
-        sigmas['xyz'] = sigmas['xy'].add(sigmas['z']).normalize()
+        sigmas['xyz'] = sigmas['x'].add(sigmas['y']).add(sigmas['z']).normalize()
 
         if kind not in sigmas:
             print("Oops, I only know about x, y, z, and their combinations.")
@@ -566,24 +572,75 @@ def sigma(kind, theta=None, phi=None):
 
 # See if the function creates the three sigmas discussed so far:
 
-# In[37]:
+# In[28]:
 
 
-sigma('x').print_states('σx', 1)
-sigma('y').print_states('σy', 1)
-sigma('z').print_states('σz', 1)
-sigma('z').norm_squared().print_states("σz's norm", 1)
+sigma('x').print_state('σx')
+sigma('y').print_state('σy')
+sigma('z').print_state('σz')
+sigma('z').norm_squared().print_state("σz's norm")
 
 
-# In[30]:
+# In[29]:
 
 
-sigma('xy').norm_squared().print_states('σxy', 1)
-sigma('xy').normalize().norm_squared().print_states('σxy', 1)
+sigma('xy').norm_squared().print_state('σxy')
+sigma('xy').normalize().norm_squared().print_state('σxy')
 
 
 # It is important not to lose sight about what is going on here. There is a nice picture of a sphere at the end of the lecture:
 
 # ![](images/lecture_3/c3_p89_q1.jpg)
 
-# It is easy of a mind to take the easy road and think spin has something to do with this sphere and spherical coordinates, or x, y, and z for that matter. Spin has two states, that is all it about. Deciding which one to use for $\sigma_x$, $\sigma_y$, and $\sigma_z$ was arbitrary. In fact, the representation for $\sigma_x$ and $\sigma_z$ only involved time-like numbers. Oddly enough it was $\sigma_y$ that involed $x$. One could have easily used $j$ which is "y-like", but that deeply does not matter. Everyone does this calculation since it makes the two states of spin feel like they are part of space-time. With quaternion series quantum mechanics, that need is less needed since space-time is always there.
+# It is easy for a mind to take the easy road and think spin has something to do with this sphere and spherical coordinates, or x, y, and z for that matter. Spin has two states, that is all it is about. Deciding which one to use for $\sigma_x$, $\sigma_y$, and $\sigma_z$ was arbitrary. In fact, the representation for $\sigma_x$ and $\sigma_z$ only involved time-ish numbers. Oddly enough it was $\sigma_y$ that involved $x$. One could have easily used $j$ which is "y-ish", but that deeply does not matter. Everyone does this calculation since it makes the two states of spin feel like they are part of space-time. With quaternion series quantum mechanics, that need is less needed since space-time is always there.
+
+# ## Epilog: So What Is Spin?
+
+# As I have already argued, spin is not about the three sphere. The three sigmas are about covering all the possibilities. Instead, by looking at the three representations under study (out of an infinite number of possibilities), what spin operators do is rearrange two  state dimensions. The three spin operators ($\sigma_x$, $\sigma_y$, and $\sigma_z$) as a team is cover all possible variations (a covering set). Let's look at what each one does, one at a time, starting with $\sigma_x$. 
+
+# In[30]:
+
+
+A = qt.QHStates([Aq1, Aq2])
+A.print_state("A", quiet=True)
+sigma('x').print_state('σx', quiet=True)
+σxA = sigma('x').product(A)
+σxA.print_state("σx|A>", quiet=True)
+
+
+# All the first spin operator $\sigma_x$ does is take the first state and put it in the second states place while doing the reverse for the second state. The third operator $\sigma_z$ is also darn simple.
+
+# In[31]:
+
+
+σzA = sigma('z').product(A)
+σzA.print_state("σz|A>", quiet=True)
+
+
+# Both states stay in place. The difference is that the second term flips signs. It is easy enough to imagine a different representation where it was the first term that flips signs. Just one more to go.
+
+# In[32]:
+
+
+σyA = sigma('y').product(A)
+σyA.print_state("σz|A>", quiet=True)
+
+
+# Notice that the states "stayed together" in the sense that the first state space is made up of only the 2's, while the second state space has 1's. This time the t and x numbers switched spots. If this pattern is generally true, then one can expect a mixing between the positions, but not the two states per se. Time to do an experiment.
+
+# In[33]:
+
+
+σxyA = sigma('xy', .1, .2).product(A)
+σxyA.print_state("σxy|A>", 1, quiet=True)
+σxzA = sigma('xz', .1, .2).Euclidean_product(A)
+σxzA.print_state("σxz|A>", 1, quiet=True)
+σxyzA = sigma('xyz', .1, .2).Euclidean_product(A)
+σxyzA.print_state("σxyz|A>", quiet=True)
+
+
+# The hypothesis was definitely **wrong**. I consider that a good thing. It means the ideas I am playing with are precise enough to be wrong. Too much work is just vague. The two states can mingle. I think the implication is that the two states can mingle in any possible way. I don't know how easy it will be to figure out the combination of sigmas will be needed to get to a certain state.
+# 
+# Note that this analysis of spin is not dependent on the quaternion series approach to quantum mechanics. One has to look to see what each representation of the spin operator does to a two dimensional state space. That is not complicated, but I know that did not appear in QMTTM, and I don't recall seeing that done in other books on quantum mechanics. What is discussed is the operator $\sigma_n$ as the combination of three orthonormal operators. Yet the implications are again not discussed, namely that information contained in the two states can be shuffled around.
+# 
+# At this point, I don't feel comfortable with what a two state dimension system _is_. The spin operator mixes it around in any and all possible ways, but until I have a solid feeling about the two state dimensional system, I will not be able to answer the question posed in this epilogue, what is spin? Yet I do feel like my view on the topic is different from the standard approach in a good way because it is focused on what spin the operator does.

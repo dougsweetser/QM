@@ -7,7 +7,7 @@
 
 # With lecture 1 in the books, this one should be pretty simple and direct. The working hypothesis is that there is an equivalence relation between the way quantum mechanics is represented using a complex-valued vector space and quaternion series. Every calculation done the standard way in lecture 1 was done with quaternion series for the companion iPython notebook. Continue that process with Lecture 2 which fortunately is shorter. It is also simpler, focusing on spin, something that can be described as best we can do with two quantum states. Set up our math tools.
 
-# In[2]:
+# In[1]:
 
 
 get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as np\nimport sympy as sp\nimport matplotlib.pyplot as plt\n\n# To get equations the look like, well, equations, use the following.\nfrom sympy.interactive import printing\nprinting.init_printing(use_latex=True)\nfrom IPython.display import display\n\n# Tools for manipulating quaternions.\nimport Q_tools as qt;\n\nfrom IPython.core.display import display, HTML, Math, Latex\ndisplay(HTML("<style>.container { width:100% !important; }</style>"))')
@@ -33,7 +33,7 @@ get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as
 
 # ![AxB.png](images/lecture_2/AxB.png)
 
-# In[3]:
+# In[17]:
 
 
 q_0, q_1, q_i, q_j, q_k = qt.QH().q_0(), qt.QH().q_1(), qt.QH().q_i(), qt.QH().q_j(), qt.QH().q_k()
@@ -41,23 +41,23 @@ q_0, q_1, q_i, q_j, q_k = qt.QH().q_0(), qt.QH().q_1(), qt.QH().q_i(), qt.QH().q
 u = qt.QHStates([q_1, q_0])
 d = qt.QHStates([q_0, q_1])
 
-u.print_states("u", True)
-d.print_states("d")
+u.print_state("|u>")
+d.print_state("|d>")
 
 
 # ![](images/lecture_2/lecture_2_p_38_2.50.jpg)
 
 # Construct a general A, not setting any values.
 
-# In[4]:
+# In[16]:
 
 
 At1, Ax1, Ay1, Az1 = sp.symbols("At1 Ax1 Ay1 Az1")
 At2, Ax2, Ay2, Az2 = sp.symbols("At2 Ax2 Ay2 Az2")
-Aq2 = qt.QH([At2, Ax2, Ay2, Az2], qtype="a₁")
+Aq1 = qt.QH([At1, Ax1, Ay1, Az1], qtype="a₁")
 Aq2 = qt.QH([At2, Ax2, Ay2, Az2], qtype="a₂")
-A = qt.QHStates([Aq2, Aq2])
-A.print_states("A")
+A = qt.QHStates([Aq1, Aq2])
+A.print_state("|A>")
 
 
 # Calculation the components.
@@ -65,10 +65,10 @@ A.print_states("A")
 # In[4]:
 
 
-uA = u.Euclidean_product("bra", ket=A)
-dA = d.Euclidean_product("bra", ket=A)
-uA.print_states("αu = <u|A>",1)
-dA.print_states("αd = <d|A>")
+uA = u.bra().Euclidean_product(A)
+uA.print_state("<u|A>")
+dA = d.bra().Euclidean_product(A)
+dA.print_state("<d|A>")
 
 
 # That was easy. As different basis vectors are constructed, the 8 values that go into $A$ will shift around.
@@ -82,10 +82,8 @@ dA.print_states("αd = <d|A>")
 # In[5]:
 
 
-uA_norm_sq = uA.Euclidean_product("bra", ket=uA)
-dA_norm_sq = dA.Euclidean_product("bra", ket=dA)
-uA_norm_sq.print_states("|αu|²", 1)
-dA_norm_sq.print_states("|αd|²")
+uA.norm_squared().print_state("|αu|²")
+dA.norm_squared().print_state("|αd|²")
 
 
 # Everything evaluates to the expected positive real value. The up probability of spin is all from the first quaternion, while the down probability is all from the second quaternion. Quite clean and simple.
@@ -94,11 +92,11 @@ dA_norm_sq.print_states("|αd|²")
 
 # For this representation, it is obvious so I will do just one.
 
-# In[6]:
+# In[9]:
 
 
-ud = u.Euclidean_product("bra", ket=d)
-ud.print_states("<u|d>")
+ud = u.bra().Euclidean_product(d)
+ud.print_state("<u|d>")
 
 
 # ![](images/lecture_2/lecture_2_p_40_1.50.jpg)
@@ -109,21 +107,17 @@ ud.print_states("<u|d>")
 
 # Normalization is a simple enough trick to do.
 
-# In[7]:
+# In[10]:
 
 
 An = A.normalize()
-An.print_states("A, normalized", 1)
-Anp = An.Euclidean_product("bra", ket=An)
-Anp.print_states("<An|An>")
-print("simplified t, n=1: ", sp.simplify(Anp.qs[0].t))
-print("simplified x, n=1: ", sp.simplify(Anp.qs[0].x))
-print("simplified y, n=1: ", sp.simplify(Anp.qs[0].y))
-print("simplified z, n=1: ", sp.simplify(Anp.qs[0].z))
-print("simplified t, n=2: ", sp.simplify(Anp.qs[1].t))
-print("simplified x, n=2: ", sp.simplify(Anp.qs[1].x))
-print("simplified y, n=2: ", sp.simplify(Anp.qs[1].y))
-print("simplified z, n=2: ", sp.simplify(Anp.qs[1].z))
+An.print_state("A, normalized")
+Anp = An.norm_squared()
+Anp.print_state("<An|An>")
+print("simplified t: ", sp.simplify(Anp.qs[0].t))
+print("simplified x: ", sp.simplify(Anp.qs[0].x))
+print("simplified y: ", sp.simplify(Anp.qs[0].y))
+print("simplified z: ", sp.simplify(Anp.qs[0].z))
 
 
 # These expressions look crazy complex, but it simplifies down to two factors of a half whose sum is unity.
@@ -132,19 +126,19 @@ print("simplified z, n=2: ", sp.simplify(Anp.qs[1].z))
 
 # Define $|r>$ and $|L>$ using $|u>$ and $|d>$.
 
-# In[8]:
+# In[15]:
 
 
-sqrt_2op = qt.QHStates([qt.QH([sp.sqrt(1/2), 0, 0, 0])])
+sqrt_2op = qt.QHStates([qt.QH([sp.sqrt(1/2), 0, 0, 0])], qs_type="op")
 
-u2 = u.Euclidean_product('ket', operator=sqrt_2op)
-d2 = d.Euclidean_product('ket', operator=sqrt_2op)
+u2 = sqrt_2op.product(u)
+d2 = sqrt_2op.product(d)
 
 r = u2.add(d2)
 L = u2.dif(d2)
 
-r.print_states("r", True)
-L.print_states("L")
+r.print_state("|r>")
+L.print_state("|L>")
 
 
 # One thing to notices is how complicated the qtype became. For the up and down states, it was either zero or one.  Why is there a sum of four terms? Notices that three of the four terms are zeros. To multiply a quaternion series with two state dimensions by the one over the square root of two takes a diagonal quaternion series with four state dimensions. That requirement is effectively recorded in the qtype.
@@ -157,24 +151,24 @@ L.print_states("L")
 
 # Just do it.
 
-# In[9]:
+# In[12]:
 
 
-r.Euclidean_product('bra', ket=r).print_states("<r|r>", True)
-L.Euclidean_product('bra', ket=L).print_states("<L|L>", True)
-r.Euclidean_product('bra', ket=L).print_states("<r|L>")
+r.norm_squared().print_state("<r|r>")
+L.norm_squared().print_state("<L|L>")
+r.bra().Euclidean_product(L).print_state("<r|L>")
 
 
 # Just for fun, calculate the probability amplitudes $<A|r>$ and $<A|L>$ to see how this basis mixes around the information in $A$ without destroying it.
 
-# In[10]:
+# In[13]:
 
 
-Ar = A.Euclidean_product("bra", ket=r)
-Ar.print_states("<A|r>", 1)
+Ar = A.bra().Euclidean_product(r)
+Ar.print_state("<A|r>", 1)
 
-AL = A.Euclidean_product("bra", ket=L)
-AL.print_states("<A|L>", 1)
+AL = A.bra().Euclidean_product(L)
+AL.print_state("<A|L>", 1)
 
 
 # In the up and down representation of quaternion states, one row was all zeroes, nice and simple. Now every seat in the hockey arena is filled. The first element in both series are the same. The second terms all differ by a sign although the magnitudes are the same.
@@ -191,78 +185,78 @@ AL.print_states("<A|L>", 1)
 
 # This is not so bad. Let's build this, then see of all the conditions "just work".
 
-# In[11]:
+# In[14]:
 
 
 one_root_two = sp.sqrt(1/2)
 q_2 = qt.QHStates( [ qt.QH([sp.sqrt(1/2), 0, 0, 0]) ] )
 q_2i = qt.QHStates([qt.QH([0, sp.sqrt(1/2), 0, 0])])
 
-i = u.product("ket", operator=q_2).add(d.product("ket", operator=q_2i))
-o = u.product("ket", operator=q_2).dif(d.product("ket", operator=q_2i))
+i = q_2.product(u).add(q_2i.product(d))
+o = q_2.product(u).dif(q_2i.product(d))
 
-i.print_states("i", 1)
-o.print_states("o", 1)
+i.print_state("|i>")
+o.print_state("|o>")
 
 
 # First check the normal and orthogonal properties.
 
-# In[12]:
+# In[18]:
 
 
-i.Euclidean_product('bra', ket=i).print_states("<i|i>", 1)
-o.Euclidean_product('bra', ket=o).print_states("<o|o>", 1)
-i.Euclidean_product('bra', ket=o).print_states("<i|o>")
+i.norm_squared().print_state("<i|i>")
+o.norm_squared().print_state("<o|o>")
+i.bra().Euclidean_product(o).print_state("<i|o>")
 
 
 # Great, these two are orthonormal quaternion series. Now to see how they relate to the other orthonomal series.
 
-# In[13]:
+# In[19]:
 
 
 print("Equation 2.8\n")
 
-ou = o.Euclidean_product('bra', ket=u)
-uo = u.Euclidean_product('bra', ket=o)
-ouuo = ou.product('bra', ket=uo)
-ouuo.print_states("<o|u><u|o>", 1)
-od = o.Euclidean_product('bra', ket=d)
-do = d.Euclidean_product('bra', ket=o)
-oddo = od.product('bra', ket=do)
-oddo.print_states("<o|d><d|o>", 1)
-iu = i.Euclidean_product('bra', ket=u)
-ui = u.Euclidean_product('bra', ket=i)
-iuui = iu.product('bra', ket=ui)
-iuui.print_states("<i|d><d|i>", 1)
-id = i.Euclidean_product('bra', ket=d)
-di = d.Euclidean_product('bra', ket=i)
-iddi = id.product('bra', ket=di)
-iddi.print_states("<i|d><d|i>")
+ou = o.bra().Euclidean_product(u)
+uo = u.bra().Euclidean_product(o)
+ouuo = ou.product(uo)
+ouuo.print_state("<o|u><u|o>")
+od = o.bra().Euclidean_product(d)
+do = d.bra().Euclidean_product(o)
+oddo = od.product(do)
+oddo.print_state("<o|d><d|o>")
+iu = i.bra().Euclidean_product(u)
+ui = u.bra().Euclidean_product(i)
+iuui = iu.product(ui)
+iuui.print_state("<i|d><d|i>")
+id = i.bra().Euclidean_product(d)
+di = d.bra().Euclidean_product(i)
+iddi = id.product(di)
+iddi.print_state("<i|d><d|i>")
 
 
 # Notice how both a Euclidean product and product are used in the calculation. The amplitudes as quaternion series can be multiplied together to get the correct final result. When I first did this calculation, one of the four was 0.3535, not 0.5. There was a typo in expression. Once correct, four down four to go.
 
-# In[14]:
+# In[20]:
 
 
 print("Equation 2.9\n")
 
-Or = o.Euclidean_product('bra', ket=r)
-ro = r.Euclidean_product('bra', ket=o)
-orro = Or.product('bra', ket=ro)
-orro.print_states("<o|r><r|o>", 1)
-oL = o.Euclidean_product('bra', ket=L)
-Lo = L.Euclidean_product('bra', ket=o)
-oLLo = oL.product('bra', ket=Lo)
-oLLo.print_states("<o|L><L|o>", 1)
-ir = i.Euclidean_product('bra', ket=r)
-ri = r.Euclidean_product('bra', ket=i)
-irri = ir.product('bra', ket=ri)
-irri.print_states("<i|r><r|i>", 1)
-iL = i.Euclidean_product('bra', ket=L)
-Li = L.Euclidean_product('bra', ket=i)
-iLLi = iL.product('bra', ket=Li)
-iLLi.print_states("<i|L><L|i>")
+Or = o.bra().Euclidean_product(r)
+ro = r.bra().Euclidean_product(o)
+orro = Or.product(ro)
+orro.print_state("<o|r><r|o>")
+oL = o.bra().Euclidean_product(L)
+Lo = L.bra().Euclidean_product(o)
+oLLo = oL.product(Lo)
+oLLo.print_state("<o|L><L|o>")
+ir = i.bra().Euclidean_product(r)
+ri = r.bra().Euclidean_product(i)
+irri = ir.product(ri)
+irri.print_state("<i|r><r|i>")
+iL = i.bra().Euclidean_product(L)
+Li = L.bra().Euclidean_product(i)
+iLLi = iL.product(Li)
+iLLi.print_state("<i|L><L|i>")
 
 
 # ![](images/lecture_2/lecture_2_p_44_2.50.jpg)
@@ -275,7 +269,7 @@ iLLi.print_states("<i|L><L|i>")
 
 # Time to get abstract, the wheelhouse of algebra. First define the symbols needed for the four unknown components.
 
-# In[15]:
+# In[21]:
 
 
 αt, αx, αy, αz = sp.symbols("αt αx αy αz")
@@ -285,134 +279,134 @@ iLLi.print_states("<i|L><L|i>")
 
 αq = qt.QH([αt, αx, αy, αz])
 αs = qt.QHStates([αq])
-αs.print_states("α component", 1)
+αs.print_state("α component")
 
 βq = qt.QH([βt, βx, βy, βz])
 βs = qt.QHStates([βq])
-βs.print_states("β component", 1)
+βs.print_state("β component")
 
 γq = qt.QH([γt, γx, γy, γz])
 γs = qt.QHStates([γq])
-γs.print_states("γ component", 1)
+γs.print_state("γ component")
 
 δq = qt.QH([δt, δx, δy, δz])
 δs = qt.QHStates([δq])
-δs.print_states("δ component")
+δs.print_state("δ component")
 
 
 # Define the kets $|i>$ and $|o>$.
 
-# In[16]:
+# In[27]:
 
 
-iαβ = u.product("bra", operator=αs).add(d.product("ket", operator=βs))
-iαβ.print_states("iαβ", 1)
+iαβ = αs.product(u).add(βs.product(d))
+iαβ.print_state("iαβ")
 
-oγδ = u.product("bra", operator=γs).add(d.product("ket", operator=δs))
-oγδ.print_states("oγδ")
+oγδ = γs.product(u).add(δs.product(d))
+oγδ.print_state("oγδ")
 
 
 # Notice we can extract the component alpha from $|i>$ by multiplying it by the bra $<u|$ because that bra is orthonormal to $<d|$. Beta, gamma, and delta components can be extracted the same way.
 
-# In[17]:
+# In[28]:
 
 
-alpha = u.Euclidean_product("bra", ket=iαβ)
-alpha.print_states("alpha", 1)
+alpha = u.bra().Euclidean_product(iαβ)
+alpha.print_state("alpha")
 
-beta = d.Euclidean_product("bra", ket=iαβ)
-beta.print_states("betaa", 1)
+beta = d.bra().Euclidean_product(iαβ)
+beta.print_state("beta")
 
-gamma = u.Euclidean_product("bra", ket=oγδ)
-gamma.print_states("gamma", 1)
+gamma = u.bra().Euclidean_product(oγδ)
+gamma.print_state("gamma")
 
-delta = d.Euclidean_product("bra", ket=oγδ)
-delta.print_states("delta")
+delta = d.bra().Euclidean_product(oγδ)
+delta.print_state("delta")
 
 
 # With the four components precisely defined, we can start forming the products asked for in Exercise 2.3: a):
 
-# In[18]:
+# In[30]:
 
 
 print("Exercise 2.3: a)\n")
 
 print("equation 2.8.1: <i|u><u|i> = 1/2 =? α* α")
 
-iu = iαβ.Euclidean_product("bra", ket=u)
-ui = u.Euclidean_product("bra", ket=iαβ)
-iuui = iu.product("bra", ket=ui)
-iuui.print_states("<i|u><u|i>", 1)
+iu = iαβ.bra().Euclidean_product(u)
+ui = u.bra().Euclidean_product(iαβ)
+iuui = iu.product(ui)
+iuui.print_state("<i|u><u|i>")
 
 
 print("equation 2.8.2: <i|d><d|i> = 1/2 =? β* β")
 
-id = iαβ.Euclidean_product("bra", ket=d)
-di = d.Euclidean_product("bra", ket=iαβ)
-iddi = id.product("bra", ket=di)
-iddi.print_states("<i|d><d|i>", 1)
+id = iαβ.bra().Euclidean_product(d)
+di = d.bra().Euclidean_product(iαβ)
+iddi = id.product(di)
+iddi.print_state("<i|d><d|i>")
 
 
 print("equation 2.8.3: <o|u><u|o> = 1/2 =? γ* γ")
 
-ou = oγδ.Euclidean_product("bra", ket=u)
-uo = u.Euclidean_product("bra", ket=oγδ)
-ouuo = ou.product("bra", ket=uo)
-ouuo.print_states("<o|u><u|o>", 1)
+ou = oγδ.bra().Euclidean_product(u)
+uo = u.bra().Euclidean_product(oγδ)
+ouuo = ou.product(uo)
+ouuo.print_state("<o|u><u|o>", 1)
 
 
 print("equation 2.8.4: <o|d><d|o> = 1/2 =? δ* δ")
 
-od = oγδ.Euclidean_product("bra", ket=d)
-do = d.Euclidean_product("bra", ket=oγδ)
-oddo = od.product("bra", ket=do)
-oddo.print_states("<o|d><d|o>")
+od = oγδ.bra().Euclidean_product(d)
+do = d.bra().Euclidean_product(oγδ)
+oddo = od.product(do)
+oddo.print_state("<o|d><d|o>")
 
 
 # These products are all real numbers composed of each of the four components.
 
-# In[19]:
+# In[32]:
 
 
 print("Exercise 2.3: b)\n")
 
 print("equation 2.9.1: <o|r><r|o> = 1/2 =?")
 
-OR = oγδ.Euclidean_product("bra", ket=r)
-ro = r.Euclidean_product("bra", ket=oγδ)
-orro = OR.product("bra", ket=ro)
-orro.print_states("<o|r><r|o>", 1)
+OR = oγδ.bra().Euclidean_product(r)
+ro = r.bra().Euclidean_product(oγδ)
+orro = OR.product(ro)
+orro.print_state("<o|r><r|o>")
 
 
 print("equation 2.9.2: <o|L><L|o> = 1/2 =?")
 
-oL = oγδ.Euclidean_product("bra", ket=L)
-Lo = L.Euclidean_product("bra", ket=oγδ)
-oLLo = oL.product("bra", ket=Lo)
-oLLo.print_states("<o|L><L|o>", 1)
+oL = oγδ.bra().Euclidean_product(L)
+Lo = L.bra().Euclidean_product(oγδ)
+oLLo = oL.product(Lo)
+oLLo.print_state("<o|L><L|o>")
 
 
 print("equation 2.9.3: <i|r><r|i> = 1/2 =?")
 
-ir = iαβ.Euclidean_product("bra", ket=r)
-ri = r.Euclidean_product("bra", ket=iαβ)
-irri = ir.product("bra", ket=ri)
-irri.print_states("<i|r><r|i>", 1)
+ir = iαβ.bra().Euclidean_product(r)
+ri = r.bra().Euclidean_product(iαβ)
+irri = ir.product(ri)
+irri.print_state("<i|r><r|i>")
 
 
 print("equation 2.9.4: <i|L><L|i> = 1/2 =?")
 
-iL = iαβ.Euclidean_product("bra", ket=L)
-Li = L.Euclidean_product("bra", ket=iαβ)
-iLLi = iL.product("bra", ket=Li)
-iLLi.print_states("<i|L><L|i>")
+iL = iαβ.bra().Euclidean_product(L)
+Li = L.bra().Euclidean_product(iαβ)
+iLLi = iL.product(Li)
+iLLi.print_state("<i|L><L|i>")
 
 
 # The first two have the sum of $\gamma^* \gamma$ and $\delta^* \delta$. The last two are $\alpha^* \alpha$ and $\beta^* \beta$. Those values were figured out in part a). A half of a half plus a half is equal to a half.
 
 # Each of the 4 kets, $|i>$, $|o>$, $|r>$, and $|L>$ are expressed in terms of the orthonormal basis vectors $|u>$ and $|d>$. The products look like this:
 
-# In[20]:
+# In[33]:
 
 
 display(Math(r"""\begin{align*}
@@ -424,7 +418,7 @@ display(Math(r"""\begin{align*}
 \end{align*}"""))
 
 
-# In[21]:
+# In[34]:
 
 
 display(Math(r"""\begin{align*}
@@ -436,7 +430,7 @@ display(Math(r"""\begin{align*}
 \end{align*}"""))
 
 
-# In[22]:
+# In[35]:
 
 
 display(Math(r"""\begin{align*} 
@@ -448,7 +442,7 @@ display(Math(r"""\begin{align*}
 \end{align*}"""))
 
 
-# In[23]:
+# In[36]:
 
 
 display(Math(r"""\begin{align*}
