@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 # coding: utf-8
 
 # # Developing Quaternion and Space-time Number Tools for iPython3
@@ -17,7 +17,7 @@
 # 
 # Test driven development was used. The same tests were used for QH, QHa, Q8, and Q8a.  Either class can be used to study quaternions in physics.
 
-# In[1]:
+# In[4]:
 
 
 import IPython
@@ -39,7 +39,7 @@ get_ipython().run_line_magic('matplotlib', 'inline')
 
 # Define the stretch factor $\gamma$ and the $\gamma \beta$ used in special relativity.
 
-# In[2]:
+# In[5]:
 
 
 def sr_gamma(beta_x=0, beta_y=0, beta_z=0):
@@ -59,7 +59,7 @@ def sr_gamma_betas(beta_x=0, beta_y=0, beta_z=0):
 
 # Define a class QH to manipulate quaternions as Hamilton would have done it so many years ago. The "qtype" is a little bit of text to leave a trail of breadcrumbs about how a particular quaternion was generated.
 
-# In[3]:
+# In[6]:
 
 
 class QH(object):
@@ -268,34 +268,55 @@ class QH(object):
         self.z = sp.expand(self.z)
         return self
     
+    def scalar(self, qtype="scalar"):
+        """Returns the scalar part of a quaternion."""
+        
+        end_qtype = "scalar({})".format(self.qtype)
+        
+        s = QH([self.t, 0, 0, 0], qtype=end_qtype, representation=self.representation)
+        return s
+    
+    def vector(self, qtype="v"):
+        """Returns the vector part of a quaternion."""
+        
+        end_qtype = "vector({})".format(self.qtype)
+        
+        v = QH([0, self.x, self.y, self.z], qtype=end_qtype, representation=self.representation)
+        return v
+    
+    def xyz(self):
+        """Returns the vector as an np.array."""
+        
+        return np.array([self.x, self.y, self.z])
+        
     def q_0(self, qtype="0"):
         """Return a zero quaternion."""
 
         q0 = QH([0, 0, 0, 0], qtype=qtype, representation=self.representation)
         return q0
 
-    def q_1(self, qtype="1"):
+    def q_1(self, n=1, qtype="1"):
         """Return a multiplicative identity quaternion."""
 
-        q1 = QH([1, 0, 0, 0], qtype=qtype, representation=self.representation)
+        q1 = QH([n, 0, 0, 0], qtype=qtype, representation=self.representation)
         return q1
     
-    def q_i(self, qtype="i"):
+    def q_i(self, n=1, qtype="i"):
         """Return i."""
 
-        qi = QH([0, 1, 0, 0], qtype=qtype, representation=self.representation)
+        qi = QH([0, n, 0, 0], qtype=qtype, representation=self.representation)
         return qi
     
-    def q_j(self, qtype="j"):
+    def q_j(self, n=1, qtype="j"):
         """Return j."""
 
-        qj = QH([0, 0, 1, 0], qtype=qtype, representation=self.representation)
+        qj = QH([0, 0, n, 0], qtype=qtype, representation=self.representation)
         return qj
     
-    def q_k(self, qtype="k"):
+    def q_k(self, n=1, qtype="k"):
         """Return k."""
 
-        qk = QH([0, 0, 0, 1], qtype=qtype, representation=self.representation)
+        qk = QH([0, 0, 0, n], qtype=qtype, representation=self.representation)
         return qk
     
     def q_random(self, qtype="?"):
@@ -968,7 +989,7 @@ class QH(object):
 
 # Write tests the QH class.
 
-# In[4]:
+# In[7]:
 
 
 class TestQH(unittest.TestCase):
@@ -981,6 +1002,29 @@ class TestQH(unittest.TestCase):
 
     def test_qt(self):
         self.assertTrue(self.Q.t == 1)
+
+    def test_scalar(self):
+        q_z = self.Q.scalar()
+        print("scalar(q): ", q_z)
+        self.assertTrue(q_z.t == 1)
+        self.assertTrue(q_z.x == 0)
+        self.assertTrue(q_z.y == 0)
+        self.assertTrue(q_z.z == 0)
+        
+    def test_vector(self):
+        q_z = self.Q.vector()
+        print("vector(q): ", q_z)
+        self.assertTrue(q_z.t == 0)
+        self.assertTrue(q_z.x == -2)
+        self.assertTrue(q_z.y == -3)
+        self.assertTrue(q_z.z == -4)
+        
+    def test_xyz(self):
+        q_z = self.Q.xyz()
+        print("q.xyz()): ", q_z)
+        self.assertTrue(q_z[0] == -2)
+        self.assertTrue(q_z[1] == -3)
+        self.assertTrue(q_z[2] == -4)
 
     def test_q_0(self):
         q_z = self.Q.q_0()
@@ -1321,7 +1365,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQH())
 unittest.TextTestRunner().run(suite);
 
 
-# In[5]:
+# In[8]:
 
 
 class TestQHRep(unittest.TestCase):
@@ -1372,7 +1416,7 @@ unittest.TextTestRunner().run(suite);
 
 # A separate class is needed for numpy array due to technical issues I have getting sympy and numpy to play nicely with each other...
 
-# In[6]:
+# In[12]:
 
 
 class QHa(object):
@@ -1574,34 +1618,55 @@ class QHa(object):
         self.a[3] = sp.simplify(self.a[3])
         return
     
+    def scalar(self, qtype="scalar"):
+        """Returns the scalar part of a quaternion."""
+        
+        end_qtype = "scalar({})".format(self.qtype)
+        
+        s = QHa([self.a[0], 0, 0, 0], qtype=end_qtype, representation=self.representation)
+        return s
+    
+    def vector(self, qtype="v"):
+        """Returns the vector part of a quaternion."""
+        
+        end_qtype = "vector({})".format(self.qtype)
+        
+        v = QHa([0, self.a[1], self.a[2], self.a[3]], qtype=end_qtype, representation=self.representation)
+        return v
+    
+    def xyz(self):
+        """Returns the vector as an np.array."""
+        
+        return np.array([self.a[1], self.a[2], self.a[3]])
+    
     def q_0(self, qtype="0"):
         """Return a zero quaternion."""
 
         q0 = QHa(qtype=qtype, representation=self.representation)
         return q0
 
-    def q_1(self, qtype="1"):
+    def q_1(self, n=1, qtype="1"):
         """Return a multiplicative identity quaternion."""
     
-        q1 = QHa([1.0, 0.0, 0.0, 0.0], qtype=qtype, representation=self.representation)
+        q1 = QHa([n, 0.0, 0.0, 0.0], qtype=qtype, representation=self.representation)
         return q1
     
-    def q_i(self, qtype="i"):
+    def q_i(self, n=1, qtype="i"):
         """Return i."""
 
-        qi = QHa([0.0, 1.0, 0.0, 0.0], qtype=qtype, representation=self.representation)
+        qi = QHa([0.0, n, 0.0, 0.0], qtype=qtype, representation=self.representation)
         return qi
 
-    def q_j(self, qtype="j"):
+    def q_j(self, n=1, qtype="j"):
         """Return j."""
         
-        qj = QHa([0.0, 0.0, 1.0, 0.0], qtype=qtype, representation=self.representation)
+        qj = QHa([0.0, 0.0, n, 0.0], qtype=qtype, representation=self.representation)
         return qj
     
-    def q_k(self, qtype="k"):
+    def q_k(self, n=1, qtype="k"):
         """Return k."""
 
-        qk = QHa([0.0, 0.0, 0.0, 1.0], qtype=qtype, representation=self.representation)
+        qk = QHa([0.0, 0.0, 0.0, n], qtype=qtype, representation=self.representation)
         return qk
 
     def q_random(self, qtype="?"):
@@ -2281,7 +2346,7 @@ class QHa(object):
         return self
 
 
-# In[7]:
+# In[13]:
 
 
 class TestQHa(unittest.TestCase):
@@ -2294,6 +2359,29 @@ class TestQHa(unittest.TestCase):
     
     def test_qt(self):
         self.assertTrue(self.Q.a[0] == 1)
+        
+    def test_scalar(self):
+        q_z = self.Q.scalar()
+        print("scalar(q): ", q_z)
+        self.assertTrue(q_z.a[0] == 1)
+        self.assertTrue(q_z.a[1] == 0)
+        self.assertTrue(q_z.a[2] == 0)
+        self.assertTrue(q_z.a[3] == 0)
+        
+    def test_vector(self):
+        q_z = self.Q.vector()
+        print("vector(q): ", q_z)
+        self.assertTrue(q_z.a[0] == 0)
+        self.assertTrue(q_z.a[1] == -2)
+        self.assertTrue(q_z.a[2] == -3)
+        self.assertTrue(q_z.a[3] == -4)
+        
+    def test_xyz(self):
+        q_z = self.Q.xyz()
+        print("q.xyz()): ", q_z)
+        self.assertTrue(q_z[0] == -2)
+        self.assertTrue(q_z[1] == -3)
+        self.assertTrue(q_z[2] == -4)
 
     def test_q_0(self):
         q_z = self.Q.q_0()
@@ -2627,7 +2715,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHa())
 unittest.TextTestRunner().run(suite);
 
 
-# In[8]:
+# In[14]:
 
 
 class TestQHaRep(unittest.TestCase):
@@ -2679,7 +2767,7 @@ unittest.TextTestRunner().run(suite);
 
 # My long term goal is to deal with quaternions on a quaternion manifold. This will have 4 pairs of doublets. Each doublet is paired with its additive inverse. Instead of using real numbers, one uses (3, 0) and (0, 2) to represent +3 and -2 respectively. Numbers such as (5, 6) are allowed. That can be "reduced" to (0, 1).  My sense is that somewhere deep in the depths of relativistic quantum field theory, this will be a "good thing". For now, it is a minor pain to program.
 
-# In[9]:
+# In[15]:
 
 
 class Doublet(object):
@@ -2801,7 +2889,7 @@ class Doublet(object):
         return Doublet([p1, n1])
 
 
-# In[10]:
+# In[16]:
 
 
 class TestDoublet(unittest.TestCase):
@@ -2876,7 +2964,7 @@ unittest.TextTestRunner().run(suite);
 
 # Repeat the exercise for arrays.
 
-# In[11]:
+# In[17]:
 
 
 class Doubleta(object):
@@ -2987,7 +3075,7 @@ class Doubleta(object):
         return Doubleta([p1, n1])
 
 
-# In[12]:
+# In[18]:
 
 
 class TestDoubleta(unittest.TestCase):
@@ -3057,7 +3145,7 @@ class TestDoubleta(unittest.TestCase):
         self.assertTrue(Z2p_red.d[1] == Z2p_2.d[1])
 
 
-# In[13]:
+# In[19]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestDoubleta())
@@ -3068,7 +3156,7 @@ unittest.TextTestRunner().run(suite);
 
 # Write a class to handle quaternions given 8 numbers.
 
-# In[14]:
+# In[20]:
 
 
 class Q8(object):
@@ -3301,7 +3389,28 @@ class Q8(object):
     def q4(self):
         """Return a 4 element array."""
         return [self.dt.p - self.dt.n, self.dx.p - self.dx.n, self.dy.p - self.dy.n, self.dz.p - self.dz.n]
-            
+        
+    def scalar(self, qtype="scalar"):
+        """Returns the scalar part of a quaternion."""
+        
+        end_qtype = "scalar({})".format(self.qtype)
+        
+        s = Q8([self.dt.p, self.dt.n, 0, 0, 0, 0, 0, 0], qtype=end_qtype, representation=self.representation)
+        return s
+    
+    def vector(self, qtype="v"):
+        """Returns the vector part of a quaternion."""
+        
+        end_qtype = "vector({})".format(self.qtype)
+        
+        v = Q8([0, 0, self.dx.p, self.dx.n, self.dy.p, self.dy.n, self.dz.p, self.dz.n], qtype=end_qtype, representation=self.representation)
+        return v
+    
+    def xyz(self):
+        """Returns the vector as an np.array."""
+        
+        return np.array([self.dx.p - self.dx.n, self.dy.p - self.dy.n, self.dz.p - self.dz.n])
+          
     def q_0(self, qtype="0"):
         """Return a zero quaternion."""
         
@@ -4050,7 +4159,7 @@ class Q8(object):
         return self
 
 
-# In[15]:
+# In[21]:
 
 
 class TestQ8(unittest.TestCase):
@@ -4064,6 +4173,29 @@ class TestQ8(unittest.TestCase):
     
     def test_qt(self):
         self.assertTrue(self.Q.dt.p == 1)
+    
+    def test_scalar(self):
+        q_z = self.Q.scalar()
+        print("scalar(q): ", q_z)
+        self.assertTrue(q_z.dt.p == 1)
+        self.assertTrue(q_z.dx.p == 0)
+        self.assertTrue(q_z.dy.p == 0)
+        self.assertTrue(q_z.dz.p == 0)
+        
+    def test_vector(self):
+        q_z = self.Q.vector()
+        print("vector(q): ", q_z)
+        self.assertTrue(q_z.dt.p == 0)
+        self.assertTrue(q_z.dx.n == 2)
+        self.assertTrue(q_z.dy.n == 3)
+        self.assertTrue(q_z.dz.n == 4)
+        
+    def test_xyz(self):
+        q_z = self.Q.xyz()
+        print("q.xyz()): ", q_z)
+        self.assertTrue(q_z[0] == -2)
+        self.assertTrue(q_z[1] == -3)
+        self.assertTrue(q_z[2] == -4)
     
     def test_q_0(self):
         q_z = self.Q.q_0()
@@ -4486,7 +4618,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8())
 unittest.TextTestRunner().run(suite);
 
 
-# In[16]:
+# In[ ]:
 
 
 class TestQ8Rep(unittest.TestCase):
@@ -4538,7 +4670,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Class Q8a as nparrays
 
-# In[17]:
+# In[23]:
 
 
 class Q8a(Doubleta):
@@ -4797,7 +4929,28 @@ class Q8a(Doubleta):
     def q4(self):
         """Return a 4 element array."""
         return [self.a[0] - self.a[1], self.a[0] - self.a[1], self.a[4] - self.a[5], self.a[6] - self.a[7]]
-            
+    
+    def scalar(self, qtype="scalar"):
+        """Returns the scalar part of a quaternion."""
+        
+        end_qtype = "scalar({})".format(self.qtype)
+        
+        s = Q8a([self.a[0], self.a[1], 0, 0, 0, 0, 0, 0], qtype=end_qtype, representation=self.representation)
+        return s
+    
+    def vector(self, qtype="v"):
+        """Returns the vector part of a quaternion."""
+        
+        end_qtype = "vector({})".format(self.qtype)
+        
+        v = Q8a([0, 0, self.a[2], self.a[3], self.a[4], self.a[5], self.a[6], self.a[7]], qtype=end_qtype, representation=self.representation)
+        return v
+    
+    def xyz(self):
+        """Returns the vector as an np.array."""
+        
+        return np.array([self.a[2] - self.a[3], self.a[4] - self.a[5], self.a[6] - self.a[7]])
+    
     def q_0(self, qtype="0"):
         """Return a zero quaternion."""
         
@@ -4805,31 +4958,31 @@ class Q8a(Doubleta):
         
         return q0
       
-    def q_1(self, qtype="1"):
+    def q_1(self, n=1, qtype="1"):
         """Return a multiplicative identity quaternion."""
         
-        q1 = Q8a([1, 0, 0, 0, 0, 0, 0, 0], qtype=qtype, representation=self.representation)
+        q1 = Q8a([n, 0, 0, 0], qtype=qtype, representation=self.representation)
         
         return q1
     
-    def q_i(self, qtype="i"):
+    def q_i(self, n=1, qtype="i"):
         """Return i."""
         
-        qi = Q8a([0, 0, 1, 0, 0, 0, 0, 0], qtype=qtype, representation=self.representation)
+        qi = Q8a([0, n, 0, 0], qtype=qtype, representation=self.representation)
         return qi
     
-    def q_j(self, qtype="j"):
+    def q_j(self, n=1, qtype="j"):
         """Return j."""
         
-        qj = Q8a([0, 0, 0, 0, 1, 0, 0, 0], qtype=qtype, representation=self.representation)
+        qj = Q8a([0, 0, n, 0], qtype=qtype, representation=self.representation)
         
         return qj
     
 
-    def q_k(self, qtype="k"):
+    def q_k(self, n=1, qtype="k"):
         """Return k."""
         
-        qk = Q8a([0, 0, 0, 0, 0, 0, 1, 0], qtype=qtype, representation=self.representation)
+        qk = Q8a([0, 0, 0, n], qtype=qtype, representation=self.representation)
         
         return qk
 
@@ -5659,7 +5812,7 @@ class Q8a(Doubleta):
         return self
 
 
-# In[18]:
+# In[24]:
 
 
 class TestQ8a(unittest.TestCase):
@@ -5673,6 +5826,29 @@ class TestQ8a(unittest.TestCase):
     
     def test_qt(self):
         self.assertTrue(self.q1.a[0] == 1)
+    
+    def test_scalar(self):
+        q_z = self.q1.scalar()
+        print("scalar(q): ", q_z)
+        self.assertTrue(q_z.a[0] == 1)
+        self.assertTrue(q_z.a[2] == 0)
+        self.assertTrue(q_z.a[4] == 0)
+        self.assertTrue(q_z.a[6] == 0)
+        
+    def test_vector(self):
+        q_z = self.q1.vector()
+        print("vector(q): ", q_z)
+        self.assertTrue(q_z.a[0] == 0)
+        self.assertTrue(q_z.a[3] == 2)
+        self.assertTrue(q_z.a[5] == 3)
+        self.assertTrue(q_z.a[7] == 4)
+        
+    def test_xyz(self):
+        q_z = self.q1.xyz()
+        print("q.xyz()): ", q_z)
+        self.assertTrue(q_z[0] == -2)
+        self.assertTrue(q_z[1] == -3)
+        self.assertTrue(q_z[2] == -4)
     
     def test_q_zero(self):
         q_z = self.q1.q_0()
@@ -6008,7 +6184,7 @@ class TestQ8a(unittest.TestCase):
     def test_g_shift(self):
         q1_sq = self.q1.square().reduce()
         q_z = self.q1.g_shift(0.003)
-        q_z2 = q_z.square().reduce()
+        q_z2 = q_z.square().reduce() 
         print("q1_sq: {}".format(q1_sq))
         print("g_shift: {}".format(q_z))
         print("g squared: {}".format(q_z2))
@@ -6024,7 +6200,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8a())
 unittest.TextTestRunner().run(suite);
 
 
-# In[19]:
+# In[25]:
 
 
 class TestQ8aRep(unittest.TestCase):
@@ -6085,7 +6261,7 @@ unittest.TextTestRunner().run(suite);
 # Such an exact relation is not of much interest to physicists since Einstein showed that holds for only one set of observers. If one is moving relative to the reference observer, the two events would look like they occured at different times in the future, presuming perfectly accurate measuring devices.
 # 
 
-# In[20]:
+# In[26]:
 
 
 def round_sig_figs(num, sig_figs):
@@ -6099,7 +6275,7 @@ def round_sig_figs(num, sig_figs):
         return 0  # Can't take the log of 0
 
 
-# In[21]:
+# In[27]:
 
 
 class EQ(object):
@@ -6423,7 +6599,7 @@ class EQ(object):
     
 
 
-# In[22]:
+# In[28]:
 
 
 class TestEQ(unittest.TestCase):
@@ -6533,7 +6709,7 @@ class TestEQ(unittest.TestCase):
         self.assertTrue(eq_small_tiny.norm_squared_of_unity() == 'less_than_unity')
 
 
-# In[23]:
+# In[29]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestEQ())
@@ -6544,7 +6720,7 @@ unittest.TextTestRunner().run(suite);
 
 # Create a class that can make many, many quaternions.
 
-# In[24]:
+# In[30]:
 
 
 class QHArray(QH):
@@ -6617,7 +6793,7 @@ class QHArray(QH):
         return QH([new_t, new_x, new_y, new_z])
 
 
-# In[25]:
+# In[31]:
 
 
 class TestQHArray(unittest.TestCase):
@@ -6645,7 +6821,7 @@ class TestQHArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.z > 13.9)
 
 
-# In[26]:
+# In[32]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHArray())
@@ -6654,7 +6830,7 @@ unittest.TextTestRunner().run(suite);
 
 # ## Array of nparrays
 
-# In[27]:
+# In[33]:
 
 
 class QHaArray(QHa):
@@ -6717,7 +6893,7 @@ class QHaArray(QHa):
                 self.q_max.a[3] = q1.a[3]
 
 
-# In[28]:
+# In[34]:
 
 
 class TestQHaArray(unittest.TestCase):
@@ -6745,7 +6921,7 @@ class TestQHaArray(unittest.TestCase):
         self.assertTrue(self.qha.q_max.a[3] > 13.9)
 
 
-# In[29]:
+# In[35]:
 
 
 suite = unittest.TestLoader().loadTestsFromModule(TestQHaArray())
@@ -6756,7 +6932,7 @@ unittest.TextTestRunner().run(suite);
 
 # Any quaternion can be viewed as the sum of n other quaternions. This is common to see in quantum mechanics, whose needs are driving the development of this class and its methods.
 
-# In[30]:
+# In[36]:
 
 
 class QHStates(QH):
@@ -6918,6 +7094,36 @@ class QHStates(QH):
             new_states.append(bra.simple_q())
             
         return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def scalar(self, qtype="scalar"):
+        """Returns the scalar part of a quaternion."""
+    
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.scalar())
+            
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def vector(self, qtype="v"):
+        """Returns the vector part of a quaternion."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.vector())
+            
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+      
+    def xyz(self):
+        """Returns the vector as an np.array."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.xyz())
+            
+        return new_states
     
     def flip_signs(self):
         """Flip signs of all states."""
@@ -7182,6 +7388,12 @@ class QHStates(QH):
         self_copy = deepcopy(self)
         q1_copy = deepcopy(q1)
         
+        # Operator products need to be transposed.
+        operator_flag = False
+        if self.qs_type in ['op', 'operator']:
+            if q1.qs_type in ['op', 'operator']:
+                operator_flag = True
+                
         # Diagonalize if need be.
         if ((self.rows == q1.rows) and (self.columns == q1.columns)) or             ("scalar" in [self.qs_type, q1.qs_type]):
                 
@@ -7234,9 +7446,19 @@ class QHStates(QH):
         
         # Flatten the list.
         new_qs = [item for sublist in result for item in sublist]
-        new_states = QHStates(new_qs, rows=outer_row_max, columns=outer_column_max)
+    
+        if outer_row_max == 1 and outer_column_max == 1:
+            qst = "scalar"
+        elif outer_row_max == 1 and outer_column_max > 1:
+            qst = "ket"
+        elif outer_row_max > 1 and outer_column_max == 1:
+            qst = "bra"
+        else:
+            qst = "op"
+        
+        new_states = QHStates(new_qs, qs_type = qst, rows=outer_row_max, columns=outer_column_max)
 
-        if projector_flag:
+        if projector_flag or operator_flag:
             return new_states.transpose()
         
         else:
@@ -7362,7 +7584,7 @@ class QHStates(QH):
         return signma[kind].normalize()
 
 
-# In[31]:
+# In[37]:
 
 
 class TestQHStates(unittest.TestCase):
@@ -7410,6 +7632,8 @@ class TestQHStates(unittest.TestCase):
     q_0_q_1 = QHStates([q_0, q_1])
     q_1_q_0 = QHStates([q_1, q_0])
     q_1_q_i = QHStates([q_1, q_i])
+    q_1_q_0 = QHStates([q_1, q_0])
+    q_0_q_i = QHStates([q_0, q_i])
     A = QHStates([QH([4,0,0,0]), QH([0,1,0,0])], "bra")
     B = QHStates([QH([0,0,1,0]), QH([0,0,0,2]), QH([0,3,0,0])])
     Op = QHStates([QH([3,0,0,0]), QH([0,1,0,0]), QH([0,0,2,0]), QH([0,0,0,3]), QH([2,0,0,0]), QH([0,4,0,0])], "op", rows=2, columns=3)
@@ -7447,7 +7671,23 @@ class TestQHStates(unittest.TestCase):
     def test_1030_equals(self):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
-        
+    
+    def test_1032_scalar(self):
+        qs = self.q_1_q_i.scalar()
+        print("scalar(q_1_q_i)", qs)
+        self.assertTrue(qs.equals(self.q_1_q_0))
+    
+    def test_1033_vector(self):
+        qv = self.q_1_q_i.vector()
+        print("vector(q_1_q_i)", qv)
+        self.assertTrue(qv.equals(self.q_0_q_i))
+    
+    def test_1034_xyz(self):
+        qxyz = self.q_1_q_i.xyz()
+        print("q_1_q_i.xyz()", qxyz)
+        self.assertTrue(qxyz[0][0] == 0)
+        self.assertTrue(qxyz[1][0] == 1)
+
     def test_1040_conj(self):
         qc = self.q_1_q_i.conj()
         qc1 = self.q_1_q_i.conj(1)
@@ -7691,7 +7931,7 @@ unittest.TextTestRunner().run(suite);
 # 
 # by old fashioned cut and paste with minor tweaks (boring).
 
-# In[32]:
+# In[38]:
 
 
 class QHaStates(QHa):
@@ -7829,6 +8069,36 @@ class QHaStates(QHa):
                 
         return result
 
+    def scalar(self, qtype="scalar"):
+        """Returns the scalar part of a quaternion."""
+    
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.scalar())
+            
+        return QHaStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def vector(self, qtype="v"):
+        """Returns the vector part of a quaternion."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.vector())
+            
+        return QHaStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+      
+    def xyz(self):
+        """Returns the vector as an np.array."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.xyz())
+            
+        return new_states
+    
     def conj(self, conj_type=0):
         """Take the conjgates of states, default is zero, but also can do 1 or 2."""
         
@@ -8282,7 +8552,7 @@ class QHaStates(QHa):
         return signma[kind].normalize()
 
 
-# In[33]:
+# In[39]:
 
 
 class TestQHaStates(unittest.TestCase):
@@ -8330,6 +8600,8 @@ class TestQHaStates(unittest.TestCase):
     q_0_q_1 = QHaStates([q_0, q_1])
     q_1_q_0 = QHaStates([q_1, q_0])
     q_1_q_i = QHaStates([q_1, q_i])
+    q_1_q_0 = QHaStates([q_1, q_0])
+    q_0_q_i = QHaStates([q_0, q_i])
     A = QHaStates([QHa([4,0,0,0]), QHa([0,1,0,0])], "bra")
     B = QHaStates([QHa([0,0,1,0]), QHa([0,0,0,2]), QHa([0,3,0,0])])
     Op = QHaStates([QHa([3,0,0,0]), QHa([0,1,0,0]), QHa([0,0,2,0]), QHa([0,0,0,3]), QHa([2,0,0,0]), QHa([0,4,0,0])], "op", rows=2, columns=3)
@@ -8367,7 +8639,23 @@ class TestQHaStates(unittest.TestCase):
     def test_1030_equals(self):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
-        
+    
+    def test_1032_scalar(self):
+        qs = self.q_1_q_i.scalar()
+        print("scalar(q_1_q_i)", qs)
+        self.assertTrue(qs.equals(self.q_1_q_0))
+    
+    def test_1033_vector(self):
+        qv = self.q_1_q_i.vector()
+        print("vector(q_1_q_i)", qv)
+        self.assertTrue(qv.equals(self.q_0_q_i))
+    
+    def test_1034_xyz(self):
+        qxyz = self.q_1_q_i.xyz()
+        print("q_1_q_i.xyz()", qxyz)
+        self.assertTrue(qxyz[0][0] == 0)
+        self.assertTrue(qxyz[1][0] == 1)
+
     def test_1040_conj(self):
         qc = self.q_1_q_i.conj()
         qc1 = self.q_1_q_i.conj(1)
@@ -8602,7 +8890,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQHaStates())
 unittest.TextTestRunner().run(suite);
 
 
-# In[34]:
+# In[40]:
 
 
 class Q8States(Q8):
@@ -8740,6 +9028,36 @@ class Q8States(Q8):
                 
         return result
 
+    def scalar(self, qtype="scalar"):
+        """Returns the scalar part of a quaternion."""
+    
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.scalar())
+            
+        return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def vector(self, qtype="v"):
+        """Returns the vector part of a quaternion."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.vector())
+            
+        return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+      
+    def xyz(self):
+        """Returns the vector as an np.array."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.xyz())
+            
+        return new_states
+    
     def conj(self, conj_type=0):
         """Take the conjgates of states, default is zero, but also can do 1 or 2."""
         
@@ -9203,7 +9521,7 @@ class Q8States(Q8):
         return signma[kind].normalize()
 
 
-# In[35]:
+# In[41]:
 
 
 class TestQ8States(unittest.TestCase):
@@ -9251,6 +9569,8 @@ class TestQ8States(unittest.TestCase):
     q_0_q_1 = Q8States([q_0, q_1])
     q_1_q_0 = Q8States([q_1, q_0])
     q_1_q_i = Q8States([q_1, q_i])
+    q_1_q_0 = Q8States([q_1, q_0])
+    q_0_q_i = Q8States([q_0, q_i])
     A = Q8States([Q8([4,0,0,0]), Q8([0,1,0,0])], "bra")
     B = Q8States([Q8([0,0,1,0]), Q8([0,0,0,2]), Q8([0,3,0,0])])
     Op = Q8States([Q8([3,0,0,0]), Q8([0,1,0,0]), Q8([0,0,2,0]), Q8([0,0,0,3]), Q8([2,0,0,0]), Q8([0,4,0,0])], "op", rows=2, columns=3)
@@ -9289,6 +9609,22 @@ class TestQ8States(unittest.TestCase):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
         
+    def test_1032_scalar(self):
+        qs = self.q_1_q_i.scalar()
+        print("scalar(q_1_q_i)", qs)
+        self.assertTrue(qs.equals(self.q_1_q_0))
+    
+    def test_1033_vector(self):
+        qv = self.q_1_q_i.vector()
+        print("vector(q_1_q_i)", qv)
+        self.assertTrue(qv.equals(self.q_0_q_i))
+    
+    def test_1034_xyz(self):
+        qxyz = self.q_1_q_i.xyz()
+        print("q_1_q_i.xyz()", qxyz)
+        self.assertTrue(qxyz[0][0] == 0)
+        self.assertTrue(qxyz[1][0] == 1)
+
     def test_1040_conj(self):
         qc = self.q_1_q_i.conj()
         qc1 = self.q_1_q_i.conj(1)
@@ -9523,7 +9859,7 @@ suite = unittest.TestLoader().loadTestsFromModule(TestQ8States())
 unittest.TextTestRunner().run(suite);
 
 
-# In[36]:
+# In[42]:
 
 
 class Q8aStates(Q8a):
@@ -9661,6 +9997,36 @@ class Q8aStates(Q8a):
                 
         return result
 
+    def scalar(self, qtype="scalar"):
+        """Returns the scalar part of a quaternion."""
+    
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.scalar())
+            
+        return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def vector(self, qtype="v"):
+        """Returns the vector part of a quaternion."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.vector())
+            
+        return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+      
+    def xyz(self):
+        """Returns the vector as an np.array."""
+        
+        new_states = []
+        
+        for bra in self.qs:
+            new_states.append(bra.xyz())
+            
+        return new_states
+    
     def conj(self, conj_type=0):
         """Take the conjgates of states, default is zero, but also can do 1 or 2."""
         
@@ -10124,7 +10490,7 @@ class Q8aStates(Q8a):
         return signma[kind].normalize()
 
 
-# In[37]:
+# In[43]:
 
 
 class TestQ8aStates(unittest.TestCase):
@@ -10172,6 +10538,8 @@ class TestQ8aStates(unittest.TestCase):
     q_0_q_1 = Q8aStates([q_0, q_1])
     q_1_q_0 = Q8aStates([q_1, q_0])
     q_1_q_i = Q8aStates([q_1, q_i])
+    q_1_q_0 = Q8aStates([q_1, q_0])
+    q_0_q_i = Q8aStates([q_0, q_i])
     A = Q8aStates([Q8a([4,0,0,0]), Q8a([0,1,0,0])], "bra")
     B = Q8aStates([Q8a([0,0,1,0]), Q8a([0,0,0,2]), Q8a([0,3,0,0])])
     Op = Q8aStates([Q8a([3,0,0,0]), Q8a([0,1,0,0]), Q8a([0,0,2,0]), Q8a([0,0,0,3]), Q8a([2,0,0,0]), Q8a([0,4,0,0])], "op", rows=2, columns=3)
@@ -10210,6 +10578,22 @@ class TestQ8aStates(unittest.TestCase):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
         
+    def test_1032_scalar(self):
+        qs = self.q_1_q_i.scalar()
+        print("scalar(q_1_q_i)", qs)
+        self.assertTrue(qs.equals(self.q_1_q_0))
+    
+    def test_1033_vector(self):
+        qv = self.q_1_q_i.vector()
+        print("vector(q_1_q_i)", qv)
+        self.assertTrue(qv.equals(self.q_0_q_i))
+    
+    def test_1034_xyz(self):
+        qxyz = self.q_1_q_i.xyz()
+        print("q_1_q_i.xyz()", qxyz)
+        self.assertTrue(qxyz[0][0] == 0)
+        self.assertTrue(qxyz[1][0] == 1)
+
     def test_1040_conj(self):
         qc = self.q_1_q_i.conj()
         qc1 = self.q_1_q_i.conj(1)
@@ -10442,4 +10826,16 @@ class TestQ8aStates(unittest.TestCase):
         
 suite = unittest.TestLoader().loadTestsFromModule(TestQ8aStates())
 unittest.TextTestRunner().run(suite);
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
