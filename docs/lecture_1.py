@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 # coding: utf-8
 
 # # Lecture 1: Systems and Experiments Using Quaternion Series
@@ -222,9 +222,9 @@ print("|A> + |B> = |B> + |A>? ", A.add(B).equals(B.add(A)))
 
 
 print("3. Addition is associative, (|A> + |B>) + |C> = |A> + (|B> + |C>).\n")
-A.add(B).add(C).print_state("(|A> + |B>) + |C>")
-A.add(B.add(C)).print_state("|A> + (|B> + |C>)")
-print("(|A> + |B>) + |C> = |A> + (|B> + |C>)? ", A.add(B).add(C).equals(A.add(B.add(C))))
+A.add(B).add(C.ket()).print_state("(|A> + |B>) + |C>")
+A.add(B.add(C.ket())).print_state("|A> + (|B> + |C>)")
+print("(|A> + |B>) + |C> = |A> + (|B> + |C>)? ", A.add(B).add(C.ket()).equals(A.add(B.add(C.ket()))))
 
 
 # In[12]:
@@ -281,15 +281,27 @@ print("(q + w)|A> = q|A> + w|A>? ", qwA.equals(qAwA))
 
 # Thus 7 basic properties of state vectors can be replicated using quaternion series. I could say there was an equivalence relationship between the two. That does not mean they are exactly the same in all detail, but that for the operations done so far, both approaches are equivalent.
 
-# ## BIG Sidebar: Multiplication as a Group Operation Experiment
+# ## BIG Sidebar: Multiplication as a Semi-Group Operation Experiment
 
-# For division algebras, both addition and multiplicaiton are group operations. That means there is closure (1 from above), associative (3), an identity exists (4) and and inverse exists (5). The real and complex numbers commute under both addition and multiplication, not so quaternion products.
+# For division algebras, both addition and multiplicaiton are group operations. That means there is closure (1 from above), associative (3), an identity exists (4) and an inverse exists (5). The real and complex numbers commute under both addition and multiplication, not so quaternion products.
 # 
-# For a vector space V, {V, +} is a group due to the work shown above, specifically 1, 3-5. No effort is expended to show the same is true for multiplicaiton because while a ket of exactly the same length can be added to another ket to generate a third ket, the same is not true by the rules of matrix multiplication. The number of rows never equal the number of columns, case closed.
+# **Sidebar to the sidebar**
+# 
+# When I first wrote this up, I made a technical error. In "(3), an identity exists" could also be rewriten as "(3), one and only one identity exists for every element in the group". For quaternion series, there is more than one identity element. For a series with $n$ states, there are $2^n$ multiplicative identities. Use all permutations of zero and unity for each state. Semi-groups with inverses are the correct way to refer to quaternion series multiplicaiton.
+# 
+# --end of sidebar to the sidebar.
+# 
+# For a vector space V, {V, +} is a group due to the work shown above, specifically 1, 3-5. No effort is expended to show the same is true for multiplication because while a ket of exactly the same length can be added to another ket to generate a third ket, the same is not true by the rules of matrix multiplication. The number of rows never equal the number of columns, case closed.
 # 
 # For quaternion series, the rules for multication are modified in a specific way. If one has a ket of the same dimension, then to form a sensible product, the ket on the left is diagonalized first to form a square matrix. At this point, the rules of matrix multiplication allow a product to be formed.
 # 
 # Let's make this concrete. Consider a real-valued vector with three state dimensions, $|1 \;2 \;3>$. If we squared each term individual, $|k^2>$, the result is $|1\; 4\; 9>$. If the left ket is made into a diagonal operator with a state dimension of 3 rows by 3 columns, one can form a product with the ket with three rows and a column, so $\rm{diagonal}(k) \times |k> = |1\; 4\; 9>$. Recall how addition of two vectors happens if and only if they are of the same dimensions. This is also the case for multiplicaiton. A similar story is possible for bras, but this time it is the left bra that gets made into a diagonal operator. The result of the multiplaciton is other bra quaternion series of the same dimension.
+# 
+# **Second sidebar to the sidebar**
+# 
+# In later chapters, the vital role of unitarity will be explored to limit what operations are physically meaningful. Squaring a vector will not respect unitarity. One must remain wary about whether any of these math tools plays a role in the physical Universe. I am hopeful that being able to construct an inverse will be of use (and respect unitarity). All other calculations are suspect until proven useful.
+# 
+# --end second sidebar.
 # 
 # Now an experiment can be done. Take the 7 things shown to hold true for the additon operator, and see if they hold for multiplication of quaternion series.
 
@@ -333,19 +345,31 @@ print("(|A> x |B>) x |C> = |A> x (|B> x |C>)? ", A.product(B).product(C.set_qs_t
 # In[21]:
 
 
-print("4x. An multiplicative identity series identity operator exists.\n")
+print("4x. A multiplicative identity series identity operator exists.\n")
 I = qt.QHStates().identity(dim=2, additive=False, operator=True)
 I.print_state("I")
 I.product(A).print_state("I x |A>")
 print("|A> = I x |A>?", A.equals(I.product(A)))
 
 
+# Now imagine a different ket that had a zero state.
+
 # In[22]:
 
 
+D = qt.QHStates([qt.QH([0, 0, 0, 0]), qt.QH([2, 2, 2, 2])])
+Id = qt.QHStates().identity(dim=2, additive=False, operator=True, non_zeroes=[False, True])
+Id.print_state("I w/zeroes")
+Id.product(D).print_state("Id|D>")
+print("|D> = Id x |D>?", D.equals(Id.product(D)))
+
+
+# In[23]:
+
+
 print("5x. A multiplicative inverse exists, A A^-1 = 1.\n")
-A.inverse(additive=False, operator=True).print_state("A^-1")
-A.product(A.inverse(additive=False, operator=True)).print_state("A A^-1")
+A.inverse(additive=False).print_state("A^-1")
+A.product(A.inverse(additive=False)).print_state("A A^-1")
 
 
 # Except for a little rounding error, a pair of real-valued ones make up the two state ket. Mutliplying bra and ket quaternion series involves diagonal operators. A ket diagonalized and multiplied by $|1\;1>$ would be the ket for of the diagonal. 
@@ -364,7 +388,7 @@ A.product(A.inverse(additive=False, operator=True)).print_state("A A^-1")
 
 # The world of rows and columns does not port to quaternion series. All series are just that: series. Even operators are quaternion series which have relations based on state dimensions. The conjugate of a series can be calculated, and is a very useful thing.
 
-# In[23]:
+# In[24]:
 
 
 A.conj().print_state("A*")
@@ -378,7 +402,7 @@ A.conj().print_state("A*")
 
 # Let's first figure out what exactly is meant by "bra corresponding to [a ket] using complex numbers.
 
-# In[24]:
+# In[25]:
 
 
 print("z|Ac> = <Ac|z* ?\n")
@@ -393,7 +417,7 @@ print("z|Ac> = <Ac|z* ?", zAc.equals(Acz))
 
 # Almost, but not quite, off by a conjugate. One more conjugate operation is needed to be equal:
 
-# In[25]:
+# In[26]:
 
 
 print("z|Ac> = (<Ac|z*)* ?", zAc.equals(Acz.conj()))
@@ -401,7 +425,7 @@ print("z|Ac> = (<Ac|z*)* ?", zAc.equals(Acz.conj()))
 
 # Now lets do this more precise definition of the relationship for quaternions.
 
-# In[26]:
+# In[27]:
 
 
 print("q|A> = (<A|q*)* ?\n")
@@ -423,7 +447,7 @@ print("z|A> = (<A|q*)* ?", qA.equals(Aq.conj()))
 
 # This calculation should feel similar to the one done with ket's. The bra is just a different series that gets conjugated. 
 
-# In[27]:
+# In[28]:
 
 
 print("1. linear inner product, <C|(|A> + |B>) = <C|A> + <C|B>\n")
@@ -438,7 +462,7 @@ print("<C|(|A> + |B>) = <C|A> + <C|B>? ", CAB.equals(CABA))
 
 # Quaternions do not commute, but mirrors can sometimes manage the situation.
 
-# In[28]:
+# In[29]:
 
 
 print("2. For inner product, change order AND conjugate, <B|A> = <A|B>*\n")
@@ -455,7 +479,7 @@ print("<B|A> = <A|B>* ?", BdotA.equals(AdotBc))
 
 # Prove a variation on the linearity of inner products.
 
-# In[29]:
+# In[30]:
 
 
 print("Exercise 1.1: A) linear inner products, (<A| + <B|)|C> = <A|C> + <B|C> ?\n")
@@ -468,7 +492,7 @@ print("<C|(|A> + |B>) = <C|A> + <C|B>? ", CAB.equals(CABA))
 
 # Let's show that the inner self-products of A, B, and C evaluate to real numbers.
 
-# In[30]:
+# In[31]:
 
 
 print("<q|q> = real scalar?\n")
@@ -481,7 +505,7 @@ C.norm_squared().print_state("<C|C>")
 
 # That is what is going on.
 
-# In[31]:
+# In[32]:
 
 
 q_0 = qt.QH().q_0()
@@ -503,7 +527,7 @@ B5.Euclidean_product(A5).print_state("<B5|A5>")
 
 # Let's build two quaternion series that are orthogonal. Use only states that are multiplies of i. If we have 4 state dimensions, and half are positive i while the other a minuses, that should cancel out. Here's what I mean:
 
-# In[32]:
+# In[33]:
 
 
 Ai = qt.QHStates([q_i, q_i, q_i, q_i]).normalize()
@@ -519,7 +543,7 @@ Bi.bra().Euclidean_product(Ai).print_state("<Bi|Ai>")
 
 # The complex numbers $\alpha_i$ have to be made into a diagonal quaternion series so the end result of it acting on the basis series is correct.
 
-# In[33]:
+# In[34]:
 
 
 αi = qt.QHStates([qt.QH([1,1,0,0]),qt.QH([2,0,2,0]),qt.QH([3,1,3,0]),qt.QH([4,0,0,4])]).diagonal(4)
@@ -530,7 +554,7 @@ Asum.print_state("|A> = Sum αi|Ai>")
 
 # Good, now just take Euclidean product with <j|.
 
-# In[34]:
+# In[35]:
 
 
 Bi.bra().Euclidean_product(αi).product(Ai).print_state("<B|αi|A>")
@@ -542,14 +566,14 @@ Bi.bra().Euclidean_product(αi).product(Ai).print_state("<B|αi|A>")
 
 # The only way this can be is if $|i><i|=1$. We already know $<i|i>=1$. All that has to be done is to change the order, yet they point in the same direction, so changing the order doesn't change a thing. 
 
-# In[35]:
+# In[36]:
 
 
 ii_projector = Ai.product(Ai.bra().conj())
 ii_projector.print_state("projection operator: |i><i|")
 
 
-# In[36]:
+# In[37]:
 
 
 ii_projector.product(Asum).print_state("|i><i|A")
