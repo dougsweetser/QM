@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 # coding: utf-8
 
 # # Lecture 4: Time and Change
@@ -31,7 +31,7 @@ get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as
 
 # ![](images/lecture_4/c4_p096_q1.jpg)
 
-# Think about the math. If I have a specific expression for the [space-]time-development operator multiplying a spaceific state, only one state-vector will result. The rules of quaternion series multiplication are _desterministic_ in this way.
+# Think about the math. If I have a specific expression for the [space-]time-development operator multiplying a specific state, only one state-vector will result. The rules of quaternion series multiplication are _desterministic_ in this way.
 
 # ![](images/lecture_4/c4_p096_q2.jpg)
 
@@ -45,7 +45,14 @@ get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as
 
 # ![](images/lecture_4/c4_p097_q3.jpg)
 
-# Herein like the "power of zero under multiplication" as I call it. There are two states whose product is zero because they are orthogonal. This means their norm is zero. Quaternion series is a normed division algebra. Multipying the states by the [space-]time-development operator will not alter the norm of zero. Thus states that are orthogonal will stay that way and conserve distinctions. One should recall that there are many states. The distribution of values will changes via the operation of the [space-]time-development operator, but the sum will be zero always. The fact that you can see shifts in value yet the sum remains zero is pretty cool. Zeroes don't budge, but they do sway in the series of states.
+# Herein like the "power of zero under multiplication" as I call it. There are two states whose product is zero because they are orthogonal. This means their norm is zero. Quaternion series is :
+# 
+# ## sidebar 
+# I originally wrote: a normed division algebra. This led to an online discussion with Purple Penguin where he convinced me that quaternion series most definitely are **not a division algebra**. Instead, quaternion series are a semi-group with inverses. What this means in practice is that there are many unity elements instead of exactly one. The number of unity elements is easy to calculate: for $n$ states, there are $2^n$ forms of unity. 
+# 
+# --end sidebare
+# 
+# Multipying the states by the [space-]time-development operator will not alter the norm of zero. Thus states that are orthogonal will stay that way and conserve distinctions. One should recall that there are many states. The distribution of values will changes via the operation of the [space-]time-development operator, but the sum will be zero always. The fact that you can see shifts in value yet the sum remains zero is pretty cool. Zeroes don't budge, but they do sway in the series of states.
 
 # ![](images/lecture_4/c4_p099_q1.jpg)
 
@@ -71,7 +78,7 @@ get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as
 
 # $$U(\epsilon) = 1 - \epsilon H$$
 
-# gfg
+# One thing I have figured out is that whatever 3-position I choose in space, say $(x, y, z) = (1, 2, 3)$, that same big $I$ has to be used (something a multiple of $(1, 2, 3)$).
 
 # ![](images/lecture_4/c4_p100_q3.jpg)
 
