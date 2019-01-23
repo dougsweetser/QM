@@ -11,7 +11,7 @@
 # 
 # Load the needed libraries.
 
-# In[1]:
+# In[4]:
 
 
 get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as np\nimport sympy as sp\nimport matplotlib.pyplot as plt\nimport math\n\n# To get equations the look like, well, equations, use the following.\nfrom sympy.interactive import printing\nprinting.init_printing(use_latex=True)\nfrom IPython.display import display\n\n# Tools for manipulating quaternions.\nimport Q_tools as qt\nfrom IPython.core.display import display, HTML, Math, Latex\ndisplay(HTML("<style>.container { width:100% !important; }</style>"))')
@@ -19,7 +19,7 @@ get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as
 
 # Only a few quaternions will be used, create some convenient abbreviations.
 
-# In[2]:
+# In[5]:
 
 
 q_0, q_1, q_i, q_j, q_k = qt.QH().q_0(), qt.QH().q_1(), qt.QH().q_i(), qt.QH().q_j(), qt.QH().q_k()
@@ -29,7 +29,7 @@ q_sqrt_half = qt.QHStates([qt.QH([sp.sqrt(1/2),0,0,0])])
 
 # Alice and Bob's state vectors are |1> and |+>. Each can be written in whatever basis one choses. For Alice, let's use the easy one. 
 
-# In[3]:
+# In[6]:
 
 
 u = qt.QHStates([q_1, q_0])
@@ -41,7 +41,7 @@ d.print_state("|d>")
 
 # Form the ket |+> for Bob and confirm it is orthonormal:
 
-# In[4]:
+# In[7]:
 
 
 udp = u.add(d)
@@ -58,7 +58,7 @@ plus.bra().Euclidean_product(minus).print_state("<+|->", quiet=True)
 
 # Define the operators used in the blog.
 
-# In[5]:
+# In[8]:
 
 
 U = qt.QHStates([q_1, q_0, q_0, q_j]).op()
@@ -70,7 +70,7 @@ V.print_state("V", quiet=True)
 
 # Calculate $<1|U|1>$, $<+|V|+>$, and their product, $<1|U|1><+|V|+>$
 
-# In[6]:
+# In[9]:
 
 
 bracket = qt.QHStates().bracket
@@ -90,7 +90,7 @@ one_U_plus_V.print_state("<1|U|1><+|V|+>")
 # 
 # Can we ask a better question? If one starts with the state $|0>$, might there be an operator $V$ that would use an imaginary and still generate a real number? Without any more thought, do the calculation...
 
-# In[7]:
+# In[10]:
 
 
 d_V = bracket(d.bra(), V, d)
@@ -99,7 +99,7 @@ d_V.print_state("<0|V|0>")
 
 # Nice, only off by a factor of -i, simple to adjust.
 
-# In[16]:
+# In[11]:
 
 
 Vi = V.product(qt.QHStates([qt.QH().q_i(-1)])).op()
@@ -109,19 +109,24 @@ d_Vi = bracket(d.bra(), Vi, d)
 d_Vi.print_state("<0|Vi|0>")
 
 
+# $ Vi = \begin{bmatrix}
+# -i & 0 \\
+# 0 & 1 
+# \end{bmatrix}  $
+
 # Now we can ask about odds of making an observation given Alice with a state $|1>$ and Bob with a state $|0>$ using the operators $U$ and $V$:
 
-# In[9]:
+# In[12]:
 
 
 one_U.product(d_Vi).print_state("<1|U|1><0|Vi|0>")
 
 
-# Why is this certain to happen? There is not superposition of states and all the operators can do is play with the phase. 
+# Why is this certain to happen? There is not superposition of states and all the operators can do is play with the phase. The calculation could be made more interesting by using superpositions of states. The key thing to notice is more care is required to finding Hermitian operators.
 # 
 # What does the suggested rotation operator do to this calculation? I have chosen to rotate the operators $U$ and $Vi$.
 
-# In[10]:
+# In[13]:
 
 
 jk = qt.QHStates([q_j, q_k, q_k, q_j], qs_type="op")
@@ -129,11 +134,14 @@ jk = qt.QHStates([q_j, q_k, q_k, q_j], qs_type="op")
 jk.print_state("jk operator")
 
 
-# Again, the normalization posted in the orginal blog does not look correct to me. Not a big deal, but a detail.
-# 
-# Form the product of this rotation matrix with $U$ and $Vi$, again needing a normalization tweak.
+# $ jk = \begin{bmatrix}
+# j & k \\
+# k & j 
+# \end{bmatrix}  $
 
-# In[11]:
+# Form the product of this rotation matrix with $U$ and $Vi$.
+
+# In[17]:
 
 
 jkU = jk.product(U).op()
@@ -145,7 +153,7 @@ jkVi.print_state("jk Vi")
 
 # Put these rotated operators to work. See if they generate real values as they must to be Hermitian operators.
 
-# In[12]:
+# In[18]:
 
 
 bracket(u.bra(), jkU, u).print_state("<1|jkU|1>")
@@ -154,7 +162,7 @@ bracket(d.bra(), jkVi, d).print_state("<0|jkVi|0>")
 
 # Both miss the mark by a factor of $-j$.
 
-# In[13]:
+# In[19]:
 
 
 jjkU = qt.QHStates([qt.QH().q_j(-1)]).product(jkU).op()
