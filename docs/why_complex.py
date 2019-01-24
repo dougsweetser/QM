@@ -11,7 +11,7 @@
 # 
 # Load the needed libraries.
 
-# In[4]:
+# In[1]:
 
 
 get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as np\nimport sympy as sp\nimport matplotlib.pyplot as plt\nimport math\n\n# To get equations the look like, well, equations, use the following.\nfrom sympy.interactive import printing\nprinting.init_printing(use_latex=True)\nfrom IPython.display import display\n\n# Tools for manipulating quaternions.\nimport Q_tools as qt\nfrom IPython.core.display import display, HTML, Math, Latex\ndisplay(HTML("<style>.container { width:100% !important; }</style>"))')
@@ -19,7 +19,7 @@ get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as
 
 # Only a few quaternions will be used, create some convenient abbreviations.
 
-# In[5]:
+# In[2]:
 
 
 q_0, q_1, q_i, q_j, q_k = qt.QH().q_0(), qt.QH().q_1(), qt.QH().q_i(), qt.QH().q_j(), qt.QH().q_k()
@@ -29,7 +29,7 @@ q_sqrt_half = qt.QHStates([qt.QH([sp.sqrt(1/2),0,0,0])])
 
 # Alice and Bob's state vectors are |1> and |+>. Each can be written in whatever basis one choses. For Alice, let's use the easy one. 
 
-# In[6]:
+# In[3]:
 
 
 u = qt.QHStates([q_1, q_0])
@@ -41,7 +41,7 @@ d.print_state("|d>")
 
 # Form the ket |+> for Bob and confirm it is orthonormal:
 
-# In[7]:
+# In[4]:
 
 
 udp = u.add(d)
@@ -58,19 +58,31 @@ plus.bra().Euclidean_product(minus).print_state("<+|->", quiet=True)
 
 # Define the operators used in the blog.
 
-# In[8]:
+# In[5]:
 
 
 U = qt.QHStates([q_1, q_0, q_0, q_j]).op()
-U.print_state("U", quiet=True)
+U.print_state("U")
+U.norm_squared().print_state("U norm")
 
 V = qt.QHStates([q_1, q_0, q_0, q_i]).op()
-V.print_state("V", quiet=True)
+V.print_state("V")
+V.norm_squared().print_state("V norm")
 
+
+# What is up with this norm squared? This appears different than what is in Aaronson's blog. My code calculates something called the "Frobenius" norm, the square of all terms in expression. What is found in Mathematica is something different: the maximum Eigen value of $U^\dagger U$. That turns out to be one. 
+
+# In[6]:
+
+
+U.transpose().Euclidean_product(U).print_state("Ut U")
+
+
+# If I repeat the work with the identity as a 2x2 operator, the Frobenius norm is again 2. I think that is a problem because the identity should not change a thing as the factor of 2 would do. This is just a note to myself to be wary about using the norm_squared() on operators.
 
 # Calculate $<1|U|1>$, $<+|V|+>$, and their product, $<1|U|1><+|V|+>$
 
-# In[9]:
+# In[7]:
 
 
 bracket = qt.QHStates().bracket
@@ -90,7 +102,7 @@ one_U_plus_V.print_state("<1|U|1><+|V|+>")
 # 
 # Can we ask a better question? If one starts with the state $|0>$, might there be an operator $V$ that would use an imaginary and still generate a real number? Without any more thought, do the calculation...
 
-# In[10]:
+# In[8]:
 
 
 d_V = bracket(d.bra(), V, d)
@@ -99,7 +111,7 @@ d_V.print_state("<0|V|0>")
 
 # Nice, only off by a factor of -i, simple to adjust.
 
-# In[11]:
+# In[9]:
 
 
 Vi = V.product(qt.QHStates([qt.QH().q_i(-1)])).op()
@@ -116,7 +128,7 @@ d_Vi.print_state("<0|Vi|0>")
 
 # Now we can ask about odds of making an observation given Alice with a state $|1>$ and Bob with a state $|0>$ using the operators $U$ and $V$:
 
-# In[12]:
+# In[10]:
 
 
 one_U.product(d_Vi).print_state("<1|U|1><0|Vi|0>")
@@ -126,7 +138,7 @@ one_U.product(d_Vi).print_state("<1|U|1><0|Vi|0>")
 # 
 # What does the suggested rotation operator do to this calculation? I have chosen to rotate the operators $U$ and $Vi$.
 
-# In[13]:
+# In[11]:
 
 
 jk = qt.QHStates([q_j, q_k, q_k, q_j], qs_type="op")
@@ -141,7 +153,7 @@ jk.print_state("jk operator")
 
 # Form the product of this rotation matrix with $U$ and $Vi$.
 
-# In[17]:
+# In[12]:
 
 
 jkU = jk.product(U).op()
@@ -153,7 +165,7 @@ jkVi.print_state("jk Vi")
 
 # Put these rotated operators to work. See if they generate real values as they must to be Hermitian operators.
 
-# In[18]:
+# In[13]:
 
 
 bracket(u.bra(), jkU, u).print_state("<1|jkU|1>")
@@ -162,7 +174,7 @@ bracket(d.bra(), jkVi, d).print_state("<0|jkVi|0>")
 
 # Both miss the mark by a factor of $-j$.
 
-# In[19]:
+# In[14]:
 
 
 jjkU = qt.QHStates([qt.QH().q_j(-1)]).product(jkU).op()
@@ -180,7 +192,7 @@ one_jjkU.print_state("<1|jjkU|1>")
 # 
 # Complete the story with the other operator, $Vi$.
 
-# In[14]:
+# In[15]:
 
 
 jjkVi = qt.QHStates([qt.QH().q_j(-1)]).product(jkVi).op()
@@ -194,13 +206,33 @@ zero_jjkVi.print_state("<0|jjkVi|0>")
 # -i & 1 
 # \end{bmatrix}  $
 
-# In[15]:
+# In[16]:
 
 
 one_jjkU.product(zero_jjkVi).print_state("<1|jjkU|1><0|jjkVi|0>")
 
 
 # The odds are not altered by the rotation.
+
+# ## Two states, two Hermitian operators
+
+# I don't know if this will be an issue, but I noticed that a Hermitian operator for one state is not a Hermitian operator for another.
+
+# In[17]:
+
+
+bracket(u.bra(), U, u).print_state("<u|U|u>")
+bracket(d.bra(), U, d).print_state("<d|U|d>")
+
+
+# In[18]:
+
+
+bracket(u.bra(), Vi, u).print_state("<u|Vi|u>")
+bracket(d.bra(), Vi, d).print_state("<d|Vi|d>")
+
+
+# The Hermitian operator for |u> is U, while the one for |d> is Vi. 
 
 # In[ ]:
 
