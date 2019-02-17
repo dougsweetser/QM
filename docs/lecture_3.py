@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 # coding: utf-8
 
 # # Lecture 3: The Principles of Quantum Mechanics

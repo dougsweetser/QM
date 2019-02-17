@@ -11,7 +11,6 @@
 # 
 # This set of tools is done 4x:
 # 1. QH - Quaternions for Hamilton, can do symbolic manipulations
-# 1. QHa - Quaternions for Hamilton numpy arrays
 # 1. Q8 - Quaternions that are represented by 8 numbers
 # 1. Q8a - Quaternions that are represented by 8 numbers that are numpy arrays
 # 
@@ -267,6 +266,18 @@ class QH(object):
         self.y = sp.expand(self.y)
         self.z = sp.expand(self.z)
         return self
+    
+    def subs(self, symbol_value_dict):
+        """Evaluates a quaternion using sympy values and a dictionary {t:1, x:2, etc}."""
+    
+        t1 = self.t.subs(symbol_value_dict)
+        x1 = self.x.subs(symbol_value_dict)
+        y1 = self.y.subs(symbol_value_dict)
+        z1 = self.z.subs(symbol_value_dict)
+    
+        q_txyz = QH([t1, x1, y1, z1], qtype=self.qtype, representation=self.representation)
+    
+        return q_txyz
     
     def scalar(self, qtype="scalar"):
         """Returns the scalar part of a quaternion."""
@@ -999,9 +1010,16 @@ class TestQH(unittest.TestCase):
     P = QH([0, 4, -3, 0], qtype="P")
     R = QH([3, 0, 0, 0], qtype="R")
     C = QH([2, 4, 0, 0], qtype="C")
-
+    t, x, y, z = sp.symbols("t x y z")
+    q_sym = QH([t, x, y, x * y * z])
+    
     def test_qt(self):
         self.assertTrue(self.Q.t == 1)
+        
+    def test_subs(self):
+        q_z = self.q_sym.subs({self.t:1, self.x:2, self.y:3, self.z:4})
+        print("t x y xyz sub 1 2 3 4: ", q_z)
+        self.assertTrue(q_z.equals(QH([1, 2, 3, 24])))
 
     def test_scalar(self):
         q_z = self.Q.scalar()
@@ -2038,7 +2056,24 @@ class Q8(object):
     def q4(self):
         """Return a 4 element array."""
         return [self.dt.p - self.dt.n, self.dx.p - self.dx.n, self.dy.p - self.dy.n, self.dz.p - self.dz.n]
-        
+  
+
+    def subs(self, symbol_value_dict):
+        """Evaluates a quaternion using sympy values and a dictionary {t:1, x:2, etc}."""
+    
+        t1 = self.dt.p.subs(symbol_value_dict)
+        t2 = self.dt.n.subs(symbol_value_dict)
+        x1 = self.dx.p.subs(symbol_value_dict)
+        x2 = self.dx.n.subs(symbol_value_dict)
+        y1 = self.dy.p.subs(symbol_value_dict)
+        y2 = self.dy.n.subs(symbol_value_dict)
+        z1 = self.dz.p.subs(symbol_value_dict)
+        z2 = self.dz.n.subs(symbol_value_dict)
+    
+        q_txyz = Q8([t1, t2, x1, x2, y1, y2, z1, z2], qtype=self.qtype, representation=self.representation)
+    
+        return q_txyz
+    
     def scalar(self, qtype="scalar"):
         """Returns the scalar part of a quaternion."""
         
@@ -2819,9 +2854,16 @@ class TestQ8(unittest.TestCase):
     R = Q8([3, 0, 0, 0, 0, 0, 0, 0])
     C = Q8([2, 0, 4, 0, 0, 0, 0, 0])
     q_big = Q8([1, 2, 3, 4, 5, 6, 7, 8])
+    t, x, y, z = sp.symbols("t x y z")
+    q_sym = Q8([t, t, x, x, y, y, x * y * z, x * y * z])
     
     def test_qt(self):
         self.assertTrue(self.Q.dt.p == 1)
+        
+    def test_subs(self):
+        q_z = self.q_sym.subs({self.t:1, self.x:2, self.y:3, self.z:4})
+        print("t x y xyz sub 1 2 3 4: ", q_z)
+        self.assertTrue(q_z.equals(Q8([1, 1, 2, 2, 3, 3, 24, 24])))
     
     def test_scalar(self):
         q_z = self.Q.scalar()
@@ -3578,6 +3620,22 @@ class Q8a(Doubleta):
     def q4(self):
         """Return a 4 element array."""
         return [self.a[0] - self.a[1], self.a[0] - self.a[1], self.a[4] - self.a[5], self.a[6] - self.a[7]]
+    
+    def subs(self, symbol_value_dict):
+        """Evaluates a quaternion using sympy values and a dictionary {t:1, x:2, etc}."""
+    
+        t1 = self.a[0].subs(symbol_value_dict)
+        t2 = self.a[1].subs(symbol_value_dict)
+        x1 = self.a[2].subs(symbol_value_dict)
+        x2 = self.a[3].subs(symbol_value_dict)
+        y1 = self.a[4].subs(symbol_value_dict)
+        y2 = self.a[5].subs(symbol_value_dict)
+        z1 = self.a[6].subs(symbol_value_dict)
+        z2 = self.a[7].subs(symbol_value_dict)
+    
+        q_txyz = Q8a([t1, t2, x1, x2, y1, y2, z1, z2], qtype=self.qtype, representation=self.representation)
+    
+        return q_txyz
     
     def scalar(self, qtype="scalar"):
         """Returns the scalar part of a quaternion."""
@@ -4472,9 +4530,16 @@ class TestQ8a(unittest.TestCase):
     q2 = Q8a([0, 0, 4, 0, 0, 3, 0, 0])
     q_big = Q8a([1, 2, 3, 4, 5, 6, 7, 8])
     verbose = True
+    t, x, y, z = sp.symbols("t x y z")
+    q_sym = QH([t, t, x, x, y, y, x * y * z, x * y * z])
     
     def test_qt(self):
         self.assertTrue(self.q1.a[0] == 1)
+        
+    def test_subs(self):
+        q_z = self.q_sym.subs({self.t:1, self.x:2, self.y:3, self.z:4})
+        print("t x y xyz sub 1 2 3 4: ", q_z)
+        self.assertTrue(q_z.equals(QH([1, 1, 2, 2, 3, 3, 24, 24])))
     
     def test_scalar(self):
         q_z = self.q1.scalar()
@@ -5497,6 +5562,7 @@ class QHStates(QH):
         self.qs_type = qs_type
         self.rows = rows
         self.columns = columns
+        self.qtype = ""
         
         if qs_type not in self.QS_TYPES:
             print("Oops, only know of these quaternion series types: {}".format(self.QS_TYPES))
@@ -5569,17 +5635,49 @@ class QHStates(QH):
     def bra(self):
         """Quickly set the qs_type to bra by calling set_qs_type()."""
         
-        return self.set_qs_type("bra")
+        if self.qs_type == "bra":
+            return self
+        
+        bra = deepcopy(self).conj()
+        bra.rows = 1
+        bra.columns = self.dim
+        
+        if self.dim > 1:
+            bra.qs_type = "bra"
+        
+        return bra
     
     def ket(self):
         """Quickly set the qs_type to ket by calling set_qs_type()."""
-        
-        return self.set_qs_type("ket")
     
-    def op(self, rows=0, columns=0):
-        """Quickly set the qs_type to op by calling set_qs_type()."""
+        if self.qs_type == "ket":
+            return self
         
-        return self.set_qs_type("op", rows=rows, columns=columns)
+        ket = deepcopy(self).conj()
+        ket.rows = self.dim
+        ket.columns = 1
+        
+        if self.dim > 1:
+            ket.qs_type = "ket"
+        
+        return ket
+    
+    def op(self, rows, columns):
+        """Quickly set the qs_type to op by calling set_qs_type()."""
+ 
+        if rows * columns != self.dim:
+            print("Oops, rows * columns != dim: {} * {}, {}".formaat(rows, columns, self.dim))
+            return None
+        
+        op_q = deepcopy(self)
+        
+        op_q.rows = rows
+        op_q.columns = columns
+        
+        if self.dim > 1:
+            op_q.qs_type = "op"
+        
+        return op_q
     
     def __str__(self, quiet=False):
         """Print out all the states."""
@@ -5631,8 +5729,8 @@ class QHStates(QH):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.conj(conj_type))
+        for ket in self.qs:
+            new_states.append(ket.conj(conj_type))
             
         return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
@@ -5641,8 +5739,18 @@ class QHStates(QH):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.simple_q())
+        for ket in self.qs:
+            new_states.append(ket.simple_q())
+            
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def subs(self, symbol_value_dict, qtype="scalar"):
+        """Substitutes values into ."""
+      
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.subs(symbol_value_dict))
             
         return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
@@ -5651,8 +5759,8 @@ class QHStates(QH):
     
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.scalar())
+        for ket in self.qs:
+            new_states.append(ket.scalar())
             
         return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
@@ -5661,8 +5769,8 @@ class QHStates(QH):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.vector())
+        for ket in self.qs:
+            new_states.append(ket.vector())
             
         return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
       
@@ -5671,8 +5779,8 @@ class QHStates(QH):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.xyz())
+        for ket in self.qs:
+            new_states.append(ket.xyz())
             
         return new_states
     
@@ -5681,8 +5789,8 @@ class QHStates(QH):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.flip_signs())
+        for ket in self.qs:
+            new_states.append(ket.flip_signs())
             
         return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
@@ -6014,14 +6122,24 @@ class QHStates(QH):
     
     @staticmethod
     def bracket(bra, op, ket):
-        """Forms <bra|op|ket>."""
+        """Forms <bra|op|ket>. Note: if fed 2 k"""
+        
+        flip = 0
         
         if bra.qs_type == 'ket':
             bra = bra.bra()
+            flip += 1
+            
         if ket.qs_type == 'bra':
             ket = ket.ket()
+            flip += 1
             
-        b = bra.Euclidean_product(op).product(ket)
+        if flip == 1:
+            print("fed 2 bras or kets, taking the conjugate as need be. Check result though.")
+            b = bra.product(op).product(ket)
+        
+        else:
+            b = bra.Euclidean_product(op).product(ket)
         
         return b
     
@@ -6138,6 +6256,76 @@ class QHStates(QH):
             return None
         
         return sigma[kind].normalize()
+  
+    def sin(self):
+        """sine of states."""
+                
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.sin(qtype=""))
+            
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def cos(self):
+        """cosine of states."""
+                
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.cos(qtype=""))
+            
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def tan(self):
+        """tan of states."""
+                
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.tan(qtype=""))
+            
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def sinh(self):
+        """sinh of states."""
+                
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.sinh(qtype=""))
+            
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def cosh(self):
+        """cosh of states."""
+                
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.cosh(qtype=""))
+            
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
+    def tanh(self):
+        """tanh of states."""
+                
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.tanh(qtype=""))
+            
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+
+    def exp(self):
+        """exponential of states."""
+                
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.exp(qtype=""))
+            
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
 
 
 # In[25]:
@@ -6227,6 +6415,15 @@ class TestQHStates(unittest.TestCase):
     def test_1030_equals(self):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
+    
+    def test_1031_subs(self):  
+        
+        t, x, y, z = sp.symbols("t x y z")
+        q_sym = QHStates([QH([t, x, y, x * y * z])])
+    
+        q_z = q_sym.subs({t:1, x:2, y:3, z:4})
+        print("t x y xyz sub 1 2 3 4: ", q_z)
+        self.assertTrue(q_z.equals(QHStates([QH([1, 2, 3, 24])])))
     
     def test_1032_scalar(self):
         qs = self.q_1_q_i.scalar()
@@ -6576,17 +6773,49 @@ class Q8States(Q8):
     def bra(self):
         """Quickly set the qs_type to bra by calling set_qs_type()."""
         
-        return self.set_qs_type("bra")
+        if self.qs_type == "bra":
+            return self
+        
+        bra = deepcopy(self).conj()
+        bra.rows = 1
+        bra.columns = self.dim
+        
+        if self.dim > 1:
+            bra.qs_type = "bra"
+        
+        return bra
     
     def ket(self):
         """Quickly set the qs_type to ket by calling set_qs_type()."""
-        
-        return self.set_qs_type("ket")
     
-    def op(self, rows=0, columns=0):
-        """Quickly set the qs_type to op by calling set_qs_type()."""
+        if self.qs_type == "ket":
+            return self
         
-        return self.set_qs_type("op", rows=rows, columns=columns)
+        ket = deepcopy(self).conj()
+        ket.rows = self.dim
+        ket.columns = 1
+        
+        if self.dim > 1:
+            ket.qs_type = "ket"
+        
+        return ket
+    
+    def op(self, rows, columns):
+        """Quickly set the qs_type to op by calling set_qs_type()."""
+ 
+        if rows * columns != self.dim:
+            print("Oops, rows * columns != dim: {} * {}, {}".formaat(rows, columns, self.dim))
+            return None
+        
+        op_q = deepcopy(self)
+        
+        op_q.rows = rows
+        op_q.columns = columns
+        
+        if self.dim > 1:
+            op_q.qs_type = "op"
+        
+        return op_q
     
     def __str__(self, quiet=False):
         """Print out all the states."""
@@ -6628,13 +6857,23 @@ class Q8States(Q8):
                 
         return result
 
+    def subs(self, symbol_value_dict, qtype="scalar"):
+        """Substitutes values into ."""
+    
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.subs(symbol_value_dict))
+            
+        return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
     def scalar(self, qtype="scalar"):
         """Returns the scalar part of a quaternion."""
     
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.scalar())
+        for ket in self.qs:
+            new_states.append(ket.scalar())
             
         return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
@@ -6643,8 +6882,8 @@ class Q8States(Q8):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.vector())
+        for ket in self.qs:
+            new_states.append(ket.vector())
             
         return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
       
@@ -6653,8 +6892,8 @@ class Q8States(Q8):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.xyz())
+        for ket in self.qs:
+            new_states.append(ket.xyz())
             
         return new_states
     
@@ -6663,8 +6902,8 @@ class Q8States(Q8):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.conj(conj_type))
+        for ket in self.qs:
+            new_states.append(ket.conj(conj_type))
             
         return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
@@ -6673,8 +6912,8 @@ class Q8States(Q8):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.simple_q())
+        for ket in self.qs:
+            new_states.append(ket.simple_q())
             
         return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
@@ -6683,8 +6922,8 @@ class Q8States(Q8):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.flip_signs())
+        for ket in self.qs:
+            new_states.append(ket.flip_signs())
             
         return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
@@ -7008,14 +7247,24 @@ class Q8States(Q8):
     
     @staticmethod
     def bracket(bra, op, ket):
-        """Forms <bra|op|ket>."""
+        """Forms <bra|op|ket>. Note: if fed 2 k"""
+        
+        flip = 0
         
         if bra.qs_type == 'ket':
             bra = bra.bra()
+            flip += 1
+            
         if ket.qs_type == 'bra':
             ket = ket.ket()
+            flip += 1
             
-        b = bra.Euclidean_product(op).product(ket)
+        if flip == 1:
+            print("fed 2 bras or kets, taking the conjugate as need be. Check result though.")
+            b = bra.product(op).product(ket)
+        
+        else:
+            b = bra.Euclidean_product(op).product(ket)
         
         return b
     
@@ -7221,6 +7470,15 @@ class TestQ8States(unittest.TestCase):
     def test_1030_equals(self):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
+        
+    def test_1031_subs(self):
+        
+        t, x, y, z = sp.symbols("t x y z")
+        q_sym = Q8States([Q8([t, t, x, x, y, y, x * y * z, x * y * z])])
+    
+        q_z = q_sym.subs({t:1, x:2, y:3, z:4})
+        print("t x y xyz sub 1 2 3 4: ", q_z)
+        self.assertTrue(q_z.equals(Q8States([Q8([1, 1, 2, 2, 3, 3, 24, 24])])))    
         
     def test_1032_scalar(self):
         qs = self.q_1_q_i.scalar()
@@ -7563,17 +7821,49 @@ class Q8aStates(Q8a):
     def bra(self):
         """Quickly set the qs_type to bra by calling set_qs_type()."""
         
-        return self.set_qs_type("bra")
+        if self.qs_type == "bra":
+            return self
+        
+        bra = deepcopy(self).conj()
+        bra.rows = 1
+        bra.columns = self.dim
+        
+        if self.dim > 1:
+            bra.qs_type = "bra"
+        
+        return bra
     
     def ket(self):
         """Quickly set the qs_type to ket by calling set_qs_type()."""
-        
-        return self.set_qs_type("ket")
     
-    def op(self, rows=0, columns=0):
-        """Quickly set the qs_type to op by calling set_qs_type()."""
+        if self.qs_type == "ket":
+            return self
         
-        return self.set_qs_type("op", rows=rows, columns=columns)
+        ket = deepcopy(self).conj()
+        ket.rows = self.dim
+        ket.columns = 1
+        
+        if self.dim > 1:
+            ket.qs_type = "ket"
+        
+        return ket
+    
+    def op(self, rows, columns):
+        """Quickly set the qs_type to op by calling set_qs_type()."""
+ 
+        if rows * columns != self.dim:
+            print("Oops, rows * columns != dim: {} * {}, {}".formaat(rows, columns, self.dim))
+            return None
+        
+        op_q = deepcopy(self)
+        
+        op_q.rows = rows
+        op_q.columns = columns
+        
+        if self.dim > 1:
+            op_q.qs_type = "op"
+        
+        return op_q
     
     def __str__(self, quiet=False):
         """Print out all the states."""
@@ -7615,13 +7905,23 @@ class Q8aStates(Q8a):
                 
         return result
 
+    def subs(self, symbol_value_dict, qtype="scalar"):
+        """Substitutes values into all states."""
+    
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.subs(symbol_value_dict))
+            
+        return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
     def scalar(self, qtype="scalar"):
         """Returns the scalar part of a quaternion."""
     
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.scalar())
+        for ket in self.qs:
+            new_states.append(ket.scalar())
             
         return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
@@ -7630,8 +7930,8 @@ class Q8aStates(Q8a):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.vector())
+        for ket in self.qs:
+            new_states.append(ket.vector())
             
         return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
       
@@ -7640,8 +7940,8 @@ class Q8aStates(Q8a):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.xyz())
+        for ket in self.qs:
+            new_states.append(ket.xyz())
             
         return new_states
     
@@ -7650,8 +7950,8 @@ class Q8aStates(Q8a):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.conj(conj_type))
+        for ket in self.qs:
+            new_states.append(ket.conj(conj_type))
             
         return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
@@ -7660,8 +7960,8 @@ class Q8aStates(Q8a):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.simple_q())
+        for ket in self.qs:
+            new_states.append(ket.simple_q())
             
         return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
@@ -7670,8 +7970,8 @@ class Q8aStates(Q8a):
         
         new_states = []
         
-        for bra in self.qs:
-            new_states.append(bra.flip_signs())
+        for ket in self.qs:
+            new_states.append(ket.flip_signs())
             
         return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
@@ -7995,14 +8295,24 @@ class Q8aStates(Q8a):
     
     @staticmethod
     def bracket(bra, op, ket):
-        """Forms <bra|op|ket>."""
+        """Forms <bra|op|ket>. Note: if fed 2 k"""
+        
+        flip = 0
         
         if bra.qs_type == 'ket':
             bra = bra.bra()
+            flip += 1
+            
         if ket.qs_type == 'bra':
             ket = ket.ket()
+            flip += 1
             
-        b = bra.Euclidean_product(op).product(ket)
+        if flip == 1:
+            print("fed 2 bras or kets, taking the conjugate as need be. Check result though.")
+            b = bra.product(op).product(ket)
+        
+        else:
+            b = bra.Euclidean_product(op).product(ket)
         
         return b
     
@@ -8208,6 +8518,15 @@ class TestQ8aStates(unittest.TestCase):
     def test_1030_equals(self):
         self.assertTrue(self.A.equals(self.A))
         self.assertFalse(self.A.equals(self.B))
+        
+    def test_1031_subs(self):
+        
+        t, x, y, z = sp.symbols("t x y z")
+        q_sym = Q8aStates([Q8a([t, t, x, x, y, y, x * y * z, x * y * z])])
+    
+        q_z = q_sym.subs({t:1, x:2, y:3, z:4})
+        print("t x y xyz sub 1 2 3 4: ", q_z)
+        self.assertTrue(q_z.equals(Q8aStates([Q8a([1, 1, 2, 2, 3, 3, 24, 24])])))    
         
     def test_1032_scalar(self):
         qs = self.q_1_q_i.scalar()
@@ -8595,6 +8914,22 @@ unittest.TextTestRunner().run(suite);
 
 
 get_ipython().system('jupyter nbconvert --to script Q_tools.ipynb')
+
+
+# In[33]:
+
+
+q1 = QH([0,1,2,3])
+q1exp = q1.exp()
+q1exp.print_state("q exp 0123")
+
+
+# In[34]:
+
+
+q1s = QHStates([QH([0,1,2,3])])
+q1sexp = q1s.exp()
+q1sexp.print_state("qs exp 0123")
 
 
 # In[ ]:
