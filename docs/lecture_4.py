@@ -9,10 +9,10 @@
 # 
 # Load the needed libraries.
 
-# In[1]:
+# In[8]:
 
 
-get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as np\nimport sympy as sp\nimport matplotlib.pyplot as plt\nimport math\n\n# To get equations the look like, well, equations, use the following.\nfrom sympy.interactive import printing\nprinting.init_printing(use_latex=True)\nfrom IPython.display import display\n\n# Tools for manipulating quaternions.\nimport Q_tools as qt;\n\nfrom IPython.core.display import display, HTML, Math, Latex\ndisplay(HTML("<style>.container { width:100% !important; }</style>"))')
+get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as np\nimport sympy as sp\nimport matplotlib.pyplot as plt\nimport math\n\n# To get equations the look like, well, equations, use the following.\nfrom sympy.interactive import printing\nprinting.init_printing(use_latex=True)\nfrom IPython.display import display\n\n# Tools for manipulating quaternions.\nimport Q_tools as qt;\n\nfrom IPython.core.display import display, HTML, Math, Latex\ndisplay(HTML("<style>.container { width:100% !important; }</style>"))\n\n%autosave 60')
 
 
 # ![](images/lecture_4/c4_p093_q1.jpg)
@@ -86,7 +86,7 @@ get_ipython().run_cell_magic('capture', '', '%matplotlib inline\nimport numpy as
 
 # This algebraically simple expression has a correspondingly simple **physical** interpretation. The identity does nothing to a quantum state, go inertia go. The three imaginaries $i$ point in some direction of space - and have zero for time. The epsilon $\epsilon$ is a real number, so is a tiny amount of time. The produt of these two results in a tiny amount of space. Do the calculation.  
 
-# In[2]:
+# In[9]:
 
 
 q_0, q_1, q_n1 = qt.QH().q_0(), qt.QH().q_1(), qt.QH().q_1(-1)
@@ -145,58 +145,123 @@ IaddHIdifH.print_state("(I+iεH)(I-iεH)=I")
 
 # ![](images/lecture_4/c4_p108_q1.jpg)
 
-# What I see in these statements is a requirement: **Say NO to Torque**. 
+# This idea is presented as _just a math thing_. But we are not doing pure math here. This is mathematical physics. Any **built in** symmetry has serious physical consequences via [Noether's theorem](https://en.wikipedia.org/wiki/Noether%27s_theorem). But hold on, that only applies to actions and literally nothing was said about what the ket $|B>$ was about. Because I want to understand what this little bit of math means physically, then I constraint the comments that follow to the case where the ket $|B>$ is only about an action, as is the case for the [path integral approach to quantum mechanics](https://en.wikipedia.org/wiki/Path_integral_formulation). Just to be clear: Susskind and Friedman are talkinb about a math thing which is true, and I am looking at a physical interpretation of a far narrower situation,
+# 
+# When analyzing symmetries, three things must be done:
+# 
+# 1. Identify specifically what is **not changing**
+# 1. Find **all symmetries**
+# 1. State the corresponding conserved quantities
+# 
+# Those are the three jobs.
 
-# In[3]:
+# 1. The inner product is not changing.
+# 
+# $$ <B|B> = \sum_0^{i=n} (bt_n^2 + bx_n^2 + by_n^2 + bz_n^2, 0, 0, 0) $$
+# 
+# Each state must not change this value.
+
+# 2. There are three symmetries that will leave the norm unchanged:
+# 
+#     - $U(1)$
+#     - $SU(2)$
+#     - $Q_8$
+#   
+# The group $U(1)$ is also know as a unit cirle in the complex plane. Let's show that a quaternion series pointed in one direction is not altered by an exponentila pointed in that same direction (in this case, (1, 2, 3)).
+
+# In[10]:
 
 
 q23 = qt.QHStates([qt.QH([2, 1, 2, 3]).normalize(1/np.sqrt(2)), qt.QH([3, 1, 2, 3]).normalize(1/np.sqrt(2))])
-q23_selfie = qt.QHStates().bracket(q23.bra(), I2, q23)
+q23_selfie = qt.QHStates().braket(q23.bra(), q23)
 q23.print_state("|q23>")
 q23_selfie.print_state("<q23|q23>")
-
-
-# In[9]:
-
-
-q1s = qt.QHStates([qt.QH([0,1,2,3])]).diagonal(2)
-q1s.print_state("q1s")
-q1s_exp123 = q1s.exp()
-q1s_exp123.print_state("exp(q123)")
 
 
 # In[11]:
 
 
-exp_q23 = q1s_exp123.product(q23)
-exp_q23.print_state("exp_q23")
+exp_123 = qt.QHStates([qt.QH([0,1,2,3]).exp()]).diagonal(2)
+exp_123.print_state("exp(123)")
 
 
-# In[15]:
+# In[12]:
 
 
-exp_q23.bra().print_state("ext bra")
-I2.print_state("I2") 
-exp_q23.print_state("exp")
-q23_exp123_selfie = qt.QHStates().bracket(exp_q23.bra(), I2, exp_q23)
-q23_selfie.print_state("<q23 exp(0123)*|exp(0123) q23>")
+exp_123_q23 = exp_123.product(q23).ket()
+exp_123_q23.print_state("exp(123) q23")
 
+
+# In[13]:
+
+
+exp_123_q23_selfie = qt.QHStates().braket(exp_123_q23.bra(), exp_123_q23)
+exp_123_q23_selfie.print_state("<exp(0123) q23|exp(0123) q23>")
+
+
+# I could stop here. This is all anyone ever shows as an algebra observation with no physical consequences. In electromagnetism, the symmetry $U(1)$ is a reflection of electric charge conservation. Usually, one is not working directly with electromagnetism. And yet this symmetry will be there for all calculations of the norm of a wave function. I do not feel certain how to interpret that observation, the ubiquity of $U(1)$ symmetry. 
+
+# The group $SU(2)$ is also known as the unit quaternions. Tere is little doubt that quaternion serices quantum mechanics can handle this group. The demonstartion is just as vefore, except one uses a quaternion for the exponential that points in an arbitrary direction. Do it all in one cell:
+
+# In[14]:
+
+
+exp_32n1 = qt.QHStates([qt.QH([0, 3, 2, -1]).exp()]).diagonal(2)
+exp_32n1.print_state("exp(32-1)")
+exp_32n1_q23 = exp_32n1.product(q23).ket()
+exp_32n1_q23.print_state("exp(32-1) q23")
+exp_32n1_q23_selfie = qt.QHStates().braket(exp_32n1_q23.bra(), exp_32n1_q23)
+exp_123_q23_selfie.print_state("<exp(032-1) q23|exp(032-1) q23>")
+
+
+# If we were to write out the action for the weak force, the gauge symmetry needed would be right there. This feels odd: people rarely work with the weak force. Yet any and every time someone takes the norm of a wave function, this symmetry is there. The way I think about this now is to view it as Nature's way of enforcing electro-weak charge conservation even when one is not working a problem in EM or the weak force.
+
+# On to the quaternion symmetry group $Q_8$. I think I am going to make a few comments but mostly skip this one. The quaternion group $Q_8$ is not the group of the strong force $SU(3)$. I am never going to have the math chops to prove this speculation. I know when they were shopping for a group that was needed to complete the standard model, it had to have eight members and each one had to have a norm of one. The $S$ in $SU(3)$ means special, having a norm of one. The number of memember is the Lie algebra is $3^2 -1 = 8$. I will probably never know if there is any other quality needed for the strong force gauge symmetry (OK, non-commuting). The quaternion group $Q_8$ has both of those qualities.
+
+# Physicists are proud of the success of the standard model. Yet they are also not please with how it looks like an arbitrary collection of groups. Why three? Why only three? Why these three? Those are all valid fundamential equations of the standard model. Those questions where there at the start and are here today.
+
+# For quaternion series quantum mechanics, when calculating the norm of a wave function, there will always be the continous symmetries of $U(1)$, $SU(2)$, and $Q_8$. These are not put in _by hand_, they are properties of the algrabra. This could form the basis of an elegant approach to the standard model. 
 
 # ![](images/lecture_4/c4_p109_q1.jpg)
 
-# whatever
+# At first glance, this little expression looks trivial: the exponential cancel. In quaternion series quantum mechanics, this means something physically. What has happen is a rotation in time and space components so that the norm is unchanged. One has to think of the data one can collect, $ e^{i \theta} \alpha_j$ and the data one constructs mathematically via conjugates, $\alpha^*_j e^{-i \theta}$. No one can observe both since the two collections of data are space-like separated, so they are constructed.
 
 # ![](images/lecture_4/c4_p110_q1.jpg)
 
-# whatever
+# I suffer from "Minkowski vision". No matter how much I admire the authors of this book, talking about "time" bothers me. It should always be space-time because a different observer will take a pure time measurement and need to use one of space-time. The fact that the wave function changes in space-time sounds more reasonable to my ear. Of course the wave function has different values in space-time (particularly the space part, but that always carries over into the time part too). I would have written it as $$<\Psi(Rt)|\textbf{L}|\Psi(Rt)>.$$ This alteration changes no calculation in a material way. It is only about ontology, why things are the way they are. Every state of a wave function lives in space-time and only space-time, never just time alone. Respect that insight. For classical quantum mechanics, the changes that happen in time far exceed those in space, hence the standard approach is reasonable.
 
 # ![](images/lecture_4/c4_p110_q2.jpg)
 
-# whatever
+# Let me repeat this exercise with my dt's on the other side. The reason I do this is so I can see energy times time, something that appears in actions.
+# 
+# Look into the change of an operator $\textbf{L}$ which classically is mostly over time using the product rule.
+# $$ d <\Psi(Rt) | \textbf{L} | \Psi(Rt)> =  <d \Psi(Rt) | \textbf{L} | \Psi(Rt)> + <\Psi(Rt) | \textbf{L} | d \Psi(Rt)> $$
+# 
+# The first time I wrote this out, I missed a subtle issue. It is important to have both those vertical lines in there, the "|". That is where operators operatate. They are matrices as apposed to bras or kets.
+# 
+# Use the generalized Schr&ouml;dinger equation derived earlier:
+# $$ d |\Psi> = -\frac{i \textbf{H}}{\hbar} |\Psi> dt $$
+# $$ d <\Psi| = <\Psi |\frac{i \textbf{H}}{\hbar} dt $$
+# Notice that for the first term, the operator goes over to the bra. That will flip the sign of the factor of $i$. 
+# 
+# $$ \begin{align*}
+# d <\Psi(Rt) | \textbf{L} | \Psi(Rt)> &= <d \Psi(Rt) | \textbf{L} | \Psi(Rt)> + <\Psi(Rt) | \textbf{L} | d \Psi(Rt)> \\
+# &= <\Psi(Rt)| \frac{i \textbf{H}}{\hbar} \textbf{L} | \Psi(Rt)> dt + <\Psi(Rt) | \textbf{L}  \left(-\frac{i \textbf{H}}{\hbar}\right) | \Psi(Rt)> dt \\
+# &= <\Psi(Rt)| \frac{i \textbf{H}}{\hbar} \textbf{L} -  \textbf{L} \left(\frac{i \textbf{H}}{\hbar}\right)| \Psi(Rt)> dt \\
+# &= <\Psi(Rt)| \frac{i}{\hbar} [\textbf{H}, \textbf{L}]| \Psi(Rt)> dt \\
+# \end{align*} $$
+# 
+# For my quaternion series software to work, all three of $i$, $\textbf{H}$, and $\textbf{L}$ need to be square quaternion series (rows=columns), with the $i$ a diagonal quaternion series. For the above expression to be valid, $i$ must commute with $\textbf{L}$. That can and will happen if both point in the same way. As has been done since the 1920s, that one direction has always been $(1, 0, 0)$, not say $(1, 1, 1)$ or $(1, 2, 3)$. There will be many a physicists that will say, "that doesn't count, they should all be able to point wherever". Balderdash. Time for a new guiding principle:
+# 
+# ## Don't point in space-time like a drunken sailor
+# 
+# A wasted sailor cannot point in the same direction for any appreciable period of time. Drunks don't do science. Physics experiments are almost absurdly precise in where they look in space-time. Considerable effort is invested in making sure the area of detection moves in no way. All I am arguing is that what is true in the physical experimental area must also be true of the math: all those operators point in the same exact direction.
 
 # ![](images/lecture_4/c4_p111_q1.jpg)
 
-# whatever
+# "Quaternions do not commute" is a ubiquitous statement, without the caveat **unless a quaternion is real valued or the quaternions point is exactly the same directions**. The real-valued case is simple, all three imaginaries are equal to zero. The second part of the statement has two parts. When quaternions point in the same direction, then the cross product - expressed as $|A||B| \sin(\theta)$ - is zero. The second type of cancelation requires necessarily the conjugate operator to wipe out the symmetric terms. Using a conjugate means that the complete system is **necessarily non-local**. 
+
+# 
 
 # ![](images/lecture_4/c4_p112_q1.jpg)
 
