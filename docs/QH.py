@@ -2402,9 +2402,6 @@ class QHStates(QH):
         if flip == 1:
             print("fed 2 bras or kets, took a conjugate. Double check.")
 
-        else:
-            print("Assumes your <bra| already has been conjugated. Double check.")
-
         b = bra.product(op).product(ket)
 
         return b
