@@ -29,7 +29,7 @@ import sympy as sp
 import os
 import unittest
 from copy import deepcopy
-
+import pdb
 from IPython.display import display
 from os.path import basename
 from glob import glob
@@ -240,18 +240,22 @@ class QH(object):
             raise Exception("Oops, 2 quaternions have different representations: {}, {}".format(self.representation, q1.representation))
             return False
         
-    def display_q(self):
+    def display_q(self, label = ""):
         """Display each terms in a pretty way."""
-
+    
+        if label:
+            print(label)
         display(self.t)
         display(self.x)
         display(self.y)
         display(self.z)
         return
     
-    def simple_q(self):
+    def simple_q(self, label=""):
         """Simplify each term."""
         
+        if label:
+            print(label)
         self.t = sp.simplify(self.t)
         self.x = sp.simplify(self.x)
         self.y = sp.simplify(self.y)
@@ -395,6 +399,26 @@ class QH(object):
         conj_q.representation = self.representation
         
         return conj_q
+    
+    def conj_q(self, q1):
+        """Given a quaternion with 0's or 1's, will do the standard conjugate, first conjugate
+           second conjugate, sign flip, or all combinations of the above."""
+        
+        _conj = deepcopy(self)
+    
+        if q1.t:
+            _conj = _conj.conj(conj_type=0)
+            
+        if q1.x:
+            _conj = _conj.conj(conj_type=1)    
+        
+        if q1.y:
+            _conj = _conj.conj(conj_type=2)    
+        
+        if q1.z:
+            _conj = _conj.flip_signs()
+    
+        return _conj
     
     def flip_signs(self, qtype="-"):
         """Flip the signs of all terms."""
@@ -715,14 +739,12 @@ class QH(object):
         
         return triple
 
-    # Quaternion rotation involves a triple product:  UQU∗
-    # where the U is a unitary quaternion (having a norm_squared of one).
-    def rotate(self, a_1=0, a_2=0, a_3=0, qtype="rot"):
-        """Do a rotation given up to three angles."""
+    # Quaternion rotation involves a triple product:  u R 1/u
+    def rotate(self, u, qtype="rot"):
+        """Do a rotation using a triple product: u R 1/u."""
 
         end_qtype = "{}{}".format(self.qtype, qtype)
         
-        u = QH([0, a_1, a_2, a_3])
         u_abs = u.abs_of_q()
         u_norm_squaredalized = u.divide_by(u_abs)
 
@@ -735,13 +757,13 @@ class QH(object):
     # A boost also uses triple products like a rotation, but more of them.
     # This is not a well-known result, but does work.
     # b -> b' = h b h* + 1/2 ((hhb)* -(h*h*b)*)
-    # where h is of the form (cosh(a), sinh(a))
-    def boost(self, beta_x=0, beta_y=0, beta_z=0, qtype="boost"):
-        """A boost along the x, y, and/or z axis."""
+    # where h is of the form (cosh(a), sinh(a)) OR (0, a, b, c)
+    def boost(self, h, qtype="boost"):
+        """A boost or rotation or both."""
 
         end_qtype = "{}{}".format(self.qtype, qtype)
         
-        boost = QH(sr_gamma_betas(beta_x, beta_y, beta_z))      
+        boost = h      
         b_conj = boost.conj()
 
         triple_1 = boost.triple_product(self, b_conj)
@@ -1120,6 +1142,14 @@ class TestQH(unittest.TestCase):
         self.assertTrue(q_z.y == -3)
         self.assertTrue(q_z.z == 4)
         
+    def test_conj_q(self):
+        q_z = self.Q.conj_q(self.Q)
+        print("conj_q(conj_q): ", q_z)
+        self.assertTrue(q_z.t == -1)
+        self.assertTrue(q_z.x == 2)
+        self.assertTrue(q_z.y == 3)
+        self.assertTrue(q_z.z == -4)
+        
     def sign_flips(self):
         q_z = self.Q.sign_flips()
         print("sign_flips: ", q_z)
@@ -1286,7 +1316,7 @@ class TestQH(unittest.TestCase):
         self.assertTrue(q_z.z == 8)
         
     def test_rotate(self):
-        q_z = self.Q.rotate(1)
+        q_z = self.Q.rotate(QH([0, 1, 0, 0]))
         print("rotate: ", q_z)
         self.assertTrue(q_z.t == 1)
         self.assertTrue(q_z.x == -2)
@@ -1295,7 +1325,8 @@ class TestQH(unittest.TestCase):
         
     def test_boost(self):
         q1_sq = self.Q.square()
-        q_z = self.Q.boost(0.003)
+        h = QH(sr_gamma_betas(0.003))
+        q_z = self.Q.boost(h)
         q_z2 = q_z.square()
         print("q1_sq: ", q1_sq)
         print("boosted: ", q_z)
@@ -2198,6 +2229,26 @@ class Q8(object):
         
         return conj_q
 
+    def conj_q(self, q1):
+        """Given a quaternion with 0's or 1's, will do the standard conjugate, first conjugate
+           second conjugate, sign flip, or all combinations of the above."""
+        
+        _conj = deepcopy(self)
+    
+        if q1.dt.p or q1.dt.n:
+            _conj = _conj.conj(conj_type=0)
+            
+        if q1.dx.p or q1.dx.n:
+            _conj = _conj.conj(conj_type=1)    
+        
+        if q1.dy.p or q1.dy.n:
+            _conj = _conj.conj(conj_type=2)    
+        
+        if q1.dz.p or q1.dz.n:
+            _conj = _conj.flip_signs()
+    
+        return _conj
+    
     def flip_signs(self, qtype=""):
         """Flip all the signs, just like multipying by -1."""
 
@@ -2495,12 +2546,10 @@ class Q8(object):
         
         return triple
     
-    # Quaternion rotation involves a triple product:  UQU∗
-    # where the U is a unitary quaternion (having a norm_squared of one).
-    def rotate(self, a_1p=0, a_1n=0, a_2p=0, a_2n=0, a_3p=0, a_3n=0):
-        """Do a rotation given up to three angles."""
+    # Quaternion rotation involves a triple product:  u R 1/u
+    def rotate(self, u):
+        """Do a rotation using a triple product: u R 1/u."""
     
-        u = Q8([0, 0, a_1p, a_1n, a_2p, a_2n, a_3p, a_3n])
         u_abs = u.abs_of_q()
         u_norm_squaredalized = u.divide_by(u_abs)
         q_rot = u_norm_squaredalized.triple_product(self, u_norm_squaredalized.conj())
@@ -2510,12 +2559,14 @@ class Q8(object):
     
     # A boost also uses triple products like a rotation, but more of them.
     # This is not a well-known result, but does work.
-    def boost(self, beta_x=0, beta_y=0, beta_z=0, qtype="Boost!"):
+    # b -> b' = h b h* + 1/2 ((hhb)* -(h*h*b)*)
+    # where h is of the form (cosh(a), sinh(a)) OR (0, a, b, c)
+    def boost(self, h, qtype="Boost!"):
         """A boost along the x, y, and/or z axis."""
     
         end_qtype = "{st}{qt}".format(st=self.qtype, qt=qtype)
         
-        boost = Q8(sr_gamma_betas(beta_x, beta_y, beta_z))
+        boost = h
         b_conj = boost.conj()
         
         triple_1 = boost.triple_product(self, b_conj)
@@ -2987,7 +3038,15 @@ class TestQ8(unittest.TestCase):
         self.assertTrue(q_z.dx.n == 2)
         self.assertTrue(q_z.dy.n == 3)
         self.assertTrue(q_z.dz.p == 4)
-        
+    
+    def test_conj_q(self):
+        q_z = self.Q.conj_q(self.Q)
+        print("conj_q(conj_q): ", q_z)
+        self.assertTrue(q_z.dt.n == 1)
+        self.assertTrue(q_z.dx.p == 2)
+        self.assertTrue(q_z.dy.p == 3)
+        self.assertTrue(q_z.dz.n == 4)
+    
     def test_square(self):
         q_sq = self.Q.square()
         q_sq_red = q_sq.reduce()
@@ -3211,7 +3270,7 @@ class TestQ8(unittest.TestCase):
         self.assertTrue(q_z.dz.n == 0)
         
     def test_rotate(self):
-        q_z = self.Q.rotate(1).reduce()
+        q_z = self.Q.rotate(Q8([0, 1, 0, 0])).reduce()
         print("rotate: {}", q_z)
         self.assertTrue(q_z.dt.p == 1)
         self.assertTrue(q_z.dt.n == 0)
@@ -3224,7 +3283,8 @@ class TestQ8(unittest.TestCase):
         
     def test_boost(self):
         Q_sq = self.Q.square().reduce()
-        q_z = self.Q.boost(0.003)
+        h = Q8(sr_gamma_betas(0.003))
+        q_z = self.Q.boost(h)
         q_z2 = q_z.square().reduce()
         print("Q_sq: {}".format(Q_sq))
         print("boosted: {}", q_z)
@@ -3804,6 +3864,26 @@ class Q8a(Doubleta):
         
         return conj_q
 
+    def conj_q(self, q1):
+        """Given a quaternion with 0's or 1's, will do the standard conjugate, first conjugate
+           second conjugate, sign flip, or all combinations of the above."""
+        
+        _conj = deepcopy(self)
+    
+        if q1.a[0] or q1.a[1]:
+            _conj = _conj.conj(conj_type=0)
+            
+        if q1.a[2] or q1.a[3]:
+            _conj = _conj.conj(conj_type=1)    
+        
+        if q1.a[4] or q1.a[5]:
+            _conj = _conj.conj(conj_type=2)    
+        
+        if q1.a[6] or q1.a[7]:
+            _conj = _conj.flip_signs()
+    
+        return _conj
+    
     def flip_signs(self, conj_type=0, qtype="-"):
         """Flip all the signs, just like multipying by -1."""
 
@@ -4165,12 +4245,10 @@ class Q8a(Doubleta):
         
         return triple
     
-    # Quaternion rotation involves a triple product:  UQU∗
-    # where the U is a unitary quaternion (having a norm_squared of one).
-    def rotate(self, a_1p=0, a_1n=0, a_2p=0, a_2n=0, a_3p=0, a_3n=0):
-        """Do a rotation given up to three angles."""
+    # Quaternion rotation involves a triple product:  u R 1/u
+    def rotate(self, u):
+        """Do a rotation using a triple product: u R 1/u."""
     
-        u = Q8a([0, 0, a_1p, a_1n, a_2p, a_2n, a_3p, a_3n])
         u_abs = u.abs_of_q()
         u_norm_squaredalized = u.divide_by(u_abs)
         q_rot = u_norm_squaredalized.triple_product(self, u_norm_squaredalized.conj())
@@ -4180,12 +4258,14 @@ class Q8a(Doubleta):
     
     # A boost also uses triple products like a rotation, but more of them.
     # This is not a well-known result, but does work.
-    def boost(self, beta_x=0, beta_y=0, beta_z=0, qtype="boost"):
+    # b -> b' = h b h* + 1/2 ((hhb)* -(h*h*b)*)
+    # where h is of the form (cosh(a), sinh(a)) OR (0, a, b, c)
+    def boost(self, h, qtype="boost"):
         """A boost along the x, y, and/or z axis."""
         
         end_qtype = "{}{}".format(self.qtype, qtype)
         
-        boost = Q8a(sr_gamma_betas(beta_x, beta_y, beta_z))
+        boost = h
         b_conj = boost.conj()
         
         triple_1 = boost.triple_product(self, b_conj)
@@ -4663,7 +4743,15 @@ class TestQ8a(unittest.TestCase):
         self.assertTrue(q_z.a[3] == 2)
         self.assertTrue(q_z.a[5] == 3)
         self.assertTrue(q_z.a[6] == 4)
-        
+    
+    def test_conj_q(self):
+        q_z = self.q1.conj_q(self.q1)
+        print("conj_q(conj_q): ", q_z)
+        self.assertTrue(q_z.a[1] == 1)
+        self.assertTrue(q_z.a[2] == 2)
+        self.assertTrue(q_z.a[4] == 3)
+        self.assertTrue(q_z.a[7] == 4)
+    
     def test_square(self):
         q_sq = self.q1.square()
         q_sq_red = q_sq.reduce()
@@ -4875,7 +4963,7 @@ class TestQ8a(unittest.TestCase):
         self.assertTrue(q_z.a[7] == 0)
         
     def test_rotate(self):
-        q_z = self.q1.rotate(1).reduce()
+        q_z = self.q1.rotate(Q8a([0, 1, 0, 0])).reduce()
         print("rotate: {}".format(q_z))
         self.assertTrue(q_z.a[0] == 1)
         self.assertTrue(q_z.a[1] == 0)
@@ -4888,7 +4976,7 @@ class TestQ8a(unittest.TestCase):
         
     def test_boost(self):
         q1_sq = self.q1.square().reduce()
-        q_z = self.q1.boost(0.003)
+        q_z = self.q1.boost(Q8a(sr_gamma_betas(0.003)))
         q_z2 = q_z.square().reduce()
         print("q1_sq: {}".format(q1_sq))
         print("boosted: {}".format(q_z))
@@ -5734,6 +5822,16 @@ class QHStates(QH):
             
         return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
+    def conj_q(self, q1):
+        """Does multicate conjugate operators."""
+        
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.conj_q(q1))
+            
+        return QHStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
     def simple_q(self):
         """Simplify the states."""
         
@@ -6122,7 +6220,7 @@ class QHStates(QH):
     
     @staticmethod
     def bracket(bra, op, ket):
-        """Forms <bra|op|ket>. Note: if fed 2 k"""
+        """Forms <bra|op|ket>. Note: if fed 2 kets, will take a conjugate."""
         
         flip = 0
         
@@ -6135,11 +6233,36 @@ class QHStates(QH):
             flip += 1
             
         if flip == 1:
-            print("fed 2 bras or kets, taking the conjugate as need be. Check result though.")
-            b = bra.product(op).product(ket)
+            print("fed 2 bras or kets, took a conjugate. Double check.")
         
         else:
-            b = bra.Euclidean_product(op).product(ket)
+            print("Assumes your <bra| already has been conjugated. Double check.")
+            
+        b = bra.product(op).product(ket)
+        
+        return b
+    
+    @staticmethod
+    def braket(bra, ket):
+        """Forms <bra|ket>, no operator. Note: if fed 2 kets, will take a conjugate."""
+        
+        flip = 0
+        
+        if bra.qs_type == 'ket':
+            bra = bra.bra()
+            flip += 1
+            
+        if ket.qs_type == 'bra':
+            ket = ket.ket()
+            flip += 1
+            
+        if flip == 1:
+            print("fed 2 bras or kets, took a conjugate. Double check.")
+        
+        else:
+            print("Assumes your <bra| already has been conjugated. Double check.")
+            
+        b = bra.product(ket)
         
         return b
     
@@ -6448,6 +6571,14 @@ class TestQHStates(unittest.TestCase):
         print("q_1_qc*1: ", qc1)
         self.assertTrue(qc.qs[1].x == -1)
         self.assertTrue(qc1.qs[1].x == 1)
+    
+    def test_1042_conj_q(self):
+        qc = self.q_1_q_i.conj_q(self.q_1)
+        qc1 = self.q_1_q_i.conj_q(self.q_1)
+        print("q_1_q_i conj_q: ", qc)
+        print("q_1_qc*1 conj_q: ", qc1)
+        self.assertTrue(qc.qs[1].x == -1)
+        self.assertTrue(qc1.qs[1].x == -1)
     
     def test_1050_flip_signs(self):
         qf = self.q_1_q_i.flip_signs()
@@ -6907,6 +7038,16 @@ class Q8States(Q8):
             
         return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
+    def conj_q(self, q1):
+        """Takes multiple conjgates of states, depending on true/false value of q1 parameter."""
+        
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.conj_q(q1))
+            
+        return Q8States(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
     def simple_q(self):
         """Simplify the states."""
         
@@ -7260,11 +7401,36 @@ class Q8States(Q8):
             flip += 1
             
         if flip == 1:
-            print("fed 2 bras or kets, taking the conjugate as need be. Check result though.")
-            b = bra.product(op).product(ket)
+            print("Fed 2 bras or kets, took a conjugate. Double check.")
         
         else:
-            b = bra.Euclidean_product(op).product(ket)
+            print("Assumes <bra| is already conjugated. Double check.")
+        
+        b = bra.product(op).product(ket)
+        
+        return b
+    
+    @staticmethod
+    def braket(bra, ket):
+        """Forms <bra|ket>, no operator. Note: if fed 2 kets, will take the conjugate."""
+        
+        flip = 0
+        
+        if bra.qs_type == 'ket':
+            bra = bra.bra()
+            flip += 1
+            
+        if ket.qs_type == 'bra':
+            ket = ket.ket()
+            flip += 1
+            
+        if flip == 1:
+            print("Fed 2 bras or kets, took a conjugate. Double check.")
+        
+        else:
+            print("Assumes <bra| is already conjugated. Double check.")
+        
+        b = bra.product(ket)
         
         return b
     
@@ -7503,6 +7669,14 @@ class TestQ8States(unittest.TestCase):
         print("q_1_qc*1: ", qc1)
         self.assertTrue(qc.qs[1].dx.n == 1)
         self.assertTrue(qc1.qs[1].dx.p == 1)
+    
+    def test_1042_conj(self):
+        qc = self.q_1_q_i.conj_q(self.q_1)
+        qc1 = self.q_1_q_i.conj_q(self.q_1)
+        print("q_1_q_i* conj_q: ", qc)
+        print("q_1_qc*1 conj_q: ", qc1)
+        self.assertTrue(qc.qs[1].dx.n == 1)
+        self.assertTrue(qc1.qs[1].dx.n == 1)
     
     def test_1050_flip_signs(self):
         qf = self.q_1_q_i.flip_signs()
@@ -7955,6 +8129,16 @@ class Q8aStates(Q8a):
             
         return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
     
+    def conj_q(self, q1):
+        """Takes multiple conjugates of states, depending on true/false value of q1 parameter."""
+        
+        new_states = []
+        
+        for ket in self.qs:
+            new_states.append(ket.conj_q(q1))
+            
+        return Q8aStates(new_states, qs_type=self.qs_type, rows=self.rows, columns=self.columns)
+    
     def simple_q(self):
         """Simplify the states."""
         
@@ -8295,7 +8479,7 @@ class Q8aStates(Q8a):
     
     @staticmethod
     def bracket(bra, op, ket):
-        """Forms <bra|op|ket>. Note: if fed 2 k"""
+        """Forms <bra|op|ket>. Note: if fed 2 bras or kets, will take a conjugate."""
         
         flip = 0
         
@@ -8308,11 +8492,36 @@ class Q8aStates(Q8a):
             flip += 1
             
         if flip == 1:
-            print("fed 2 bras or kets, taking the conjugate as need be. Check result though.")
-            b = bra.product(op).product(ket)
-        
+            print("Fed 2 bras or kets, took a conjugate. Double check.")
+            
         else:
-            b = bra.Euclidean_product(op).product(ket)
+            print("Assumes <bra| has conjugate taken already. Double check.")
+            
+        b = bra.product(op).product(ket)
+        
+        return b
+    
+    @staticmethod
+    def braket(bra, ket):
+        """Forms <bra|ket>, no operator. Note: if fed 2 bras or kets, will take a conjugate."""
+        
+        flip = 0
+        
+        if bra.qs_type == 'ket':
+            bra = bra.bra()
+            flip += 1
+            
+        if ket.qs_type == 'bra':
+            ket = ket.ket()
+            flip += 1
+            
+        if flip == 1:
+            print("Fed 2 bras or kets, took a conjugate. Double check.")
+            
+        else:
+            print("Assumes <bra| has conjugate taken already. Double check.")
+            
+        b = bra.product(ket)
         
         return b
     
@@ -8551,6 +8760,14 @@ class TestQ8aStates(unittest.TestCase):
         print("q_1_qc*1: ", qc1)
         self.assertTrue(qc.qs[1].a[3] == 1)
         self.assertTrue(qc1.qs[1].a[2] == 1)
+    
+    def test_1042_conj_q(self):
+        qc = self.q_1_q_i.conj_q(self.q_1)
+        qc1 = self.q_1_q_i.conj_q(self.q_1)
+        print("q_1_q_i* conj_q: ", qc)
+        print("q_1_qc*1 conj_q: ", qc1)
+        self.assertTrue(qc.qs[1].a[3] == 1)
+        self.assertTrue(qc1.qs[1].a[3] == 1)
     
     def test_1050_flip_signs(self):
         qf = self.q_1_q_i.flip_signs()
@@ -8930,6 +9147,18 @@ q1exp.print_state("q exp 0123")
 q1s = QHStates([QH([0,1,2,3])])
 q1sexp = q1s.exp()
 q1sexp.print_state("qs exp 0123")
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
